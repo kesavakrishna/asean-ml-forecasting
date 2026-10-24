@@ -1,0 +1,12 @@
+# Data and papers stay local (licensing); see README for how to get the data
+Dataset/
+OneDrive_2026-10-21/
+*.zip
+*.pdf
+
+# Superseded by eda.ipynb
+eda.py
+
+# Python / Jupyter
+__pycache__/
+.ipynb_checkpoints/
