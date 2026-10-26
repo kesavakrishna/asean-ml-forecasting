@@ -12,27 +12,40 @@ import pandas as pd
 DATA_DIR = Path(__file__).resolve().parent / "Dataset"
 
 FILES = {
-    "Indonesia":   "Jakarta Stock Exchange Composite Index Historical Data.csv",
-    "Malaysia":    "FTSE Malaysia KLCI Historical Data.csv",
-    "Philippines": "FTSE Philippines Historical Data.csv",
-    "Singapore":   "FTSE Straits Times Singapore Historical Data.csv",
-    "Thailand":    "SET Thailand Index Historical Data.csv",
-    "India":       "Nifty 50 Historical Data.csv",  # not ASEAN, kept as a benchmark
+    "Indonesia":   "Jakarta Composite (Yahoo).csv",           # download_data.py
+    "Malaysia":    "FTSE Bursa Malaysia KLCI (Yahoo).csv",    # download_data.py
+    "Philippines": "PSEi Composite Historical Data.csv",      # Investing.com
+    "Singapore":   "Straits Times Index (Yahoo).csv",         # download_data.py
+    "Thailand":    "SET Index Historical Data.csv",           # Investing.com
+    "India":       "Nifty 50 (Yahoo).csv",                    # download_data.py; not ASEAN, a benchmark
 }
 MARKETS = list(FILES)
 
+START = "2012-01-01"          # the same start for every market
+HOLDOUT_START = "2023-03-17"  # 2023-03-17 onward stays untouched until the final check
+
 WEEKEND_SESSIONS_OK = {"India"}  # real special sessions, e.g. Budget day, Diwali Muhurat trading
-CLOSE_ONLY = {"Philippines"}     # Open/High/Low are copies of Close: don't build features from them
 MAX_GAP_DAYS = 14                # a return spanning a longer gap is missing data, not a holiday
 
 
 def read_raw(path):
-    """Read one Investing.com export as-is: Date index, Open/High/Low/Close columns."""
+    """Read one file as-is: Date index, Open/High/Low/Close columns."""
     df = pd.read_csv(path, encoding="utf-8-sig", thousands=",")
-    df = df.rename(columns={"Price": "Close"})
-    # Dates come in two styles ("01-03-2012" and "03/15/2023"); both are month-first.
-    df["Date"] = pd.to_datetime(df["Date"].str.replace("-", "/"), format="%m/%d/%Y")
+    if "Price" in df.columns:  # Investing.com export: "Price" is the close, dates are month-first
+        df = df.rename(columns={"Price": "Close"})
+        df["Date"] = pd.to_datetime(df["Date"], format="%m/%d/%Y")
+    else:                      # download_data.py output
+        df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m-%d")
     return df.set_index("Date").sort_index()[["Open", "High", "Low", "Close"]]
+
+
+def read_market(market, include_holdout=False):
+    """Raw rows for one market from START, stopping before the holdout unless asked."""
+    raw = read_raw(DATA_DIR / FILES[market])
+    raw = raw[raw.index >= START]
+    if not include_holdout:
+        raw = raw[raw.index < HOLDOUT_START]
+    return raw
 
 
 def clean(raw, market):
@@ -69,11 +82,11 @@ def check(df, market):
         raise ValueError(f"{market}: {', '.join(failed)}")
 
 
-def load_market(market):
-    """Cleaned, checked data for one market."""
-    return clean(read_raw(DATA_DIR / FILES[market]), market)
+def load_market(market, include_holdout=False):
+    """Cleaned, checked data for one market. Excludes the holdout unless asked."""
+    return clean(read_market(market, include_holdout), market)
 
 
-def load_all():
+def load_all(include_holdout=False):
     """Cleaned, checked data for every market, as {market: DataFrame}."""
-    return {market: load_market(market) for market in MARKETS}
+    return {market: load_market(market, include_holdout) for market in MARKETS}

@@ -6,7 +6,7 @@ Run:  python test_leakage.py
 import numpy as np
 import pandas as pd
 
-from data import DATA_DIR, FILES, MARKETS, clean, read_raw
+from data import MARKETS, clean, read_market
 from evaluation import baseline_guesses
 from features import make_features          # add under the other imports
 
@@ -41,7 +41,7 @@ def assert_no_lookahead(compute, raw, market, t, rng):
 def test_no_lookahead():
     rng = np.random.default_rng(0)
     for market in MARKETS:
-        raw = read_raw(DATA_DIR / FILES[market])
+        raw = read_market(market)  # development period only, never the holdout
         for t in rng.choice(raw.index[50:-50], size=10, replace=False):
             assert_no_lookahead(pipeline, raw, market, pd.Timestamp(t), rng)
 
@@ -54,7 +54,7 @@ def test_catches_a_leak():
         return df
 
     rng = np.random.default_rng(0)
-    raw = read_raw(DATA_DIR / FILES["Indonesia"])
+    raw = read_market("Indonesia")
     try:
         assert_no_lookahead(leaky, raw, "Indonesia", pd.Timestamp("2018-06-29"), rng)
     except AssertionError:
