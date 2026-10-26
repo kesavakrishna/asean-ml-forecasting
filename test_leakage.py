@@ -8,13 +8,12 @@ import pandas as pd
 
 from data import DATA_DIR, FILES, MARKETS, clean, read_raw
 from evaluation import baseline_guesses
-
+from features import make_features          # add under the other imports
 
 def pipeline(raw, market):
     """Everything computed per day so far. Add each new feature function here."""
     df = clean(raw, market)
-    return df.join(baseline_guesses(df))
-
+    return df.join(baseline_guesses(df)).join(make_features(df))   # last line of pipeline()
 
 def scramble_after(raw, t, rng):
     """Copy of `raw` with every row after day t multiplied by a random factor.

@@ -6,6 +6,7 @@ Convention for every model: the row for day t has
     features = built only from data up to day t-1
 so splitting rows by calendar year never lets a label cross into another split.
 """
+import math
 import numpy as np
 import pandas as pd
 
@@ -44,3 +45,25 @@ def baseline_guesses(df):
         {"always up": True, "always down": False, "same as yesterday": up_yesterday},
         index=df.index,
     )
+
+def majority_direction(up):
+    """The fair baseline: the direction that was more common in training (True = up).
+
+    Fixed before the test year starts, so a model could have used it in real time.
+    """
+    return bool(up.mean() >= 0.5)
+
+def mcnemar(actual, calls_a, calls_b):
+    """Paired test of two sets of up/down calls scored on the same days.
+
+    Only days where exactly one of them is right carry information.
+    Returns (days only A got right, days only B got right, two-sided p-value).
+    """
+    a_right = calls_a == actual
+    b_right = calls_b == actual
+    only_a = int((a_right & ~b_right).sum())
+    only_b = int((~a_right & b_right).sum())
+    n = only_a + only_b
+    # Exact binomial test: if A and B were equally good, each disagreement is a coin flip.
+    tail = sum(math.comb(n, i) for i in range(min(only_a, only_b) + 1)) / 2**n
+    return only_a, only_b, min(1.0, 2 * tail)
