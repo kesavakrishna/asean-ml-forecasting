@@ -9,8 +9,8 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from torch import nn
 
-from evaluation import majority_direction, mcnemar, walk_forward_splits
-from features import make_dataset
+from evaluation import baseline_guesses, majority_direction, mcnemar, walk_forward_splits
+from features import make_dataset, make_features
 
 
 # ---------- the two models ----------
@@ -56,27 +56,32 @@ def fit_torch(X, y, weight_decay, epochs=500, lr=0.05):
 
 # ---------- the six-fold loop ----------
 
-def walk_forward(df, fit, grid):
-    """For each test year: pick the setting with the lowest log loss on the tune year,
-    refit on train + tune with it, and predict the test year."""
-    X, y = make_dataset(df)
+def pick_by_log_loss(fit, grid, X_train, y_train, X_tune, y_tune):
+    """Try every setting in the grid; keep the one with the lowest log loss on the tune year."""
+    def tune_loss(setting):
+        predict = fit(X_train, y_train, setting)
+        return log_loss(y_tune, predict(X_tune), labels=[False, True])
+    return min(grid, key=tune_loss)
+
+
+def walk_forward(df, fit, grid, make_x=make_features, pick=pick_by_log_loss):
+    """For each test year: pick a setting on the tune year, refit on train + tune with it,
+    and predict the test year."""
+    X, y = make_dataset(df, make_x)
+    up_yesterday = baseline_guesses(df)["same as yesterday"]
     folds = []
     for year, train, tune, test in walk_forward_splits(X.index):
-        tune_loss = {}
-        for setting in grid:
-            predict = fit(X[train], y[train], setting)
-            tune_loss[setting] = log_loss(y[tune], predict(X[tune]), labels=[False, True])
-        best = min(tune_loss, key=tune_loss.get)
+        best = pick(fit, grid, X[train], y[train], X[tune], y[tune])
 
         before_test = train | tune
         predict = fit(X[before_test], y[before_test], best)
         folds.append(pd.DataFrame({
             "year": year,
-            "setting": best,
+            "setting": " ".join(str(best).split()),  # as one line of text
             "p_up": predict(X[test]),
             "up": y[test],
             "fair_call": majority_direction(y[before_test]),  # fixed before the test year
-            "same_as_yesterday": X.loc[test, "dir_yesterday"] > 0,
+            "same_as_yesterday": up_yesterday[X.index[test]],
         }, index=X.index[test]))
     return pd.concat(folds)
 

@@ -7,6 +7,7 @@ Forecasting the daily direction (up/down) of the ASEAN-5 stock indices with mach
 - step 2: one cleaning function, walk-forward evaluation, leakage test
 - step 3: logistic regression in sklearn and PyTorch
 - data updated to Oct 2026, with an untouched holdout; steps 2–3 re-run on it
+- step 4: the paper's 12 indicators and seven models, tuned and tested properly
 
 ## Data
 
@@ -95,6 +96,50 @@ All six test years pooled (sklearn):
   - Both versions leave the intercept unpenalised, so the intercept isn't the cause. In PyTorch the bias has its own parameter group with weight decay 0.
   - With the exact conversion, weight decay = 1 / (C × training days), PyTorch matches sklearn almost perfectly. Correlation is 0.99999 or higher, and the up/down calls agree on at least 99.6% of days in every fold.
 
+## Step 4 findings: the paper's setup
+
+**Setup:**
+- **Features:** the 12 technical indicators from Kim (2003), as used by Kumar & Thenmozhi (2006): stochastic %K, %D and slow %D, momentum, rate of change, Williams %R, A/D oscillator, 5- and 10-day disparity, price oscillator, CCI and RSI. Look-back is 10 days (the papers don't say).
+- **Models:** LDA, logistic regression, KNN, SVM, random forest and AdaBoost in sklearn, plus a neural network with one hidden layer in PyTorch.
+- **Tuning:** each model tries a few settings and keeps the best on the tune year. The network picks its hidden nodes (2–12) and its number of epochs the same way, using early stopping.
+- **Fixes the paper's mistake:** Kumar & Thenmozhi picked the SVM's settings and the network's hidden nodes by their score on the test period.
+- **Skipped:** Kernel Factory, an R package with no standard Python version.
+- **Data notes:**
+  - The Philippines keeps all 12 indicators, because the PSEi file has a real High and Low. The old FTSE Philippines file had High = Low every day, so the A/D oscillator (which divides by High − Low) couldn't be computed.
+  - Yahoo has 11 days with High = Low (Indonesia 5, Malaysia 6). The A/D oscillator is blank on those days, so the following day is left out.
+- **Leakage test:** now also checks that the features for day t don't change when day t's own prices change. It passes, and it fails on a planted leak.
+
+All 36 folds per model (6 markets × 6 test years):
+
+| Model | Mean AUC | Folds above fair bar | Folds below | Significantly above | Significantly below | All-up folds |
+|---|---|---|---|---|---|---|
+| LDA | 0.51 | 15 | 18 | 0 | 0 | 0 |
+| Logistic regression | 0.52 | 11 | 7 | 0 | 0 | 16 |
+| KNN | 0.51 | 17 | 14 | 2 | 1 | 4 |
+| SVM | 0.51 | 12 | 10 | 0 | 0 | 7 |
+| Random forest | 0.51 | 18 | 13 | 1 | 0 | 0 |
+| AdaBoost | 0.51 | 15 | 20 | 0 | 0 | 0 |
+| Neural network | 0.51 | 18 | 15 | 0 | 1 | 0 |
+
+Pooled accuracy minus the fair bar, in points (the full table for each model is in `technical_indicators.ipynb`):
+
+| Model | Indonesia | Malaysia | Philippines | Singapore | Thailand | India |
+|---|---|---|---|---|---|---|
+| LDA | 0.1 | −0.3 | 0.0 | 1.7 | −1.0 | −1.4 |
+| Logistic regression | 0.2 | −0.3 | 0.3 | 1.0 | −0.1 | −0.1 |
+| KNN | −0.1 | 1.8 | −1.2 | 3.3 | −0.1 | 0.3 |
+| SVM | 0.0 | −0.1 | −0.5 | 0.7 | 0.0 | −0.1 |
+| Random forest | −0.6 | −0.8 | 0.1 | 3.4 | 0.8 | −1.2 |
+| AdaBoost | −0.2 | 0.8 | −0.8 | 1.0 | −1.2 | 0.3 |
+| Neural network | −0.9 | 0.5 | −1.2 | −0.2 | 1.0 | −0.4 |
+
+- **No model has an edge.** No pooled gap is significant; the smallest p-value is 0.06. Mean AUC is 0.51–0.52, where a coin flip scores 0.50.
+- **The few significant folds look like luck.** Out of 252 model-folds, 3 beat the fair bar and 2 lost to it at p < 0.05. Testing that many folds, you'd expect a handful either way by chance.
+- **Singapore looks best but isn't significant:** random forest +3.4 points (p = 0.07), KNN +3.3 (p = 0.06). Step 3's logistic regression was also highest there. With this many models tried, that's not evidence.
+- **India:** the paper reported 56–68% on the Nifty for 2004–05. Here the same models score 53.1–54.8% for 2017–2022, while the fair bar scores 54.6% and "same as yesterday" 54.8%.
+- **Calling every day "up":** logistic regression did this in 16 of 36 folds, SVM in 7 and KNN in 4. The other four models never did.
+- **AdaBoost never called every day up** (0 of 36 folds). In each test year it said up on 48–92% of days. Its accuracy was never significantly different from the fair bar (p ≥ 0.18), and its AUC ranged from 0.45 to 0.61. So it doesn't collapse to "always up"; it simply has no edge. Tuning picked a learning rate of 1.0 in 33 of 36 folds.
+
 ## Files
 
 | File | What it is |
@@ -102,11 +147,13 @@ All six test years pooled (sklearn):
 | `download_data.py` | Downloads the four Yahoo markets into `Dataset/`, up to a fixed end date |
 | `data.py` | `load_market()` / `load_all()`: load, clean and check the data, development period only unless asked. Every step after the EDA uses this |
 | `evaluation.py` | Walk-forward splits (test years 2017–2022), scoring (accuracy, balanced accuracy, MCC), no-model baselines, fair baseline, McNemar paired test |
-| `features.py` | Model features: the last 5 daily returns and yesterday's direction |
+| `features.py` | Model features: the last 5 daily returns and yesterday's direction (step 3), and the 12 technical indicators (step 4) |
 | `models.py` | Logistic regression in sklearn and PyTorch, the six-fold loop, per-year and pooled reports |
-| `test_leakage.py` | Checks that nothing computed for day t changes when data after t is removed or scrambled |
+| `classifiers.py` | Step 4 models: the six sklearn classifiers, the PyTorch network, summary tables |
+| `test_leakage.py` | Checks that nothing computed for day t changes when data after t is removed or scrambled, and that features for day t don't use day t itself |
 | `walk_forward_baselines.ipynb` | Baselines scored on each test year |
 | `logistic_regression.ipynb` | Step 3: both logistic regressions through the six folds, and the agreement check |
+| `technical_indicators.ipynb` | Step 4: all seven models on the 12 indicators, a table per model, and the AdaBoost check |
 | `eda.ipynb` | EDA notebook on the original data: data checks, cleaning, returns, up-day shares, baseline scores |
 | `eda_report.md` | Write-up of the EDA findings |
 | `eda_output/` | Figures used in the report (saved by the EDA notebook) |
@@ -120,4 +167,5 @@ pip install pandas numpy matplotlib scikit-learn torch yfinance jupyter
 python download_data.py
 python test_leakage.py
 jupyter notebook logistic_regression.ipynb
+jupyter notebook technical_indicators.ipynb   # about 15 minutes
 ```
