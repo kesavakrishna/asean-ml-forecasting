@@ -53,6 +53,52 @@ def make_us_features(df, us):
     return pd.merge_asof(df[[]], us_ret, left_index=True, right_index=True,
                          allow_exact_matches=False)  # strictly earlier date
 
+SEQ_DAYS = 20  # about one trading month
+
+def make_sequence(df):
+    """The last 20 daily returns, oldest first. The newest is day t-1."""
+    X = pd.DataFrame(index=df.index)
+    for lag in range(SEQ_DAYS, 0, -1):
+        X[f"seq_ret{lag}"] = df["ret"].shift(lag)
+    return X
+
+def make_sequence_with_us(df, us):
+    """Each of the 20 steps is one Asian day's return, then the US session that followed it.
+
+    The newest step is day t-1's return and the last US session before day t.
+    """
+    us_ret = make_us_features(df, us)["us_ret"]
+    X = pd.DataFrame(index=df.index)
+    for lag in range(SEQ_DAYS, 0, -1):
+        X[f"seq_ret{lag}"] = df["ret"].shift(lag)
+        X[f"seq_us{lag}"] = us_ret.shift(lag - 1)
+    return X
+
+def log_range(df):
+    """How big day t's move was: the log of log(High / Low). Blank if High = Low."""
+    return np.log(np.log(df["High"] / df["Low"]).where(df["High"] > df["Low"]))
+
+def past_ranges(df):
+    """log_range for row t-1 and earlier. A blank day repeats the day before it."""
+    return log_range(df).ffill().shift(1)
+
+def make_har(df):
+    """The average range over the last 1, 5 and 22 days. Row t ends at day t-1."""
+    past = past_ranges(df)
+    return pd.DataFrame({
+        "range_1d": past,
+        "range_5d": past.rolling(5).mean(),
+        "range_22d": past.rolling(22).mean(),
+    })
+
+def make_range_sequence(df):
+    """The last 20 daily ranges, oldest first. The newest is day t-1."""
+    past = past_ranges(df)
+    X = pd.DataFrame(index=df.index)
+    for lag in range(SEQ_DAYS, 0, -1):
+        X[f"seq_range{lag}"] = past.shift(lag - 1)
+    return X
+
 def up_close_to_close(df):
     """Label: did day t close above day t-1's close?"""
     return df["ret"] > 0

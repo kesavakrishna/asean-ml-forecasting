@@ -10,6 +10,7 @@ Forecasting the daily direction (up/down) of the ASEAN-5 stock indices with mach
 - step 4: the paper's 12 indicators and seven models, tuned and tested properly
 - step 5: the US overnight move as a feature, close-to-close vs open-to-close
 - step 5b: the two open-to-close exceptions checked; a draft holdout plan
+- step 6: a small GRU in PyTorch on the same task
 
 ## Data
 
@@ -256,6 +257,46 @@ Logistic regression, all six test years pooled:
 
 **Verdict:** the edge comes from US news showing up in the index after its opening number is recorded, as you'd expect if the open is partly stale. Without a tradeable price we can't prove that. But it doesn't change the answer: even taken at face value, the edge is 0.05–0.12% per trade, less than realistic trading costs. It's not something you could trade.
 
+## Step 6 findings: does a deep model change anything?
+
+**Setup:** a small GRU in PyTorch reads the last 20 days in order, oldest first. Hidden size (8, 16 or 32) and epochs are picked on the tune year with early stopping. It's compared with logistic regression on the same days.
+
+**Own returns only, close-to-close** (logistic regression gets the same 20 returns):
+
+| Market | GRU % | Logistic regression % | Fair bar % | p GRU vs fair | GRU AUC |
+|---|---|---|---|---|---|
+| Indonesia | 53.6 | 52.7 | 52.9 | 0.24 | 0.52 |
+| Malaysia | 47.9 | 49.6 | 49.8 | 0.23 | 0.49 |
+| Philippines | 50.4 | 51.6 | 51.8 | 0.35 | 0.49 |
+| Singapore | 46.8 | 50.6 | 49.4 | 0.16 | 0.47 |
+| Thailand | 51.7 | 52.4 | 52.4 | 0.35 | 0.52 |
+| India | 54.5 | 53.4 | 54.6 | 1.00 | 0.54 |
+
+**With US data** (the GRU reads 20 days of own and US returns; logistic regression gets only the last US move, as in step 5):
+
+| Market | Close-to-close: GRU % | Logistic regression % | p GRU vs LR | Open-to-close: GRU % | Logistic regression % | p GRU vs LR |
+|---|---|---|---|---|---|---|
+| Indonesia | 59.4 | 58.0 | 0.14 | 53.1 | 48.3 | 0.007 |
+| Malaysia | 60.8 | 59.9 | 0.32 | 51.8 | 49.8 | 0.14 |
+| Philippines | 60.5 | 60.5 | 1.00 | 55.7 | 55.9 | 0.90 |
+| Singapore | 61.2 | 61.4 | 0.82 | 47.0 | 49.4 | 0.17 |
+| Thailand | 58.1 | 57.8 | 0.83 | 52.8 | 54.8 | 0.21 |
+| India | 60.2 | 60.8 | 0.66 | 53.5 | 52.4 | 0.39 |
+
+**Random seeds, open-to-close.** The same GRU with four different starting points. **Average day in %** is what a trade earns on the index before costs:
+
+| Market | GRU % | Fair bar % | Seeds with p < 0.05 | Average day in % |
+|---|---|---|---|---|
+| Indonesia | 50.1–53.1 | 49.0 | 2 of 4 | −0.04 to 0.00 |
+| Malaysia | 49.7–51.8 | 48.9 | 1 of 4 | 0.00 to 0.03 |
+| Philippines | 55.1–56.3 | 50.2 | 4 of 4 | 0.11 to 0.13 |
+
+- **No, the deep model doesn't change the answer.** With own returns only there's still no edge: mean AUC is 0.50.
+- **Where there is signal, one number gets almost all of it.** On close-to-close, the GRU reads 40 inputs and doesn't significantly beat logistic regression on the last US move alone.
+- **Indonesia's open-to-close win over logistic regression isn't reliable.** It's significant for only 2 of 4 seeds, and those trades earn about nothing. Accuracy can rise without earning money.
+- **The Philippines holds up across all seeds,** but it's the same edge as step 5: logistic regression matches it, and it earns about 0.12% per trade, which is below realistic costs.
+- **Random seeds matter.** One market's accuracy moved by 3 points from the starting point alone, so a single run of a neural network can mislead.
+
 ## Holdout plan (draft: confirm before opening the holdout)
 
 Each test runs once on 17 Mar 2023 – 23 Oct 2026. Same procedure as the folds: pick settings with 2022 as the tune year, retrain on all development data, then test. Each is scored against the fair bar (the majority direction in the development data) with McNemar's test and AUC.
@@ -280,6 +321,8 @@ The US data for 2023–2026 is downloaded only when these tests run.
 | `walk_forward_baselines.ipynb` | Baselines scored on each test year |
 | `logistic_regression.ipynb` | Step 3: both logistic regressions through the six folds, and the agreement check |
 | `technical_indicators.ipynb` | Step 4: all seven models on the 12 indicators, a table per model, and the AdaBoost check |
+| `gru.py` | Step 6: the GRU network and its tuning |
+| `sequence_model.ipynb` | Step 6: GRU vs logistic regression on three tasks, and the random-seed check |
 | `us_overnight.ipynb` | Steps 5 and 5b: the US move as a feature, close-to-close vs open-to-close, the open-price check, and the checks of the two exceptions |
 | `eda.ipynb` | EDA notebook on the original data: data checks, cleaning, returns, up-day shares, baseline scores |
 | `eda_report.md` | Write-up of the EDA findings |
@@ -296,4 +339,5 @@ python test_leakage.py
 jupyter notebook logistic_regression.ipynb
 jupyter notebook technical_indicators.ipynb   # about 25 minutes
 jupyter notebook us_overnight.ipynb
+jupyter notebook sequence_model.ipynb         # about 35 minutes
 ```

@@ -63,6 +63,20 @@ def money_test(day_return, calls_up, cost):
     every_day = (1 + day_return - cost).prod()
     return model, every_day
 
+def diebold_mariano(errors_a, errors_b, lags=5):
+    """Paired test of two forecasts' squared errors on the same days. Returns a two-sided p-value.
+
+    Nearby days are correlated, so the variance also counts neighbours up to `lags` days apart.
+    """
+    diff = np.asarray(errors_a) ** 2 - np.asarray(errors_b) ** 2
+    centred = diff - diff.mean()
+    variance = (centred ** 2).mean()
+    for lag in range(1, lags + 1):
+        weight = 1 - lag / (lags + 1)
+        variance += 2 * weight * (centred[lag:] * centred[:-lag]).mean()
+    t = diff.mean() / math.sqrt(variance / len(diff))
+    return math.erfc(abs(t) / math.sqrt(2))
+
 def mcnemar(actual, calls_a, calls_b):
     """Paired test of two sets of up/down calls scored on the same days.
 

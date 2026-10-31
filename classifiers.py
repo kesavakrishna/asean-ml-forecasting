@@ -50,8 +50,16 @@ BATCH_SIZE = 64
 torch.set_num_threads(1)            # faster for a network this small
 
 
-def train_net(X, y, hidden, epochs, X_tune=None, y_tune=None):
-    """Train a one-hidden-layer network in mini-batches.
+def one_hidden_layer(n_inputs, hidden):
+    return nn.Sequential(
+        nn.Linear(n_inputs, hidden),  # 12 indicators -> hidden nodes
+        nn.Tanh(),
+        nn.Linear(hidden, 1),         # hidden nodes -> 1 logit
+    )
+
+
+def train_net(X, y, hidden, epochs, X_tune=None, y_tune=None, build_net=one_hidden_layer, seed=0):
+    """Train a network in mini-batches.
 
     Returns predict() and the tune-year loss after each epoch.
     With tune data, it stops early once that loss stops improving.
@@ -68,12 +76,8 @@ def train_net(X, y, hidden, epochs, X_tune=None, y_tune=None):
     x = to_tensor(X)
     target = torch.tensor(y.to_numpy(), dtype=torch.float32).unsqueeze(1)
 
-    torch.manual_seed(0)
-    net = nn.Sequential(
-        nn.Linear(X.shape[1], hidden),  # 12 indicators -> hidden nodes
-        nn.Tanh(),
-        nn.Linear(hidden, 1),           # hidden nodes -> 1 logit
-    )
+    torch.manual_seed(seed)
+    net = build_net(X.shape[1], hidden)
     optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
     loss_fn = nn.BCEWithLogitsLoss()
 

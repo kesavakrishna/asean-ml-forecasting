@@ -8,30 +8,37 @@ import pandas as pd
 
 from data import MARKETS, clean, read_market, read_us
 from evaluation import baseline_guesses
-from features import make_features, make_indicators, make_us_features
+from features import (log_range, make_features, make_har, make_indicators, make_range_sequence, make_sequence,
+                      make_sequence_with_us, make_us_features)
 
 def pipeline(raw, market):
     """Everything computed per day so far. Add each new feature function here."""
     df = clean(raw, market)
-    return df.join(baseline_guesses(df)).join(make_features(df)).join(make_indicators(df))
+    return df.join(baseline_guesses(df)).join(make_features(df)).join(make_indicators(df)).join(make_sequence(df)).join(make_har(df)).join(make_range_sequence(df))
 
 
 def model_inputs(raw, market):
     """Only the model features."""
     df = clean(raw, market)
-    return make_features(df).join(make_indicators(df))
+    return make_features(df).join(make_indicators(df)).join(make_sequence(df)).join(make_har(df)).join(make_range_sequence(df))
 
 
 def scramble_after(raw, t, rng):
-    """Copy of `raw` with every row after day t multiplied by a random factor.
+    """Copy of `raw` with every row after day t changed at random.
 
-    Filler rows (same close as the day before) keep the previous row's factor, so they
-    stay filler rows and the scrambled data still passes the cleaning checks.
+    Each row is multiplied by a random factor. Filler rows (same close as the day before)
+    keep the previous row's factor, so they stay filler rows and the scrambled data still
+    passes the cleaning checks. High and Low are also stretched apart, because multiplying
+    a whole row leaves High / Low unchanged, which would hide a leak in the range features.
     """
     factor = pd.Series(rng.uniform(0.5, 1.5, len(raw)), index=raw.index)
     factor[raw.index <= t] = 1.0
     factor[raw["Close"].diff() == 0] = np.nan
-    return raw.mul(factor.ffill(), axis=0)
+    scrambled = raw.mul(factor.ffill(), axis=0)
+    after = raw.index > t
+    scrambled.loc[after, "High"] *= rng.uniform(1.0, 1.1, after.sum())
+    scrambled.loc[after, "Low"] *= rng.uniform(0.9, 1.0, after.sum())
+    return scrambled
 
 
 def assert_no_lookahead(compute, raw, market, t, rng):
@@ -101,6 +108,22 @@ def test_catches_a_same_day_leak():
     raise AssertionError("leakage test missed a feature that uses day t's own price")
 
 
+def test_catches_a_same_day_range_leak():
+    """Sanity check: the stricter test must fail on a feature that uses day t's own range."""
+    def leaky(raw, market):
+        X = model_inputs(raw, market)
+        X["range_today"] = log_range(clean(raw, market))  # uses day t itself
+        return X
+
+    rng = np.random.default_rng(0)
+    raw = read_market("Indonesia")
+    try:
+        assert_features_ignore_day_t(leaky, raw, "Indonesia", pd.Timestamp("2018-06-29"), rng)
+    except AssertionError:
+        return
+    raise AssertionError("leakage test missed a feature that uses day t's own range")
+
+
 # ---------- the US feature (step 5) ----------
 
 def assert_us_feature_ignores_us_day_t(make, asia, us_raw, t, rng):
@@ -120,6 +143,7 @@ def test_us_feature_ignores_us_day_t():
         asia = clean(read_market(market), market)[:"2022"]  # the US file ends in 2022
         for t in rng.choice(asia.index[50:-50], size=10, replace=False):
             assert_us_feature_ignores_us_day_t(make_us_features, asia, us_raw, pd.Timestamp(t), rng)
+            assert_us_feature_ignores_us_day_t(make_sequence_with_us, asia, us_raw, pd.Timestamp(t), rng)
 
 
 def test_catches_a_same_date_join():
@@ -141,6 +165,7 @@ if __name__ == "__main__":
     test_features_ignore_day_t()
     test_catches_a_leak()
     test_catches_a_same_day_leak()
+    test_catches_a_same_day_range_leak()
     test_us_feature_ignores_us_day_t()
     test_catches_a_same_date_join()
     print("Leakage test passed.")
