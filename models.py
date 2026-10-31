@@ -9,8 +9,8 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from torch import nn
 
-from evaluation import baseline_guesses, majority_direction, mcnemar, walk_forward_splits
-from features import make_dataset, make_features
+from evaluation import majority_direction, mcnemar, walk_forward_splits
+from features import make_dataset, make_features, up_close_to_close
 
 
 # ---------- the two models ----------
@@ -64,11 +64,11 @@ def pick_by_log_loss(fit, grid, X_train, y_train, X_tune, y_tune):
     return min(grid, key=tune_loss)
 
 
-def walk_forward(df, fit, grid, make_x=make_features, pick=pick_by_log_loss):
+def walk_forward(df, fit, grid, make_x=make_features, make_y=up_close_to_close, pick=pick_by_log_loss):
     """For each test year: pick a setting on the tune year, refit on train + tune with it,
     and predict the test year."""
-    X, y = make_dataset(df, make_x)
-    up_yesterday = baseline_guesses(df)["same as yesterday"]
+    X, y = make_dataset(df, make_x, make_y)
+    up_yesterday = make_y(df).shift(1).eq(True)  # yesterday's label; unknown counts as down
     folds = []
     for year, train, tune, test in walk_forward_splits(X.index):
         best = pick(fit, grid, X[train], y[train], X[tune], y[tune])

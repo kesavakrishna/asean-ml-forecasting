@@ -53,6 +53,16 @@ def majority_direction(up):
     """
     return bool(up.mean() >= 0.5)
 
+def money_test(day_return, calls_up, cost):
+    """Buy at the open and sell at the close. Returns the growth of 1 unit (1.10 = +10%).
+
+    model: trades only on the days it calls up. every_day: trades every day.
+    day_return = Close / Open - 1 for each day. cost = round-trip cost (0.002 = 0.2%).
+    """
+    model = (1 + day_return[calls_up] - cost).prod()
+    every_day = (1 + day_return - cost).prod()
+    return model, every_day
+
 def mcnemar(actual, calls_a, calls_b):
     """Paired test of two sets of up/down calls scored on the same days.
 

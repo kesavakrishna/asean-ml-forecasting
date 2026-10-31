@@ -29,7 +29,8 @@ CLASSIFIERS = {
     # 3 features per split, as in the paper
     "Random forest": [RandomForestClassifier(n_estimators=300, max_features=3, min_samples_leaf=leaf, random_state=0, n_jobs=-1)
                       for leaf in [1, 10, 50, 200]],
-    "AdaBoost": [AdaBoostClassifier(n_estimators=n, learning_rate=lr, random_state=0) for n in [50, 200] for lr in [0.1, 1.0]],
+    "AdaBoost": [AdaBoostClassifier(n_estimators=n, learning_rate=lr, random_state=0)
+                 for n in [50, 200, 500] for lr in [0.1, 1.0, 2.0, 4.0]],
 }
 
 
@@ -111,9 +112,10 @@ def pick_net_setting(fit, hidden_grid, X_train, y_train, X_tune, y_tune):
 
 # ---------- scoring ----------
 
-def all_up_folds(preds):
-    """Number of test years in which the model said up on every day."""
-    return int(preds.groupby("year")["p_up"].min().gt(0.5).sum())
+def one_answer_folds(preds):
+    """Number of test years in which the model gave the same answer every day (all up, or all down)."""
+    share_up = (preds["p_up"] > 0.5).groupby(preds["year"]).mean()
+    return int(((share_up == 0) | (share_up == 1)).sum())
 
 
 def model_table(preds_by_market):
@@ -122,7 +124,7 @@ def model_table(preds_by_market):
     for market, preds in preds_by_market.items():
         rows[market] = pooled(preds)
         rows[market]["called up %"] = 100 * (preds["p_up"] > 0.5).mean()
-        rows[market]["all-up folds"] = all_up_folds(preds)  # out of 6
+        rows[market]["one-answer folds"] = one_answer_folds(preds)  # out of 6
     return pd.DataFrame(rows).T
 
 
@@ -141,6 +143,6 @@ def overview(results):
             "significantly above": (above & significant).sum(),
             "significantly below": (below & significant).sum(),
             "above stretch bar": (years["accuracy %"] > years["stretch bar %"]).sum(),
-            "all-up folds": sum(all_up_folds(preds) for preds in preds_by_market.values()),
+            "one-answer folds": sum(one_answer_folds(preds) for preds in preds_by_market.values()),
         }
     return pd.DataFrame(rows).T

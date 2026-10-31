@@ -44,8 +44,29 @@ def make_indicators(df):
     X["rsi"] = 100 - 100 / (1 + gain.rolling(N_DAYS).mean() / loss.rolling(N_DAYS).mean())
     return X.shift(1)  # move down one row: day t gets day t-1's values
 
-def make_dataset(df, make_x=make_features):
-    """Features X and label y (did day t close up?), keeping only complete rows."""
-    X = make_x(df)
-    complete = X.notna().all(axis=1) & df["ret"].notna()
-    return X[complete], (df["ret"] > 0)[complete]
+def make_us_features(df, us):
+    """The S&P 500's return in the last US session before day t.
+
+    The US session dated t ends after Asia has closed on day t, so day t can't use it.
+    """
+    us_ret = us["ret"].rename("us_ret")
+    return pd.merge_asof(df[[]], us_ret, left_index=True, right_index=True,
+                         allow_exact_matches=False)  # strictly earlier date
+
+def up_close_to_close(df):
+    """Label: did day t close above day t-1's close?"""
+    return df["ret"] > 0
+
+def up_open_to_close(df):
+    """Label: did day t close above its own open? (Buy at the open, sell at the close.)
+
+    Blank when the open is just a copy of yesterday's close, i.e. not a real open.
+    """
+    real_open = df["Open"] != df["Close"].shift(1)
+    return (df["Close"] > df["Open"]).where(real_open)
+
+def make_dataset(df, make_x=make_features, make_y=up_close_to_close):
+    """Features X and label y, keeping only complete rows."""
+    X, y = make_x(df), make_y(df)
+    complete = X.notna().all(axis=1) & y.notna() & df["ret"].notna()
+    return X[complete], y[complete].astype(bool)

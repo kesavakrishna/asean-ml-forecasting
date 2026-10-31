@@ -20,6 +20,7 @@ FILES = {
     "India":       "Nifty 50 (Yahoo).csv",                    # download_data.py; not ASEAN, a benchmark
 }
 MARKETS = list(FILES)
+US_FILE = "S&P 500 (Yahoo).csv"  # download_data.py; 2010-2022 only, for step 5
 
 START = "2012-01-01"          # the same start for every market
 HOLDOUT_START = "2023-03-17"  # 2023-03-17 onward stays untouched until the final check
@@ -90,3 +91,13 @@ def load_market(market, include_holdout=False):
 def load_all(include_holdout=False):
     """Cleaned, checked data for every market, as {market: DataFrame}."""
     return {market: load_market(market, include_holdout) for market in MARKETS}
+
+
+def read_us():
+    """Raw S&P 500 rows (2010-2022)."""
+    return read_raw(DATA_DIR / US_FILE)
+
+
+def load_us():
+    """Cleaned, checked S&P 500 data, with its daily return `ret`."""
+    return clean(read_us(), "US")

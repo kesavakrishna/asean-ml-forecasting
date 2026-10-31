@@ -8,6 +8,8 @@ Forecasting the daily direction (up/down) of the ASEAN-5 stock indices with mach
 - step 3: logistic regression in sklearn and PyTorch
 - data updated to Oct 2026, with an untouched holdout; steps 2–3 re-run on it
 - step 4: the paper's 12 indicators and seven models, tuned and tested properly
+- step 5: the US overnight move as a feature, close-to-close vs open-to-close
+- step 5b: the two open-to-close exceptions checked; a draft holdout plan
 
 ## Data
 
@@ -23,7 +25,9 @@ Forecasting the daily direction (up/down) of the ASEAN-5 stock indices with mach
 - **Coverage:** every market runs from 1 Jan 2012 to 23 Oct 2026. Thailand's last day is 22 Oct, because 23 Oct is a Thai holiday.
 - **Two periods:**
   - **Development:** 1 Jan 2012 to 16 Mar 2023. Everything so far uses only this.
-  - **Holdout:** 17 Mar 2023 to 23 Oct 2026. It stays untouched until the final check. `load_market()` leaves it out unless called with `include_holdout=True`.
+  - **Holdout:** 17 Mar 2023 to 23 Oct 2026. It stays untouched until the final check. `load_market()` leaves it out unless called with `include_holdout=True`, and no code in the repo does that.
+  - No model has used 2023 at all: the last test year is 2022.
+- **US data (step 5):** S&P 500 from Yahoo `^GSPC`, 2010–2022 only.
 - **Checks made when switching sources:**
   - The original files were all from Investing.com and ended in Mar 2023. Over 2012 to Mar 2023, Yahoo matches them: the up/down direction agrees on 99.8–99.9% of days.
   - Yahoo also fills Singapore's missing May–Dec 2020.
@@ -111,14 +115,14 @@ All six test years pooled (sklearn):
 
 All 36 folds per model (6 markets × 6 test years):
 
-| Model | Mean AUC | Folds above fair bar | Folds below | Significantly above | Significantly below | All-up folds |
+| Model | Mean AUC | Folds above fair bar | Folds below | Significantly above | Significantly below | One-answer folds |
 |---|---|---|---|---|---|---|
 | LDA | 0.51 | 15 | 18 | 0 | 0 | 0 |
 | Logistic regression | 0.52 | 11 | 7 | 0 | 0 | 16 |
 | KNN | 0.51 | 17 | 14 | 2 | 1 | 4 |
 | SVM | 0.51 | 12 | 10 | 0 | 0 | 7 |
 | Random forest | 0.51 | 18 | 13 | 1 | 0 | 0 |
-| AdaBoost | 0.51 | 15 | 20 | 0 | 0 | 0 |
+| AdaBoost | 0.52 | 16 | 18 | 0 | 0 | 2 |
 | Neural network | 0.51 | 18 | 15 | 0 | 1 | 0 |
 
 Pooled accuracy minus the fair bar, in points (the full table for each model is in `technical_indicators.ipynb`):
@@ -130,30 +134,153 @@ Pooled accuracy minus the fair bar, in points (the full table for each model is 
 | KNN | −0.1 | 1.8 | −1.2 | 3.3 | −0.1 | 0.3 |
 | SVM | 0.0 | −0.1 | −0.5 | 0.7 | 0.0 | −0.1 |
 | Random forest | −0.6 | −0.8 | 0.1 | 3.4 | 0.8 | −1.2 |
-| AdaBoost | −0.2 | 0.8 | −0.8 | 1.0 | −1.2 | 0.3 |
+| AdaBoost | −1.5 | 0.8 | 0.3 | 1.5 | −1.6 | −0.1 |
 | Neural network | −0.9 | 0.5 | −1.2 | −0.2 | 1.0 | −0.4 |
 
 - **No model has an edge.** No pooled gap is significant; the smallest p-value is 0.06. Mean AUC is 0.51–0.52, where a coin flip scores 0.50.
 - **The few significant folds look like luck.** Out of 252 model-folds, 3 beat the fair bar and 2 lost to it at p < 0.05. Testing that many folds, you'd expect a handful either way by chance.
-- **Singapore looks best but isn't significant:** random forest +3.4 points (p = 0.07), KNN +3.3 (p = 0.06). Step 3's logistic regression was also highest there. With this many models tried, that's not evidence.
+- **Why Singapore looks best: its fair bar is weak, not its models strong.** Random forest is +3.4 points (p = 0.07) and KNN +3.3 (p = 0.06).
+  - Most of the gain is in 2021 (+10 points), when the fair bar said "down" and the market rose on 54.5% of days. That "down" call was a near-tie: the training years had 1,120 up days and 1,122 down. With a few more early-2012 rows (as in step 5) it flips to "up".
+  - Smaller gains come from 2018, a down year where "always up" scored badly.
+  - MCC and AUC, which this can't fool, stay near a coin flip.
 - **India:** the paper reported 56–68% on the Nifty for 2004–05. Here the same models score 53.1–54.8% for 2017–2022, while the fair bar scores 54.6% and "same as yesterday" 54.8%.
-- **Calling every day "up":** logistic regression did this in 16 of 36 folds, SVM in 7 and KNN in 4. The other four models never did.
-- **AdaBoost never called every day up** (0 of 36 folds). In each test year it said up on 48–92% of days. Its accuracy was never significantly different from the fair bar (p ≥ 0.18), and its AUC ranged from 0.45 to 0.61. So it doesn't collapse to "always up"; it simply has no edge. Tuning picked a learning rate of 1.0 in 33 of 36 folds.
+- **Giving one answer every day** (one-answer folds: all up, or all down): logistic regression did this in 16 of 36 folds, SVM in 7, KNN in 4 and AdaBoost in 2. LDA, random forest and the network never did. Only AdaBoost had an all-down year; the rest were all up.
+- **AdaBoost doesn't win by saying "up".** It said up on every day in only 1 of 36 folds, and down on every day in 1 (both Thailand). Its accuracy was never significantly different from the fair bar (p ≥ 0.13), and its AUC ranged from 0.46 to 0.61. It simply has no edge.
+- **AdaBoost tuning check:** with learning rates 0.1 and 1.0 only, 1.0 was picked in 33 of 36 folds, the top of the grid. With 2.0 and 4.0 added (and 500 estimators), 1.0 is picked 19 times, 2.0 9 times and 4.0 5 times. The scores barely move, and there's still no edge.
+- **In one sentence:** once settings are no longer picked on the test period, and models are compared against a fair baseline, the paper's results disappear.
+
+## Step 5 findings: the US overnight move
+
+**Setup:**
+- **Feature:** the S&P 500's daily return (Yahoo `^GSPC`, 2010–2022 only).
+- **Timing:** the US session dated t ends after Asia has closed on day t. So Asian day t uses the last US session dated *before* t (Monday uses Friday). Joining on the same date would leak.
+- **Leakage test:** removing or scrambling US data from day t onward doesn't change the feature for Asian days up to t. A same-date join fails the test, as it should.
+- **Two targets:**
+  - **Close-to-close**, as before. Not tradeable: the US move happens after Asia's previous close.
+  - **Open-to-close.** Tradeable: see the US move, buy at the Asian open, sell at the close.
+- **Models:** logistic regression and random forest, kept simple so the result is about the feature.
+- **Fake opens:** on some days the open is just yesterday's close: Indonesia 2020 (45% of days) and 2022 (26%), Singapore 2012 (89%), the Philippines 2012–15 (about 6%). Those days are left out of the open-to-close target. Other years' opens are real.
+
+How closely the US move lines up with each part of the Asian day (correlation):
+
+| | Indonesia | Malaysia | Philippines | Singapore | Thailand | India |
+|---|---|---|---|---|---|---|
+| Close-to-close | 0.27 | 0.31 | 0.32 | 0.35 | 0.24 | 0.27 |
+| Overnight gap (close → open) | 0.56 | 0.52 | 0.47 | 0.60 | 0.50 | 0.49 |
+| Open-to-close | 0.06 | 0.05 | 0.12 | −0.03 | −0.09 | −0.03 |
+
+Logistic regression, all six test years pooled:
+
+| Market | Close-to-close % | Fair bar % | AUC | Open-to-close % | Fair bar % | p vs fair | AUC |
+|---|---|---|---|---|---|---|---|
+| Indonesia | 58.0 | 52.9 | 0.62 | 48.3 | 49.0 | 0.16 | 0.50 |
+| Malaysia | 59.9 | 49.8 | 0.65 | 49.8 | 48.9 | 0.43 | 0.55 |
+| Philippines | 60.5 | 51.8 | 0.64 | 55.9 | 50.2 | < 0.001 | 0.58 |
+| Singapore | 61.4 | 50.9 | 0.66 | 49.4 | 49.8 | 0.42 | 0.48 |
+| Thailand | 57.8 | 52.4 | 0.62 | 54.8 | 54.4 | 0.74 | 0.53 |
+| India | 60.8 | 54.6 | 0.64 | 52.4 | 52.5 | 1.00 | 0.49 |
+
+- **Close-to-close looks very predictable:** 58–61% accuracy and AUC 0.62–0.66. It beats the fair bar in every market (p < 0.001), and in 15 of 36 single years. But you couldn't trade it.
+- **Open-to-close, the tradeable version, mostly loses it.** The open already absorbs the US move: it correlates about 0.5 with the overnight gap and about 0 with what follows. Four of six markets show no edge.
+- **Two exceptions,** checked in step 5b below:
+  - Philippines: 55.9% vs 50.2% (p < 0.001, AUC 0.58), with both models.
+  - Malaysia: random forest only, 54.5% vs 48.9% (p = 0.002).
+- Random forest gives the same picture (tables below).
+
+**Full tables**, all six test years pooled. **One-answer folds** = test years (out of 6) where the model gave the same answer every day (all up, or all down).
+
+**Close-to-close, logistic regression:**
+
+| Market | Accuracy % | MCC | AUC | Fair bar % | p vs fair | Same as yesterday % | p vs same as yesterday | Called up % | One-answer folds |
+|---|---|---|---|---|---|---|---|---|---|
+| Indonesia | 58.0 | 0.15 | 0.62 | 52.9 | < 0.001 | 49.5 | < 0.001 | 76.8 | 0 |
+| Malaysia | 59.9 | 0.21 | 0.65 | 49.8 | < 0.001 | 49.3 | < 0.001 | 62.1 | 0 |
+| Philippines | 60.5 | 0.21 | 0.64 | 51.8 | < 0.001 | 48.4 | < 0.001 | 66.8 | 0 |
+| Singapore | 61.4 | 0.23 | 0.66 | 50.9 | < 0.001 | 49.6 | < 0.001 | 53.7 | 0 |
+| Thailand | 57.8 | 0.16 | 0.62 | 52.4 | < 0.001 | 51.0 | < 0.001 | 80.0 | 0 |
+| India | 60.8 | 0.20 | 0.64 | 54.6 | < 0.001 | 54.8 | < 0.001 | 74.0 | 0 |
+
+**Close-to-close, random forest:**
+
+| Market | Accuracy % | MCC | AUC | Fair bar % | p vs fair | Same as yesterday % | p vs same as yesterday | Called up % | One-answer folds |
+|---|---|---|---|---|---|---|---|---|---|
+| Indonesia | 56.7 | 0.12 | 0.60 | 52.9 | 0.02 | 49.5 | < 0.001 | 63.3 | 0 |
+| Malaysia | 61.0 | 0.22 | 0.64 | 49.8 | < 0.001 | 49.3 | < 0.001 | 54.7 | 0 |
+| Philippines | 60.7 | 0.21 | 0.64 | 51.8 | < 0.001 | 48.4 | < 0.001 | 59.5 | 0 |
+| Singapore | 61.4 | 0.23 | 0.65 | 50.9 | < 0.001 | 49.6 | < 0.001 | 48.2 | 0 |
+| Thailand | 57.3 | 0.14 | 0.61 | 52.4 | 0.001 | 51.0 | < 0.001 | 68.8 | 0 |
+| India | 60.6 | 0.20 | 0.63 | 54.6 | < 0.001 | 54.8 | 0.001 | 63.2 | 0 |
+
+**Open-to-close, logistic regression:**
+
+| Market | Accuracy % | MCC | AUC | Fair bar % | p vs fair | Same as yesterday % | p vs same as yesterday | Called up % | One-answer folds |
+|---|---|---|---|---|---|---|---|---|---|
+| Indonesia | 48.3 | −0.05 | 0.50 | 49.0 | 0.16 | 48.2 | 0.97 | 97.4 | 5 |
+| Malaysia | 49.8 | 0.01 | 0.55 | 48.9 | 0.43 | 50.0 | 0.94 | 84.0 | 2 |
+| Philippines | 55.9 | 0.13 | 0.58 | 50.2 | < 0.001 | 48.6 | < 0.001 | 70.3 | 1 |
+| Singapore | 49.4 | −0.03 | 0.48 | 49.8 | 0.42 | 49.3 | 1.00 | 2.5 | 4 |
+| Thailand | 54.8 | 0.05 | 0.53 | 54.4 | 0.74 | 48.0 | < 0.001 | 16.2 | 0 |
+| India | 52.4 | −0.01 | 0.49 | 52.5 | 1.00 | 48.4 | 0.03 | 0.5 | 5 |
+
+**Open-to-close, random forest:**
+
+| Market | Accuracy % | MCC | AUC | Fair bar % | p vs fair | Same as yesterday % | p vs same as yesterday | Called up % | One-answer folds |
+|---|---|---|---|---|---|---|---|---|---|
+| Indonesia | 50.7 | 0.02 | 0.51 | 49.0 | 0.34 | 48.2 | 0.21 | 65.2 | 0 |
+| Malaysia | 54.5 | 0.09 | 0.55 | 48.9 | 0.002 | 50.0 | 0.01 | 54.5 | 0 |
+| Philippines | 56.0 | 0.12 | 0.57 | 50.2 | 0.001 | 48.6 | < 0.001 | 59.7 | 0 |
+| Singapore | 49.2 | −0.02 | 0.49 | 49.8 | 0.75 | 49.3 | 0.97 | 41.7 | 1 |
+| Thailand | 52.6 | 0.03 | 0.51 | 54.4 | 0.31 | 48.0 | 0.02 | 38.1 | 0 |
+| India | 50.3 | −0.03 | 0.48 | 52.5 | 0.07 | 48.4 | 0.32 | 20.6 | 3 |
+
+## Step 5b findings: the two exceptions
+
+**The question:** do the Philippines and Malaysia open-to-close results come from something you could trade, or from how the index's opening number is recorded?
+
+**The likely explanation:** the index's opening value only partly reflects the overnight US news. Some stocks haven't traded yet when it's recorded, so they still carry yesterday's price, and the rest of the news shows up after the open. The Philippines fits this: it has the weakest link between the US move and its open (0.47) and the strongest link after the open (0.12). The fake-open check can't catch this, because the open is only partly stale.
+
+1. **Not a few huge days.** With 2020 removed from training, tuning and testing, the edge gets slightly *stronger*: Philippines 56.5% vs 50.1% (p < 0.001), Malaysia (random forest) 55.0% vs 49.1% (p = 0.003). The open-to-close correlations rise too (Philippines 0.12 → 0.19, Malaysia 0.05 → 0.11). Thailand's −0.09 barely moves (−0.08), so 2020 doesn't explain that one either.
+2. **It's the US news arriving after the open.** With the market's own past returns instead of the US move, the edge disappears: 48.7–51.3% against fair bars of 48.9–50.2%.
+3. **No tradeable price to test.** The Philippines' FMETF fund isn't on Yahoo. Malaysia's KLCI ETF (`0820EA.KL`) had no trades on 41% of days, and its open equals its close on 82%. I found no KLCI futures on Yahoo: its search returned nothing relevant, and the tickers I tried (`FKLI=F`, `FKLI.KL`, `KLCI=F`, `FBMKLCI=F`) returned no data.
+4. **Money test, on the index:** buy at the open and sell at the close on days the model says up; otherwise stay out. Total over the six test years, at different round-trip trading costs:
+
+| | Days in | Average day in % | No cost | 0.1% cost | 0.25% cost |
+|---|---|---|---|---|---|
+| Philippines, logistic regression | 1,027 of 1,461 | 0.09 | +128% | −18% | −83% |
+| Philippines, random forest | 872 of 1,461 | 0.12 | +163% | +10% | −70% |
+| Philippines, buy every day | 1,461 | | +3% | −76% | −97% |
+| Malaysia, random forest | 796 of 1,460 | 0.05 | +43% | −35% | −80% |
+| Malaysia, buy every day | 1,460 | | −11% | −79% | −98% |
+
+**Average day in %** is the break-even cost: any round-trip cost above it wipes out the edge. For scale, the Philippine stock transaction tax on shares is 0.6% of each sale ([Inquirer](https://business.inquirer.net/?p=246692)). I couldn't confirm how it applies to ETFs.
+
+**Verdict:** the edge comes from US news showing up in the index after its opening number is recorded, as you'd expect if the open is partly stale. Without a tradeable price we can't prove that. But it doesn't change the answer: even taken at face value, the edge is 0.05–0.12% per trade, less than realistic trading costs. It's not something you could trade.
+
+## Holdout plan (draft: confirm before opening the holdout)
+
+Each test runs once on 17 Mar 2023 – 23 Oct 2026. Same procedure as the folds: pick settings with 2022 as the tune year, retrain on all development data, then test. Each is scored against the fair bar (the majority direction in the development data) with McNemar's test and AUC.
+
+1. **Close-to-close with the US feature**, logistic regression, all six markets. Expect it to beat the fair bar.
+2. **Open-to-close with the US feature:** logistic regression for the Philippines, random forest for Malaysia, plus the money test at 0.1% and 0.25% costs. Expect any edge to stay below trading costs.
+3. **India, "same as yesterday" vs the fair bar**, close-to-close. Checks whether India's direction persistence is real.
+
+The US data for 2023–2026 is downloaded only when these tests run.
 
 ## Files
 
 | File | What it is |
 |---|---|
-| `download_data.py` | Downloads the four Yahoo markets into `Dataset/`, up to a fixed end date |
-| `data.py` | `load_market()` / `load_all()`: load, clean and check the data, development period only unless asked. Every step after the EDA uses this |
-| `evaluation.py` | Walk-forward splits (test years 2017–2022), scoring (accuracy, balanced accuracy, MCC), no-model baselines, fair baseline, McNemar paired test |
-| `features.py` | Model features: the last 5 daily returns and yesterday's direction (step 3), and the 12 technical indicators (step 4) |
+| `download_data.py` | Downloads the four Yahoo markets and the S&P 500 into `Dataset/`, up to fixed end dates |
+| `data.py` | `load_market()` / `load_all()`: load, clean and check the data, development period only unless asked. `load_us()`: the S&P 500. Every step after the EDA uses this |
+| `evaluation.py` | Walk-forward splits (test years 2017–2022), scoring (accuracy, balanced accuracy, MCC), no-model baselines, fair baseline, McNemar paired test, money test |
+| `features.py` | Model features: the last 5 daily returns and yesterday's direction (step 3), the 12 technical indicators (step 4), the US move (step 5); the two labels (close-to-close, open-to-close) |
 | `models.py` | Logistic regression in sklearn and PyTorch, the six-fold loop, per-year and pooled reports |
 | `classifiers.py` | Step 4 models: the six sklearn classifiers, the PyTorch network, summary tables |
-| `test_leakage.py` | Checks that nothing computed for day t changes when data after t is removed or scrambled, and that features for day t don't use day t itself |
+| `test_leakage.py` | Checks that nothing computed for day t changes when data after t is removed or scrambled, that features for day t don't use day t itself, and that the US feature doesn't use the US session dated t |
 | `walk_forward_baselines.ipynb` | Baselines scored on each test year |
 | `logistic_regression.ipynb` | Step 3: both logistic regressions through the six folds, and the agreement check |
 | `technical_indicators.ipynb` | Step 4: all seven models on the 12 indicators, a table per model, and the AdaBoost check |
+| `us_overnight.ipynb` | Steps 5 and 5b: the US move as a feature, close-to-close vs open-to-close, the open-price check, and the checks of the two exceptions |
 | `eda.ipynb` | EDA notebook on the original data: data checks, cleaning, returns, up-day shares, baseline scores |
 | `eda_report.md` | Write-up of the EDA findings |
 | `eda_output/` | Figures used in the report (saved by the EDA notebook) |
@@ -167,5 +294,6 @@ pip install pandas numpy matplotlib scikit-learn torch yfinance jupyter
 python download_data.py
 python test_leakage.py
 jupyter notebook logistic_regression.ipynb
-jupyter notebook technical_indicators.ipynb   # about 15 minutes
+jupyter notebook technical_indicators.ipynb   # about 25 minutes
+jupyter notebook us_overnight.ipynb
 ```

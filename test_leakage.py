@@ -6,9 +6,9 @@ Run:  python test_leakage.py
 import numpy as np
 import pandas as pd
 
-from data import MARKETS, clean, read_market
+from data import MARKETS, clean, read_market, read_us
 from evaluation import baseline_guesses
-from features import make_features, make_indicators
+from features import make_features, make_indicators, make_us_features
 
 def pipeline(raw, market):
     """Everything computed per day so far. Add each new feature function here."""
@@ -101,9 +101,46 @@ def test_catches_a_same_day_leak():
     raise AssertionError("leakage test missed a feature that uses day t's own price")
 
 
+# ---------- the US feature (step 5) ----------
+
+def assert_us_feature_ignores_us_day_t(make, asia, us_raw, t, rng):
+    """The US feature for Asian days up to t must not change when US data from day t onward
+    is removed or scrambled."""
+    day_before = t - pd.Timedelta(days=1)
+    expected = make(asia, clean(us_raw, "US")).loc[:t]
+    for changed in [us_raw.loc[:day_before], scramble_after(us_raw, day_before, rng)]:
+        result = make(asia, clean(changed, "US")).loc[:t]
+        pd.testing.assert_frame_equal(expected, result, obj=f"US feature up to {t:%Y-%m-%d}")
+
+
+def test_us_feature_ignores_us_day_t():
+    rng = np.random.default_rng(2)
+    us_raw = read_us()
+    for market in MARKETS:
+        asia = clean(read_market(market), market)[:"2022"]  # the US file ends in 2022
+        for t in rng.choice(asia.index[50:-50], size=10, replace=False):
+            assert_us_feature_ignores_us_day_t(make_us_features, asia, us_raw, pd.Timestamp(t), rng)
+
+
+def test_catches_a_same_date_join():
+    """Sanity check: joining the US session with the same date must fail the test."""
+    def same_date(asia, us):
+        return pd.merge_asof(asia[[]], us["ret"].rename("us_ret"), left_index=True, right_index=True)
+
+    rng = np.random.default_rng(0)
+    asia = clean(read_market("Indonesia"), "Indonesia")[:"2022"]
+    try:
+        assert_us_feature_ignores_us_day_t(same_date, asia, read_us(), pd.Timestamp("2018-06-29"), rng)
+    except AssertionError:
+        return
+    raise AssertionError("leakage test missed a same-date join with US data")
+
+
 if __name__ == "__main__":
     test_no_lookahead()
     test_features_ignore_day_t()
     test_catches_a_leak()
     test_catches_a_same_day_leak()
+    test_us_feature_ignores_us_day_t()
+    test_catches_a_same_date_join()
     print("Leakage test passed.")
