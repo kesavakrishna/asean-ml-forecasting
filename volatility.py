@@ -8,10 +8,15 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from torch import nn
 
-from classifiers import BATCH_SIZE, MAX_EPOCHS, PATIENCE
 from evaluation import diebold_mariano, walk_forward_splits
 from features import log_range, past_ranges
 from gru import GRUNet
+
+# Volatility keeps improving for many epochs, so bigger batches keep the GRU's training time reasonable.
+BATCH_SIZE = 256
+LEARNING_RATE = 0.002
+MAX_EPOCHS = 150
+PATIENCE = 25
 
 
 # ---------- the six-fold loop ----------
@@ -79,7 +84,7 @@ def train_gru(X, y, hidden, epochs, X_tune=None, y_tune=None, seed=0):
 
     torch.manual_seed(seed)
     net = GRUNet(X.shape[1], hidden)
-    optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(net.parameters(), lr=LEARNING_RATE)
     loss_fn = nn.MSELoss()
 
     tune_errors = []
