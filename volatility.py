@@ -1,15 +1,18 @@
 """Step 7: predict how big each day's range will be (a number, not up/down)."""
+from functools import partial
+
 import numpy as np
 import pandas as pd
 import torch
 from sklearn.base import clone
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from torch import nn
 
-from evaluation import diebold_mariano, walk_forward_splits
-from features import log_range, past_ranges
+from evaluation import TEST_YEARS, diebold_mariano, walk_forward_splits
+from features import log_range, make_garch, past_ranges
 from gru import GRUNet
 
 # Volatility keeps improving for many epochs, so bigger batches keep the GRU's training time reasonable.
@@ -36,12 +39,12 @@ def pick_by_mse(fit, settings, X_train, y_train, X_tune, y_tune):
     return min(settings, key=tune_error)
 
 
-def walk_forward_vol(df, fit, settings, make_x, pick=pick_by_mse):
+def walk_forward_vol(df, fit, settings, make_x, pick=pick_by_mse, test_years=TEST_YEARS):
     """For each test year: pick a setting on the tune year, refit on train + tune, predict the test year."""
     X, y = make_vol_dataset(df, make_x)
     yesterday = past_ranges(df)
     folds = []
-    for year, train, tune, test in walk_forward_splits(X.index):
+    for year, train, tune, test in walk_forward_splits(X.index, test_years):
         best = pick(fit, settings, X[train], y[train], X[tune], y[tune])
         before_test = train | tune
         predict = fit(X[before_test], y[before_test], best)
@@ -63,6 +66,16 @@ def fit_regressor(X, y, model):
     pipeline = make_pipeline(StandardScaler(), clone(model))
     pipeline.fit(X, y)
     return pipeline.predict
+
+
+# ---------- GARCH ----------
+
+def walk_forward_garch(df, test_years=TEST_YEARS):
+    """Refit GARCH before each test year. A straight line turns its forecast into a range forecast."""
+    return pd.concat(
+        walk_forward_vol(df, fit_regressor, [LinearRegression()], partial(make_garch, test_year=year), test_years=[year])
+        for year in test_years
+    )
 
 
 # ---------- GRU ----------
@@ -121,6 +134,12 @@ def pick_gru_vol_setting(fit, hidden_sizes, X_train, y_train, X_tune, y_tune, se
 
 
 # ---------- scoring ----------
+
+def qlike(preds):
+    """Daily QLIKE, lower is better: how far off the variance is in relative terms, like "2x too high"."""
+    ratio = np.exp(2 * (preds["actual"] - preds["predicted"]))  # actual variance / predicted variance
+    return ratio - np.log(ratio) - 1
+
 
 def vol_scores(preds, baseline):
     """R2 against the average so far (1 = perfect, 0 = no better than it), and a paired test against `baseline`."""

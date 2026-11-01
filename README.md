@@ -341,19 +341,68 @@ Logistic regression, all six test years pooled:
 
 - **Volatility can be predicted; direction couldn't.** HAR beats both the average so far and "same as yesterday" in every market (p < 0.001 against "same as yesterday").
 - **The simplest model wins.** HAR has the top R² in all six markets. The forest is significantly worse in all six (p ≤ 0.007) and beats HAR in only 1 of 36 market-years. The GRU is worse in all 18 market-and-seed runs, significantly in 15, and beats HAR in 11–14 of 36 market-years.
-- **The pooled R² is flattered by unusual years.** 2020 is the best year in five of the six markets (0.51–0.69, Thailand's 0.68 just behind its 0.70 in 2017), but most other market-years are 0.05–0.32. Expect a normal year to look more like those.
+- **The pooled R² is flattered by unusual years.** 2020 is the best year in five of the six markets (0.51–0.69, Thailand's 0.68 just behind its 0.70 in 2017), but most other market-years are 0.05–0.32. HAR isn't much better in 2020; the average so far is just much worse. HAR's typical error is 0.46 that year against 0.39–0.42 in the others, while the average's is 0.76 against 0.42–0.53.
 - **Weeks and months count more than yesterday.** HAR's weight on the 1-day average is 0.13–0.27; the 5- and 22-day averages get 0.27–0.40.
 - **Indonesia's fake opens don't change the picture outside 2020.** Leaving them out moves R² only from 0.299 to 0.303 in the other five years. Across all years it falls from 0.412 to 0.320, because 2020's fake-open days score 0.734 against 0.418 for its real opens. So Indonesia's headline number leans on those 108 days, and 0.30 is the fairer figure.
 - **This predicts the size of a move, not which way it goes,** so it isn't a trading signal on its own.
 
+### Two more models and a second score
+
+- **GARCH(1,1):** the classic volatility model, refitted before each test year. It forecasts the size of returns, so a straight line fitted on earlier years turns that into a range forecast.
+- **HAR + US:** HAR plus the log size of the last US session's move, which is known before Asia opens.
+- **QLIKE:** how far off a forecast is in relative terms, like "2× too high". Lower is better.
+
+**R², all six years** (p is the paired test against HAR on squared errors):
+
+| Market | HAR | GARCH | p | HAR + US | p | US weight |
+|---|---|---|---|---|---|---|
+| Indonesia | 0.412 | 0.314 | <0.001 | **0.420** | 0.018 | 0.046 |
+| Malaysia | 0.430 | 0.386 | 0.004 | **0.434** | 0.004 | 0.030 |
+| Philippines | 0.274 | 0.237 | 0.006 | **0.280** | 0.36 | 0.061 |
+| Singapore | 0.307 | 0.294 | 0.53 | **0.325** | 0.001 | 0.053 |
+| Thailand | 0.486 | 0.448 | 0.004 | **0.488** | 0.071 | 0.019 |
+| India | **0.408** | 0.365 | 0.005 | **0.408** | 0.72 | 0.013 |
+
+**R² without 2020** (GRU shows the range over three seeds):
+
+| Market | HAR | HAR + US | GARCH | Forest | GRU |
+|---|---|---|---|---|---|
+| Indonesia | 0.299 | **0.303** | 0.175 | 0.261 | 0.273–0.293 |
+| Malaysia | 0.278 | **0.282** | 0.232 | 0.243 | 0.265–0.277 |
+| Philippines | 0.169 | **0.172** | 0.108 | 0.131 | 0.159–0.161 |
+| Singapore | 0.098 | **0.115** | 0.091 | 0.067 | 0.059–0.081 |
+| Thailand | 0.387 | **0.388** | 0.333 | 0.295 | 0.325–0.340 |
+| India | **0.311** | **0.311** | 0.249 | 0.252 | 0.289–0.304 |
+
+**QLIKE, all six years:**
+
+| Market | HAR | HAR + US | GARCH | Forest | GRU |
+|---|---|---|---|---|---|
+| Indonesia | 0.477 | **0.463** | 0.644 | 0.551 | 0.489–0.501 |
+| Malaysia | 0.575 | **0.568** | 0.615 | 0.650 | 0.741–0.771 |
+| Philippines | 0.629 | **0.609** | 0.673 | 0.865 | 0.678–0.761 |
+| Singapore | 0.378 | **0.354** | 0.362 | 0.521 | 0.452–0.560 |
+| Thailand | 0.366 | **0.360** | 0.377 | 0.458 | 0.390–0.463 |
+| India | 0.507 | 0.504 | 0.491 | 0.655 | **0.472**–0.583 |
+
+- **HAR's win holds up without 2020.** Its R² still beats GARCH, the forest and every GRU seed in all six markets.
+- **The US move adds a little.** HAR + US is never worse on R² and is best on QLIKE in five of six markets, but the R² gain is at most 0.018. Doubling the US move raises the predicted range by only about 1–4%. It's significant on squared errors in Indonesia, Malaysia and Singapore.
+- **GARCH loses on R², but it's close on QLIKE.** It's worse on R² in all six markets, significantly in five. On QLIKE it beats HAR in Singapore and India, and only Indonesia's gap (HAR better) is significant.
+- **India is the one QLIKE exception.** Two GRU seeds and GARCH beat HAR there, but none significantly, and the third seed is worse.
+- **QLIKE isn't free of 2020 either.** It punishes forecasts that are too low much harder than ones that are too high, so 2020 costs some models a lot: the Philippines forest goes from 0.572 without 2020 to 0.865 with it.
+- **R² here was already on the log of the range,** so a wild day never got extra weight for its size.
+
 ## Holdout plan (draft: confirm before opening the holdout)
 
-Each test runs once on 17 Mar 2023 – 23 Oct 2026. Same procedure as the folds: pick settings with 2022 as the tune year, retrain on all development data, then test. Tests 1–3 are scored against the fair bar (the majority direction in the development data) with McNemar's test and AUC.
+Each test runs once, on the code and settings as committed before opening. Same walk-forward rules as development: for test year Y, train up to Y−2, tune on Y−1, test on Y. Test years are 2023 (from 17 Mar), 2024, 2025 and 2026 (to 23 Oct). Nothing changes after looking, and every result gets reported, including anything that flips.
 
-1. **Close-to-close with the US feature**, logistic regression, all six markets. Expect it to beat the fair bar.
-2. **Open-to-close with the US feature:** logistic regression for the Philippines, random forest for Malaysia, plus the money test at 0.1% and 0.25% costs. Expect any edge to stay below trading costs.
-3. **India, "same as yesterday" vs the fair bar**, close-to-close. Checks whether India's direction persistence is real.
-4. **Volatility: HAR vs "same as yesterday"**, all six markets, with R² and the Diebold-Mariano test. Expect HAR to win, with R² closer to a normal year's.
+Direction tests are scored against the fair bar (the majority direction before each test year) with McNemar's test and AUC.
+
+1. **The paper's setup:** all seven models on the 12 indicators, close-to-close, all six markets. Expect no edge.
+2. **Close-to-close with the US feature:** logistic regression, all six markets. Expect it to beat the fair bar, though it can't be traded.
+3. **Open-to-close with the US feature:** logistic regression for the Philippines, random forest for Malaysia, plus the money test at 0.1% and 0.25% costs. Expect any edge to stay below trading costs. These assume you could buy at the index's opening number, which may not be a real price.
+4. **India, "same as yesterday" vs the fair bar:** close-to-close. Checks whether India's direction persistence is real.
+5. **Volatility, all six markets:** HAR vs "same as yesterday", GARCH, the GRU (seeds 0, 1 and 2) and HAR + US. Each is scored on R² and QLIKE, with the paired test on both. Expect HAR to beat the first three on R², and HAR + US to add a little.
 
 The US data for 2023–2026 is downloaded only when these tests run.
 
@@ -364,7 +413,7 @@ The US data for 2023–2026 is downloaded only when these tests run.
 | `download_data.py` | Downloads the four Yahoo markets and the S&P 500 into `Dataset/`, up to fixed end dates |
 | `data.py` | `load_market()` / `load_all()`: load, clean and check the data, development period only unless asked. `load_us()`: the S&P 500. Every step after the EDA uses this |
 | `evaluation.py` | Walk-forward splits (test years 2017–2022), scoring (accuracy, balanced accuracy, MCC), no-model baselines, fair baseline, McNemar and Diebold-Mariano paired tests, money test |
-| `features.py` | Model features: the last 5 daily returns and yesterday's direction (step 3), the 12 technical indicators (step 4), the US move (step 5), return sequences (step 6), daily ranges (step 7); the two labels (close-to-close, open-to-close) |
+| `features.py` | Model features: the last 5 daily returns and yesterday's direction (step 3), the 12 technical indicators (step 4), the US move (step 5), return sequences (step 6), daily ranges, GARCH and the size of the US move (step 7); the two labels (close-to-close, open-to-close) |
 | `models.py` | Logistic regression in sklearn and PyTorch, the six-fold loop, per-year and pooled reports |
 | `classifiers.py` | Step 4 models: the six sklearn classifiers, the PyTorch network, summary tables |
 | `test_leakage.py` | Checks that nothing computed for day t changes when data after t is removed or scrambled, that features for day t don't use day t itself, and that the US feature doesn't use the US session dated t |
@@ -373,8 +422,8 @@ The US data for 2023–2026 is downloaded only when these tests run.
 | `technical_indicators.ipynb` | Step 4: all seven models on the 12 indicators, a table per model, and the AdaBoost check |
 | `gru.py` | Step 6: the GRU network and its tuning |
 | `sequence_model.ipynb` | Step 6: GRU vs logistic regression on three tasks, and the random-seed check |
-| `volatility.py` | Step 7: the six-fold loop for predicting a number, the GRU for ranges, R² and the paired test |
-| `volatility.ipynb` | Step 7: HAR vs forest vs GRU, year by year, HAR's weights, and the Indonesia fake-open check |
+| `volatility.py` | Step 7: the six-fold loop for predicting a number, the GRU for ranges, GARCH, R², QLIKE and the paired test |
+| `volatility.ipynb` | Step 7: HAR vs forest, GRU and GARCH, HAR + US, year by year, scores without 2020, HAR's weights, and the Indonesia fake-open check |
 | `results/` | Saved predictions from `volatility.ipynb`, so a rerun skips finished work. Not in git. Delete it after changing a model |
 | `us_overnight.ipynb` | Steps 5 and 5b: the US move as a feature, close-to-close vs open-to-close, the open-price check, and the checks of the two exceptions |
 | `eda.ipynb` | EDA notebook on the original data: data checks, cleaning, returns, up-day shares, baseline scores |
@@ -386,7 +435,7 @@ The US data for 2023–2026 is downloaded only when these tests run.
 Tested with Python 3.13 and pandas 3.1.
 
 ```
-pip install pandas numpy matplotlib scikit-learn torch yfinance jupyter
+pip install pandas numpy matplotlib scikit-learn torch yfinance jupyter arch
 python download_data.py
 python test_leakage.py
 jupyter notebook logistic_regression.ipynb

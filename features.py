@@ -1,6 +1,7 @@
 """Features for the models. Row t only uses data up to day t-1."""
 import numpy as np
 import pandas as pd
+from arch import arch_model
 
 N_LAGS = 5
 
@@ -90,6 +91,22 @@ def make_har(df):
         "range_5d": past.rolling(5).mean(),
         "range_22d": past.rolling(22).mean(),
     })
+
+def make_har_with_us(df, us):
+    """HAR plus the log size of the last US session's move. Moves under 0.1% count as 0.1%."""
+    us_size = make_us_features(df, us)["us_ret"].abs().clip(lower=0.001)
+    return make_har(df).assign(us_size=np.log(us_size))
+
+def make_garch(df, test_year):
+    """Log of GARCH(1,1)'s volatility forecast for day t, made at the end of day t-1.
+
+    The GARCH settings are fitted only on days before test_year.
+    """
+    returns = 100 * df["ret"].fillna(0)  # arch works best with returns in %
+    first_test_day = df.index[df.index.year == test_year][0]
+    fitted = arch_model(returns, vol="GARCH", p=1, q=1).fit(last_obs=first_test_day, disp="off")
+    variance = fitted.forecast(horizon=1, start=0, align="target", reindex=True).variance["h.1"]
+    return pd.DataFrame({"garch": np.log(variance) / 2}, index=df.index)
 
 def make_range_sequence(df):
     """The last 20 daily ranges, oldest first. The newest is day t-1."""

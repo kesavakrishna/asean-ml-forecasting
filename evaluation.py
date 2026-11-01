@@ -68,7 +68,11 @@ def diebold_mariano(errors_a, errors_b, lags=5):
 
     Nearby days are correlated, so the variance also counts neighbours up to `lags` days apart.
     """
-    diff = np.asarray(errors_a) ** 2 - np.asarray(errors_b) ** 2
+    return paired_loss_test(np.asarray(errors_a) ** 2, np.asarray(errors_b) ** 2, lags)
+
+def paired_loss_test(loss_a, loss_b, lags=5):
+    """The same test on any two daily losses. Returns a two-sided p-value."""
+    diff = np.asarray(loss_a) - np.asarray(loss_b)
     centred = diff - diff.mean()
     variance = (centred ** 2).mean()
     for lag in range(1, lags + 1):

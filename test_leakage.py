@@ -8,8 +8,8 @@ import pandas as pd
 
 from data import MARKETS, clean, read_market, read_us
 from evaluation import baseline_guesses
-from features import (log_range, make_features, make_har, make_indicators, make_range_sequence, make_sequence,
-                      make_sequence_with_us, make_us_features)
+from features import (log_range, make_features, make_garch, make_har, make_har_with_us, make_indicators,
+                      make_range_sequence, make_sequence, make_sequence_with_us, make_us_features)
 
 def pipeline(raw, market):
     """Everything computed per day so far. Add each new feature function here."""
@@ -144,6 +144,7 @@ def test_us_feature_ignores_us_day_t():
         for t in rng.choice(asia.index[50:-50], size=10, replace=False):
             assert_us_feature_ignores_us_day_t(make_us_features, asia, us_raw, pd.Timestamp(t), rng)
             assert_us_feature_ignores_us_day_t(make_sequence_with_us, asia, us_raw, pd.Timestamp(t), rng)
+            assert_us_feature_ignores_us_day_t(make_har_with_us, asia, us_raw, pd.Timestamp(t), rng)
 
 
 def test_catches_a_same_date_join():
@@ -160,7 +161,40 @@ def test_catches_a_same_date_join():
     raise AssertionError("leakage test missed a same-date join with US data")
 
 
+# ---------- GARCH (step 7) ----------
+
+def garch_for_2020(raw, market):
+    """GARCH fitted on days before 2020, so test days must come after that."""
+    return make_garch(clean(raw, market), test_year=2020)
+
+
+def test_garch_ignores_day_t():
+    rng = np.random.default_rng(3)
+    for market in MARKETS:
+        raw = read_market(market)
+        test_days = raw.loc["2020":"2022"].index[1:]
+        for t in rng.choice(test_days, size=3, replace=False):
+            assert_no_lookahead(garch_for_2020, raw, market, pd.Timestamp(t), rng)
+            assert_features_ignore_day_t(garch_for_2020, raw, market, pd.Timestamp(t), rng)
+
+
+def test_catches_a_same_day_garch_leak():
+    """Sanity check: the test must fail if day t gets the forecast made at the end of day t."""
+    def leaky(raw, market):
+        return garch_for_2020(raw, market).shift(-1)
+
+    rng = np.random.default_rng(0)
+    raw = read_market("Indonesia")
+    try:
+        assert_features_ignore_day_t(leaky, raw, "Indonesia", pd.Timestamp("2021-06-30"), rng)
+    except AssertionError:
+        return
+    raise AssertionError("leakage test missed a GARCH forecast that uses day t")
+
+
 if __name__ == "__main__":
+    test_garch_ignores_day_t()
+    test_catches_a_same_day_garch_leak()
     test_no_lookahead()
     test_features_ignore_day_t()
     test_catches_a_leak()
