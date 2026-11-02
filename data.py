@@ -21,6 +21,7 @@ FILES = {
 }
 MARKETS = list(FILES)
 US_FILE = "S&P 500 (Yahoo).csv"  # download_data.py; 2010-2022 only, for step 5
+US_HOLDOUT_FILE = "S&P 500 holdout (Yahoo).csv"  # download_data.py; 2023 onward, for the holdout only
 
 START = "2012-01-01"          # the same start for every market
 HOLDOUT_START = "2023-03-17"  # 2023-03-17 onward stays untouched until the final check
@@ -93,11 +94,14 @@ def load_all(include_holdout=False):
     return {market: load_market(market, include_holdout) for market in MARKETS}
 
 
-def read_us():
-    """Raw S&P 500 rows (2010-2022)."""
-    return read_raw(DATA_DIR / US_FILE)
+def read_us(include_holdout=False):
+    """Raw S&P 500 rows: 2010-2022, plus 2023 onward only if asked."""
+    raw = read_raw(DATA_DIR / US_FILE)
+    if include_holdout:
+        raw = pd.concat([raw, read_raw(DATA_DIR / US_HOLDOUT_FILE)])
+    return raw
 
 
-def load_us():
+def load_us(include_holdout=False):
     """Cleaned, checked S&P 500 data, with its daily return `ret`."""
-    return clean(read_us(), "US")
+    return clean(read_us(include_holdout), "US")

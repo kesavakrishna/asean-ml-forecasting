@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 
 TEST_YEARS = range(2017, 2023)
+HOLDOUT_YEARS = range(2023, 2027)  # scored from data.HOLDOUT_START
 
 
 def walk_forward_splits(dates, test_years=TEST_YEARS):

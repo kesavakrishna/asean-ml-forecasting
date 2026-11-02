@@ -11,6 +11,8 @@ Forecasting the daily direction (up/down) of the ASEAN-5 stock indices with mach
 - step 5: the US overnight move as a feature, close-to-close vs open-to-close
 - step 5b: the two open-to-close exceptions checked; a draft holdout plan
 - step 6: a small GRU in PyTorch on the same task
+- step 7: predicting volatility: HAR, random forest, GRU, GARCH, and HAR with the US move
+- step 8: the one-shot holdout, 17 Mar 2023 – 23 Oct 2026
 
 ## Data
 
@@ -392,7 +394,7 @@ Logistic regression, all six test years pooled:
 - **QLIKE isn't free of 2020 either.** It punishes forecasts that are too low much harder than ones that are too high, so 2020 costs some models a lot: the Philippines forest goes from 0.572 without 2020 to 0.865 with it.
 - **R² here was already on the log of the range,** so a wild day never got extra weight for its size.
 
-## Holdout plan (draft: confirm before opening the holdout)
+## Holdout plan (committed in `87aa8d5` before opening the holdout)
 
 Each test runs once, on the code and settings as committed before opening. Same walk-forward rules as development: for test year Y, train up to Y−2, tune on Y−1, test on Y. Test years are 2023 (from 17 Mar), 2024, 2025 and 2026 (to 23 Oct). Nothing changes after looking, and every result gets reported, including anything that flips.
 
@@ -405,6 +407,144 @@ Direction tests are scored against the fair bar (the majority direction before e
 5. **Volatility, all six markets:** HAR vs "same as yesterday", GARCH, the GRU (seeds 0, 1 and 2) and HAR + US. Each is scored on R² and QLIKE, with the paired test on both. Expect HAR to beat the first three on R², and HAR + US to add a little.
 
 The US data for 2023–2026 is downloaded only when these tests run.
+
+## Step 8 findings: the holdout
+
+Each test ran once, as planned. After the plan was committed, the only code changes were to let the loops take other test years and to load the new US file. The development results still reproduced exactly afterwards. One check was added before looking: Indonesia's volatility without its fake-open days.
+
+| Test | Expected | Result |
+|---|---|---|
+| 1. The paper's setup | No edge | **As expected:** no edge |
+| 2. Close-to-close with the US move | Beats the fair bar | **Mostly:** above it in all six markets, significant in four, weaker than in development |
+| 3. Open-to-close | Edge below costs | **As expected, and worse:** the Philippines trades lose money even before costs; Malaysia's edge is gone |
+| 4. India, same as yesterday | Is it real? | **No** |
+| 5. HAR vs same as yesterday and GARCH | HAR wins | **As expected** |
+| 5. HAR vs the GRU | HAR wins | **Only just:** about a tie outside Thailand |
+| 5. HAR + US vs HAR | Adds a little | **Not as expected:** no significant gain, and significantly worse in Indonesia |
+
+### Test 1: the paper's setup
+
+Over 24 market-years per model:
+
+| Model | Mean AUC | Above fair bar | Below fair bar | Significantly above | Significantly below |
+|---|---|---|---|---|---|
+| LDA | 0.510 | 7 | 16 | 0 | 3 |
+| Logistic regression | 0.515 | 5 | 11 | 0 | 1 |
+| KNN | 0.510 | 9 | 14 | 0 | 1 |
+| SVM | 0.509 | 6 | 10 | 0 | 1 |
+| Random forest | 0.513 | 10 | 11 | 1 | 1 |
+| AdaBoost | 0.516 | 12 | 11 | 0 | 1 |
+| Neural network | 0.509 | 8 | 15 | 0 | 0 |
+
+Accuracy minus the fair bar, in points, all test years pooled:
+
+| Model | Indonesia | Malaysia | Philippines | Singapore | Thailand | India |
+|---|---|---|---|---|---|---|
+| LDA | −1.8 | 1.4 | 1.4 | −3.6 | −1.6 | −1.6 |
+| Logistic regression | −0.8 | 2.0 | 1.5 | −3.6 | −0.8 | 0.2 |
+| KNN | −0.5 | 0.7 | 0.2 | −2.6 | −0.9 | −0.1 |
+| SVM | 0.0 | −0.5 | 0.3 | −3.1 | 0.2 | 0.3 |
+| Random forest | −1.3 | 3.2 | 2.4 | −4.2 | −2.6 | 1.8 |
+| AdaBoost | −4.7 | 1.8 | 0.7 | −2.4 | −1.1 | −0.2 |
+| Neural network | −0.7 | 0.9 | 1.4 | −2.5 | −0.1 | 0.6 |
+
+No model beats the fair bar significantly in any market over the whole holdout, and two fall significantly below it (AdaBoost in Indonesia, the random forest in Singapore).
+
+### Test 2: close-to-close with the US move
+
+| Market | Holdout % | Fair bar % | p vs fair | AUC | Development % | Development AUC |
+|---|---|---|---|---|---|---|
+| Indonesia | 56.7 | 52.2 | 0.008 | 0.58 | 58.0 | 0.62 |
+| Malaysia | 57.7 | 50.3 | 0.001 | 0.62 | 59.9 | 0.65 |
+| Philippines | 54.9 | 50.3 | 0.021 | 0.59 | 60.5 | 0.64 |
+| Singapore | 57.7 | 54.4 | 0.14 | 0.62 | 61.4 | 0.66 |
+| Thailand | 53.1 | 50.5 | 0.13 | 0.56 | 57.8 | 0.62 |
+| India | 57.0 | 53.7 | 0.049 | 0.59 | 60.8 | 0.64 |
+
+The link with the US move is real and it holds up on new data, but every market is weaker than in development. It still can't be traded.
+
+### Test 3: open-to-close with the US move
+
+| | Holdout % | Fair bar % | p vs fair | AUC | Average day in % | Development % | Development average day in % |
+|---|---|---|---|---|---|---|---|
+| Philippines, logistic regression | 53.4 | 49.0 | 0.044 | 0.56 | −0.03 | 55.9 | 0.09 |
+| Malaysia, random forest | 51.6 | 50.1 | 0.53 | 0.54 | 0.03 | 54.5 | 0.05 |
+
+Total return over the holdout:
+
+| | Days in | 0.1% cost | 0.25% cost |
+|---|---|---|---|
+| Philippines, model | 503 of 876 | −48% | −75% |
+| Philippines, buy every day | 876 | −83% | −95% |
+| Malaysia, model | 459 of 883 | −28% | −64% |
+| Malaysia, buy every day | 883 | −62% | −90% |
+
+- **The Philippines is more accurate than the bar but makes no money.** Its 53.4% only just clears the significance line, and the days it calls up lose 0.03% on average before any costs. Accuracy doesn't guarantee profit: a few big moves can outweigh many small right calls.
+- **Malaysia's edge is gone.**
+- **The losses are smaller than buying every day mostly because the models trade less often.** Neither one makes money at either cost.
+
+### Test 4: India, same as yesterday
+
+Same as yesterday is right 52.9% of the time and the fair bar 53.7% (p = 0.77, over 886 days). India's direction persistence doesn't hold up.
+
+### Test 5: volatility
+
+**R²** (development HAR for comparison; GRU shows the range over three seeds):
+
+| Market | Development HAR | Same as yesterday | HAR | HAR + US | GARCH | GRU |
+|---|---|---|---|---|---|---|
+| Indonesia | 0.412 | 0.222 | 0.471 | 0.462 | 0.367 | 0.462–0.474 |
+| Malaysia | 0.430 | −0.345 | 0.115 | 0.113 | 0.040 | 0.094–0.116 |
+| Philippines | 0.274 | −0.590 | 0.058 | 0.063 | 0.029 | 0.053–0.060 |
+| Singapore | 0.307 | −0.251 | 0.190 | 0.195 | 0.137 | 0.170–0.184 |
+| Thailand | 0.486 | −0.288 | 0.244 | 0.244 | 0.191 | 0.190–0.213 |
+| India | 0.408 | −0.109 | 0.302 | 0.301 | 0.228 | 0.285–0.300 |
+
+**p vs HAR on squared errors:**
+
+| Market | Same as yesterday | HAR + US | GARCH | GRU seed 0 | Seed 1 | Seed 2 |
+|---|---|---|---|---|---|---|
+| Indonesia | < 0.001 | 0.029 | < 0.001 | 0.37 | 0.66 | 0.57 |
+| Malaysia | < 0.001 | 0.75 | 0.022 | 0.17 | 0.12 | 0.90 |
+| Philippines | < 0.001 | 0.60 | 0.12 | 0.66 | 0.73 | 0.90 |
+| Singapore | < 0.001 | 0.52 | 0.044 | 0.15 | 0.66 | 0.61 |
+| Thailand | < 0.001 | 1.00 | 0.017 | 0.008 | 0.016 | 0.078 |
+| India | < 0.001 | 0.64 | 0.014 | 0.062 | 0.71 | 0.31 |
+
+**QLIKE** (lower is better):
+
+| Market | Same as yesterday | HAR | HAR + US | GARCH | GRU |
+|---|---|---|---|---|---|
+| Indonesia | 0.626 | 0.487 | 0.501 | 0.670 | **0.483**–0.509 |
+| Malaysia | 0.715 | 0.460 | **0.455** | 0.498 | 0.468–0.504 |
+| Philippines | 0.802 | 0.420 | **0.416** | 0.464 | 0.430–0.436 |
+| Singapore | 0.493 | 0.327 | 0.317 | 0.351 | **0.314**–0.320 |
+| Thailand | 0.557 | **0.321** | 0.322 | 0.366 | 0.357–0.373 |
+| India | 0.840 | 0.489 | 0.489 | **0.437** | 0.485–0.489 |
+
+**HAR's R² by year:**
+
+| Market | 2023 | 2024 | 2025 | 2026 |
+|---|---|---|---|---|
+| Indonesia | 0.22 | 0.12 | 0.34 | 0.67 |
+| Malaysia | 0.18 | 0.07 | 0.13 | 0.09 |
+| Philippines | 0.06 | −0.00 | 0.14 | 0.02 |
+| Singapore | −0.04 | 0.14 | 0.31 | 0.18 |
+| Thailand | 0.02 | −0.02 | 0.42 | 0.33 |
+| India | 0.55 | 0.08 | 0.31 | 0.29 |
+
+- **Volatility is still predictable, but less so.** HAR beats same as yesterday everywhere (p ≤ 0.001 on both scores). Its R² falls in five of six markets, though, and sharply in Malaysia (0.430 to 0.115) and the Philippines (0.274 to 0.058, close to no skill against the average so far).
+- **Indonesia is the exception, and it leans on one year.** Its 0.471 is pulled up by 0.67 in 2026; the other years are 0.12–0.34. Fake opens aren't the cause here: without those 107 days it's 0.484.
+- **HAR still beats GARCH.** It has the higher R² in all six markets, significantly in five. On QLIKE it wins in five of six, significantly in four, with India going the other way (p = 0.21).
+- **The GRU is now about tied with HAR.** In development it was significantly worse in 15 of 18 runs; here it's 2 of 18, both in Thailand. Three GRU runs have a slightly higher R², and none is significant. HAR is far simpler for the same accuracy, but "HAR beats deep models" is too strong: "a GRU doesn't beat HAR" is what this supports.
+- **The US move didn't hold up.** HAR + US gained significantly in three markets in development, but here it gains nowhere and is significantly worse in Indonesia. The development gain wasn't reliable.
+
+### What survives
+
+- **Direction from a market's own history:** no edge in development or in the holdout.
+- **The US link:** real but not tradeable, because the open already absorbs it.
+- **Tradeable direction:** nothing that makes money after costs.
+- **Volatility:** predictable, with HAR hard to beat, but less so than the development years suggested.
 
 ## Files
 
@@ -424,7 +564,8 @@ The US data for 2023–2026 is downloaded only when these tests run.
 | `sequence_model.ipynb` | Step 6: GRU vs logistic regression on three tasks, and the random-seed check |
 | `volatility.py` | Step 7: the six-fold loop for predicting a number, the GRU for ranges, GARCH, R², QLIKE and the paired test |
 | `volatility.ipynb` | Step 7: HAR vs forest, GRU and GARCH, HAR + US, year by year, scores without 2020, HAR's weights, and the Indonesia fake-open check |
-| `results/` | Saved predictions from `volatility.ipynb`, so a rerun skips finished work. Not in git. Delete it after changing a model |
+| `holdout.ipynb` | Step 8: all five one-shot tests on the holdout |
+| `results/` | Saved predictions, so a rerun skips finished work. Not in git. Delete the step 7 files after changing a model. Keep the `holdout_*` files: they're the one-shot results |
 | `us_overnight.ipynb` | Steps 5 and 5b: the US move as a feature, close-to-close vs open-to-close, the open-price check, and the checks of the two exceptions |
 | `eda.ipynb` | EDA notebook on the original data: data checks, cleaning, returns, up-day shares, baseline scores |
 | `eda_report.md` | Write-up of the EDA findings |
@@ -443,4 +584,5 @@ jupyter notebook technical_indicators.ipynb   # about 25 minutes
 jupyter notebook us_overnight.ipynb
 jupyter notebook sequence_model.ipynb         # about 35 minutes
 jupyter notebook volatility.ipynb             # about 20 minutes
+jupyter notebook holdout.ipynb                # about 50 minutes on a first run
 ```

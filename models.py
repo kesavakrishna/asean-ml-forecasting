@@ -9,7 +9,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from torch import nn
 
-from evaluation import majority_direction, mcnemar, walk_forward_splits
+from evaluation import TEST_YEARS, majority_direction, mcnemar, walk_forward_splits
 from features import make_dataset, make_features, up_close_to_close
 
 
@@ -64,13 +64,14 @@ def pick_by_log_loss(fit, grid, X_train, y_train, X_tune, y_tune):
     return min(grid, key=tune_loss)
 
 
-def walk_forward(df, fit, grid, make_x=make_features, make_y=up_close_to_close, pick=pick_by_log_loss):
+def walk_forward(df, fit, grid, make_x=make_features, make_y=up_close_to_close, pick=pick_by_log_loss,
+                 test_years=TEST_YEARS):
     """For each test year: pick a setting on the tune year, refit on train + tune with it,
     and predict the test year."""
     X, y = make_dataset(df, make_x, make_y)
     up_yesterday = make_y(df).shift(1).eq(True)  # yesterday's label; unknown counts as down
     folds = []
-    for year, train, tune, test in walk_forward_splits(X.index):
+    for year, train, tune, test in walk_forward_splits(X.index, test_years):
         best = pick(fit, grid, X[train], y[train], X[tune], y[tune])
 
         before_test = train | tune
@@ -116,7 +117,7 @@ def report(preds):
 
 
 def pooled(preds):
-    """All six test years of one market together: model vs fair bar vs same as yesterday."""
+    """All test years of one market together: model vs fair bar vs same as yesterday."""
     up, calls = preds["up"], preds["p_up"] > 0.5
     return {
         "accuracy %": 100 * (calls == up).mean(),

@@ -128,12 +128,12 @@ def model_table(preds_by_market):
     for market, preds in preds_by_market.items():
         rows[market] = pooled(preds)
         rows[market]["called up %"] = 100 * (preds["p_up"] > 0.5).mean()
-        rows[market]["one-answer folds"] = one_answer_folds(preds)  # out of 6
+        rows[market]["one-answer folds"] = one_answer_folds(preds)  # one per test year
     return pd.DataFrame(rows).T
 
 
 def overview(results):
-    """One row per model, counted over all 36 folds."""
+    """One row per model, counted over all folds."""
     rows = {}
     for name, preds_by_market in results.items():
         years = pd.concat([report(preds) for preds in preds_by_market.values()])

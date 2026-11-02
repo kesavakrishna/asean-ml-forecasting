@@ -10,7 +10,7 @@ import warnings
 
 import yfinance as yf
 
-from data import DATA_DIR, FILES, START, US_FILE
+from data import DATA_DIR, FILES, START, US_FILE, US_HOLDOUT_FILE
 
 warnings.filterwarnings("ignore", module="yfinance")  # pandas deprecation notices from inside yfinance
 
@@ -25,6 +25,7 @@ TICKERS = {
 
 US_TICKER = "^GSPC"                          # S&P 500
 US_START, US_END = "2010-01-01", "2023-01-01"  # 2010-2022 only
+US_HOLDOUT_START = US_END                      # kept in its own file, so the file above never changes
 
 
 def download(ticker, file_name, start, end):
@@ -40,3 +41,4 @@ if __name__ == "__main__":
     for market, ticker in TICKERS.items():
         download(ticker, FILES[market], START, END)
     download(US_TICKER, US_FILE, US_START, US_END)
+    download(US_TICKER, US_HOLDOUT_FILE, US_HOLDOUT_START, END)
