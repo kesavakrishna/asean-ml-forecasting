@@ -15,10 +15,14 @@ class GRUNet(nn.Module):
         self.gru = nn.GRU(self.inputs_per_day, hidden, batch_first=True)
         self.out = nn.Linear(hidden, 1)  # GRU's final memory -> 1 logit
 
-    def forward(self, x):
+    def memory(self, x):
+        """What the GRU remembers after reading all 20 days."""
         days = x.reshape(len(x), SEQ_DAYS, self.inputs_per_day)  # flat columns -> rows, days, inputs per day
         _, memory = self.gru(days)
-        return self.out(memory[-1])
+        return memory[-1]
+
+    def forward(self, x):
+        return self.out(self.memory(x))
 
 
 def fit_gru(X, y, setting, seed=0):

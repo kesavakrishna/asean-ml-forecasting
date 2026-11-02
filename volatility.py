@@ -80,47 +80,61 @@ def walk_forward_garch(df, test_years=TEST_YEARS):
 
 # ---------- GRU ----------
 
-def train_gru(X, y, hidden, epochs, X_tune=None, y_tune=None, seed=0):
-    """Train a GRU on squared error. Returns predict() and the tune-year error after each epoch."""
-    x_mean, x_std = X.mean(), X.std(ddof=0)  # scaling learned from the training rows only
-    y_mean, y_std = y.mean(), y.std(ddof=0)
+class ScaledGRU:
+    """A GRU plus the scaling learned from its training rows."""
 
-    def to_tensor(frame):
-        return torch.tensor(((frame - x_mean) / x_std).to_numpy(), dtype=torch.float32)
+    def __init__(self, X, y, hidden):
+        self.x_mean, self.x_std = X.mean(), X.std(ddof=0)
+        self.y_mean, self.y_std = y.mean(), y.std(ddof=0)
+        self.net = GRUNet(X.shape[1], hidden)
 
-    def predict(X_new):
+    def inputs(self, X):
+        return torch.tensor(((X - self.x_mean) / self.x_std).to_numpy(), dtype=torch.float32)
+
+    def memory(self, X):
+        """The GRU's memory for each row, as a numpy array."""
         with torch.no_grad():
-            return net(to_tensor(X_new)).squeeze(1).numpy() * y_std + y_mean
+            return self.net.memory(self.inputs(X)).numpy()
 
-    x = to_tensor(X)
-    target = torch.tensor(((y - y_mean) / y_std).to_numpy(), dtype=torch.float32).unsqueeze(1)
+    def from_memory(self, memory):
+        """The forecast the GRU would make from this memory."""
+        with torch.no_grad():
+            return self.net.out(torch.tensor(memory, dtype=torch.float32)).squeeze(1).numpy() * self.y_std + self.y_mean
 
+    def predict(self, X):
+        return self.from_memory(self.memory(X))
+
+
+def train_gru(X, y, hidden, epochs, X_tune=None, y_tune=None, seed=0):
+    """Train a GRU on squared error. Returns the model and the tune-year error after each epoch."""
     torch.manual_seed(seed)
-    net = GRUNet(X.shape[1], hidden)
-    optimizer = torch.optim.Adam(net.parameters(), lr=LEARNING_RATE)
+    model = ScaledGRU(X, y, hidden)
+    x = model.inputs(X)
+    target = torch.tensor(((y - model.y_mean) / model.y_std).to_numpy(), dtype=torch.float32).unsqueeze(1)
+    optimizer = torch.optim.Adam(model.net.parameters(), lr=LEARNING_RATE)
     loss_fn = nn.MSELoss()
 
     tune_errors = []
     for epoch in range(epochs):
         for batch in torch.randperm(len(x)).split(BATCH_SIZE):
             optimizer.zero_grad()
-            loss_fn(net(x[batch]), target[batch]).backward()
+            loss_fn(model.net(x[batch]), target[batch]).backward()
             optimizer.step()
 
         if X_tune is not None:
-            tune_errors.append(mean_squared_error(y_tune, predict(X_tune)))
+            tune_errors.append(mean_squared_error(y_tune, model.predict(X_tune)))
             epochs_since_best = len(tune_errors) - 1 - np.argmin(tune_errors)
             if epochs_since_best == PATIENCE:
                 break
 
-    return predict, tune_errors
+    return model, tune_errors
 
 
 def fit_gru_vol(X, y, setting, seed=0):
     """Train with a fixed setting = (hidden size, epochs). Returns predict()."""
     hidden, epochs = setting
-    predict, _ = train_gru(X, y, hidden, epochs, seed=seed)
-    return predict
+    model, _ = train_gru(X, y, hidden, epochs, seed=seed)
+    return model.predict
 
 
 def pick_gru_vol_setting(fit, hidden_sizes, X_train, y_train, X_tune, y_tune, seed=0):

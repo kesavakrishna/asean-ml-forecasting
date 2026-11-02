@@ -13,6 +13,7 @@ Forecasting the daily direction (up/down) of the ASEAN-5 stock indices with mach
 - step 6: a small GRU in PyTorch on the same task
 - step 7: predicting volatility: HAR, random forest, GRU, GARCH, and HAR with the US move
 - step 8: the one-shot holdout, 17 Mar 2023 – 23 Oct 2026
+- interpretability: does the GRU rediscover HAR?
 
 ## Data
 
@@ -546,6 +547,72 @@ Same as yesterday is right 52.9% of the time and the fair bar 53.7% (p = 0.77, o
 - **Tradeable direction:** nothing that makes money after costs.
 - **Volatility:** predictable, with HAR hard to beat, but less so than the development years suggested.
 
+## Interpretability: does the GRU rediscover HAR?
+
+**Setup:** the step 7 GRUs, refitted with their saved settings, on the development test years 2017–2022 only. All 18 reproduce their saved forecasts. HAR's averages cover 1, 5 and 22 days, but the GRU reads only 20 days, so this uses 1, 5 and 20. Every line is fitted on earlier years and scored on the test year, except the weights table, which describes the test years. Results are averaged over three seeds. These are comparisons of scores, with no significance tests.
+
+**1. Does the memory hold the averages?** R² of a straight line from the GRU's memory to each average. "Random" is the same GRU before any training:
+
+| Market | Trained: 1 day | 5 days | 20 days | Random: 1 day | 5 days | 20 days |
+|---|---|---|---|---|---|---|
+| Indonesia | 0.991 | 0.978 | 0.902 | 0.995 | 0.984 | 0.889 |
+| Malaysia | 0.986 | 0.976 | 0.920 | 0.994 | 0.980 | 0.895 |
+| Philippines | 0.988 | 0.963 | 0.852 | 0.995 | 0.971 | 0.811 |
+| Singapore | 0.965 | 0.952 | 0.782 | 0.994 | 0.967 | 0.832 |
+| Thailand | 0.989 | 0.955 | 0.869 | 0.994 | 0.987 | 0.908 |
+| India | 0.938 | 0.941 | 0.905 | 0.994 | 0.966 | 0.863 |
+
+**2. Is the forecast a straight line on the averages?** Share of the GRU's forecast that the closest straight line matches (1 = all of it), by seed:
+
+| Market | Seed 0 | Seed 1 | Seed 2 |
+|---|---|---|---|
+| Indonesia | 0.969 | 0.964 | 0.969 |
+| Malaysia | 0.972 | 0.964 | 0.949 |
+| Philippines | 0.903 | 0.931 | 0.938 |
+| Singapore | 0.853 | 0.856 | 0.896 |
+| Thailand | 0.899 | 0.837 | 0.860 |
+| India | 0.927 | 0.870 | 0.931 |
+
+The weights on each average, for the GRU's forecasts and for a line fitted to the real target:
+
+| Market | GRU: 1 day | 5 days | 20 days | Real target: 1 day | 5 days | 20 days |
+|---|---|---|---|---|---|---|
+| Indonesia | 0.20 | 0.35 | 0.19 | 0.28 | 0.33 | 0.25 |
+| Malaysia | 0.12 | 0.36 | 0.14 | 0.20 | 0.24 | 0.45 |
+| Philippines | 0.17 | 0.32 | 0.15 | 0.21 | 0.32 | 0.23 |
+| Singapore | 0.07 | 0.31 | 0.12 | 0.18 | 0.36 | 0.28 |
+| Thailand | 0.14 | 0.37 | 0.11 | 0.22 | 0.37 | 0.31 |
+| India | 0.08 | 0.36 | 0.27 | 0.21 | 0.37 | 0.29 |
+
+**3. Does training help?** Forecast R² against the average so far, as in step 7. "Imitation" keeps only the straight-line part of the GRU's forecast. "Untrained GRU + line" keeps random memory and fits only the last line to the target:
+
+| Market | HAR | GRU | Imitation | Untrained GRU + line |
+|---|---|---|---|---|
+| Indonesia | **0.412** | 0.399 | 0.400 | 0.408 |
+| Malaysia | **0.430** | 0.349 | 0.368 | 0.427 |
+| Philippines | **0.274** | 0.245 | 0.265 | 0.262 |
+| Singapore | **0.307** | 0.217 | 0.263 | 0.303 |
+| Thailand | **0.486** | 0.433 | 0.478 | 0.443 |
+| India | 0.408 | 0.379 | **0.409** | 0.363 |
+
+**4. If we erase an average, does the forecast get worse?** Take out of the memory whatever moves in step with an average, then forecast from what's left. The control erases a single old day, 15 days ago. A fresh line can no longer read an erased average back (R² at or below 0):
+
+| Market | Nothing erased | 1 day | 5 days | 20 days | All three | Control |
+|---|---|---|---|---|---|---|
+| Indonesia | 0.399 | 0.124 | 0.050 | 0.094 | −0.007 | 0.347 |
+| Malaysia | 0.349 | 0.118 | −0.005 | 0.013 | −0.039 | 0.277 |
+| Philippines | 0.245 | 0.062 | −0.014 | 0.038 | −0.047 | 0.208 |
+| Singapore | 0.217 | −0.003 | −0.088 | −0.016 | −0.091 | 0.141 |
+| Thailand | 0.433 | 0.048 | −0.114 | −0.071 | −0.173 | 0.319 |
+| India | 0.379 | 0.147 | −0.040 | −0.019 | −0.096 | 0.311 |
+
+- **In what it forecasts, mostly yes.** A straight line on the three averages matches 84–97% of the GRU's forecast, and erasing all three wipes out its skill in every market.
+- **The averages in its memory aren't something it learned.** An untrained GRU holds them about as well, and usually slightly better. The probes alone would have suggested a discovery that isn't there.
+- **Training adds little.** Random memory with only the last line fitted beats the fully trained GRU in five of six markets, all but India.
+- **What the GRU adds beyond the straight line doesn't help.** Throwing it away improves the forecast in all six markets (barely in Indonesia). This is the likeliest reason it trails HAR in development.
+- **It leans on the 5-day average.** That gets its largest weight in all six markets, and erasing it does the most damage in all six. It uses less of the 1- and 20-day averages than the real target does.
+- **The windows can't be fully separated.** The three averages move together, so erasing one also removes much of what they share. The control's smaller drop shows that erasing isn't simply breaking the network, but it also falls, because old days carry some of that shared level too.
+
 ## Files
 
 | File | What it is |
@@ -565,6 +632,8 @@ Same as yesterday is right 52.9% of the time and the fair bar 53.7% (p = 0.77, o
 | `volatility.py` | Step 7: the six-fold loop for predicting a number, the GRU for ranges, GARCH, R², QLIKE and the paired test |
 | `volatility.ipynb` | Step 7: HAR vs forest, GRU and GARCH, HAR + US, year by year, scores without 2020, HAR's weights, and the Indonesia fake-open check |
 | `holdout.ipynb` | Step 8: all five one-shot tests on the holdout |
+| `gru_probes.py` | Interpretability: reads the GRU's memory, compares it with an untrained GRU, and erases averages from it |
+| `gru_probes.ipynb` | Interpretability: the four questions about whether the GRU rediscovers HAR. Needs `volatility.ipynb`'s saved results |
 | `results/` | Saved predictions, so a rerun skips finished work. Not in git. Delete the step 7 files after changing a model. Keep the `holdout_*` files: they're the one-shot results |
 | `us_overnight.ipynb` | Steps 5 and 5b: the US move as a feature, close-to-close vs open-to-close, the open-price check, and the checks of the two exceptions |
 | `eda.ipynb` | EDA notebook on the original data: data checks, cleaning, returns, up-day shares, baseline scores |
@@ -585,4 +654,5 @@ jupyter notebook us_overnight.ipynb
 jupyter notebook sequence_model.ipynb         # about 35 minutes
 jupyter notebook volatility.ipynb             # about 20 minutes
 jupyter notebook holdout.ipynb                # about 50 minutes on a first run
+jupyter notebook gru_probes.ipynb             # under 10 minutes
 ```
