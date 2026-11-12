@@ -1,0 +1,25 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  leakage-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Install the pinned packages (PyTorch without the GPU parts, to keep it small)
+        run: |
+          pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+      - name: Make fake data (the real data can't be shared)
+        run: python make_fake_data.py
+      - name: Leakage test
+        run: python test_leakage.py
+        env:
+          DATA_DIR: fake_data

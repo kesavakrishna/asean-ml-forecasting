@@ -4,12 +4,14 @@ Load and clean the index files.
 Every later step gets its data from load_market() / load_all(), so the
 cleaning rules live in one place.
 """
+import os
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-DATA_DIR = Path(__file__).resolve().parent / "Dataset"
+# Set the DATA_DIR environment variable to load from another folder (the automated test uses made-up data).
+DATA_DIR = Path(os.environ.get("DATA_DIR", Path(__file__).resolve().parent / "Dataset"))
 
 FILES = {
     "Indonesia":   "Jakarta Composite (Yahoo).csv",           # download_data.py

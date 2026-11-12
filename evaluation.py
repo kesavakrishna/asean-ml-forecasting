@@ -96,3 +96,28 @@ def mcnemar(actual, calls_a, calls_b):
     # Exact binomial test: if A and B were equally good, each disagreement is a coin flip.
     tail = sum(math.comb(n, i) for i in range(min(only_a, only_b) + 1)) / 2**n
     return only_a, only_b, min(1.0, 2 * tail)
+
+def holm(p_values):
+    """Adjust a group of p-values (a pandas Series) for the number of tests in the group.
+
+    Run enough tests and some pass by luck. Holm's method multiplies the smallest p-value by the
+    number of tests, the next smallest by one fewer, and so on. No p-value may end up below a smaller one.
+    """
+    ordered = p_values.sort_values()
+    scaled = ordered * (len(ordered) - np.arange(len(ordered)))
+    return scaled.cummax().clip(upper=1).reindex(p_values.index)
+
+def bootstrap_range(daily, statistic, n=2000, seed=0):
+    """95% range for statistic(daily), where `daily` has one row per day.
+
+    Draw whole weeks at random, with repeats, until there are as many as in the data; recompute; repeat n times.
+    The range is the middle 95% of those results. Whole weeks stay together because nearby days are related.
+    """
+    week_of_row = daily.index.to_period("W")
+    rows_by_week = [np.flatnonzero(week_of_row == week) for week in week_of_row.unique()]
+    rng = np.random.default_rng(seed)
+    results = []
+    for _ in range(n):
+        drawn = rng.integers(len(rows_by_week), size=len(rows_by_week))
+        results.append(statistic(daily.iloc[np.concatenate([rows_by_week[week] for week in drawn])]))
+    return np.percentile(results, [2.5, 97.5])

@@ -13,3 +13,9 @@ __pycache__/
 
 # Saved model predictions (rebuilt by the notebooks)
 results/
+
+# Made-up data for the automated test (make_fake_data.py)
+fake_data/
+
+# Secrets (API keys). Never commit.
+.env
