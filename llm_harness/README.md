@@ -8,7 +8,7 @@ This folder is a separate experiment from the main project. It reuses the main p
 
 | Test | Question | Status |
 |---|---|---|
-| 1. Accuracy | Does it predict, or remember? Asked three ways, before and after its training cutoff | Gemma 3 4B: plan written, see [PLAN.md](PLAN.md). Nemotron on NIM stopped at 829 answers (rate limits) |
+| 1. Accuracy | Does it predict, or remember? Asked three ways, before and after its training cutoff | **Gemma 3 4B: done.** No skill and no memory: AUC 0.49–0.51 everywhere, and it says "up" to almost everything. See `accuracy.ipynb`. Nemotron on NIM stopped at 829 answers (rate limits) |
 | 2. Reasoning | Are the numbers it cites right, and do its reasons really drive its answers? | Not built yet |
 | 3. Feedback | Given a scorecard each month, does its notebook of rules get better? | Not built yet |
 | 4. Old local model | The same tests on a model whose training data ends in 2022–23 | Not built yet |
@@ -22,6 +22,7 @@ This folder is a separate experiment from the main project. It reuses the main p
 | `answers.py` | Reads the model's reply: the word, and P(up) |
 | `run_accuracy.py` | Test 1: builds the questions and collects the answers |
 | `PLAN.md` | Test 1's plan and expected results, written before the run |
+| `accuracy.ipynb` | Test 1's scores: the three comparisons, the fake-data check, and a year-by-year look |
 
 ## Running
 
