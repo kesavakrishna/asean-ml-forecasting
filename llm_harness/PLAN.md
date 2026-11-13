@@ -26,6 +26,30 @@ What I expect for Gemma:
 - **Accuracy:** about the fair bar everywhere, because it nearly always says "up".
 - **Fake data:** AUC 0.50.
 
+## Second model: Llama 2 7B on this laptop
+
+Written after Gemma's results and before any Llama 2 answer for 2017 onward existed.
+
+- **Model:** `llama-2-7b-chat`, 4-bit, run locally with llama.cpp. Its pretraining data ends in **Sep 2022**, and some fine-tuning data in **Jul 2023**.
+- **Periods:** *before* = Jan 2017 – Aug 2022, *in between* = Sep 2022 – Jul 2023, *after* = Aug 2023 – 23 Oct 2026. 300 random days per market in *before* and *after*, and every day *in between* (about 225 per market). 15,126 questions in all.
+- **Unchanged:** the questions, the three ways of asking, the fake data and the scoring.
+- **Two technical fixes, found in the pilot (2012–2016 only):**
+  - The model file carries no chat format, so the server was falling back to another model family's and Llama 2 replied with nonsense. `llama2_chat_template.jinja` gives it Llama 2's own format.
+  - Llama 2 starts its reply with a space. The answer reader now reads P(up) where "up" or "down" is the most likely word, instead of the first position that lists either. This changes none of the 11,100 Gemma or 779 Nemotron readings.
+- **From the pilot:** with prices it says "Up" almost always (P(up) 0.97–1.00). With only a date it is more mixed (P(up) 0.07–0.84, mean 0.48).
+
+What I expect for Llama 2:
+
+| Comparison | Before | In between | After |
+|---|---|---|---|
+| 1. Hidden, AUC | 0.50 | 0.50 | 0.50 |
+| 2. Named minus hidden, AUC | 0 to 0.02 | 0 | 0 |
+| 3. Date only, AUC | 0.50 to 0.52 | 0.50 | 0.50 |
+
+- **Memory:** little or none, as with Gemma. A 7B model is only a little bigger.
+- **Accuracy:** about the fair bar with prices, since it nearly always says "Up". With only a date it says "Down" more often, so its accuracy there may fall below the fair bar.
+- **Fake data:** AUC 0.50.
+
 The rest of this file is the original plan, written for Nemotron. Where it names Nemotron's dates or periods, read Gemma's from the list above.
 
 ## What is asked

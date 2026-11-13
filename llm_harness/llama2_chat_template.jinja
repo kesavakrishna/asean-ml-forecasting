@@ -1,0 +1,18 @@
+{#- Llama 2 chat's prompt format (from Meta's reference code). The GGUF file doesn't carry it, so llama-server is given it with --chat-template-file. The start-of-text token is added by llama.cpp. -#}
+{%- if messages[0]['role'] == 'system' -%}
+    {%- set system = messages[0]['content'] -%}
+    {%- set messages = messages[1:] -%}
+{%- else -%}
+    {%- set system = '' -%}
+{%- endif -%}
+{%- for message in messages -%}
+    {%- if message['role'] == 'user' -%}
+        {{- '[INST] ' -}}
+        {%- if loop.first and system -%}
+            {{- '<<SYS>>\n' + system + '\n<</SYS>>\n\n' -}}
+        {%- endif -%}
+        {{- message['content'] | trim + ' [/INST]' -}}
+    {%- elif message['role'] == 'assistant' -%}
+        {{- ' ' + message['content'] | trim + ' </s><s>' -}}
+    {%- endif -%}
+{%- endfor -%}

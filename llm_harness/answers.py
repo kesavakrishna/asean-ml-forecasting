@@ -5,16 +5,19 @@ import math
 def up_probability(reply):
     """P(up), from the probabilities the model gave to the words "up" and "down". None if it used neither.
 
-    With thinking off, the first word of the reply is the answer, and NIM returns the five likeliest words there.
+    The answer is read at the first position where "up" or "down" is the model's most likely word,
+    so a leading space (Llama 2 starts with one) is skipped. "Up", "UP" and " up" all count as "up".
     """
     for position in reply["choices"][0]["logprobs"]["content"]:
+        options = position["top_logprobs"]
+        if options[0]["token"].strip().lower() not in ("up", "down"):
+            continue
         chance = {"up": 0.0, "down": 0.0}
-        for option in position["top_logprobs"]:
+        for option in options:
             word = option["token"].strip().lower()
             if word in chance:
                 chance[word] += math.exp(option["logprob"])
-        if chance["up"] + chance["down"] > 0:
-            return chance["up"] / (chance["up"] + chance["down"])
+        return chance["up"] / (chance["up"] + chance["down"])
     return None
 
 
