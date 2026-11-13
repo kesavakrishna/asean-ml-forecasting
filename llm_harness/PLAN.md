@@ -2,6 +2,32 @@
 
 Written before the real run. The wording below was tried on 2012–2016 days only, which are never scored.
 
+## Change before running: Gemma 3 4B on this laptop
+
+Written after the Nemotron run stopped and before any Gemma answer for 2017 onward existed.
+
+- **Why:** NIM's free tier refused most requests after about 1,000. The Nemotron run stopped at 829 of 11,373 answers, all from Indonesia before Sep 2025. Those answers are kept but not scored as test 1.
+- **New model:** `gemma-3-4b-it`, 4-bit, run locally with llama.cpp on the graphics card. Its training data ends in **Aug 2024**.
+- **Periods:** *before* = Jan 2017 – Aug 2024, *after* = Sep 2024 – 23 Oct 2026. 300 random days per market in each. There is no "in between".
+- **Dropped:** the thinking side check. Gemma 3 has no thinking mode.
+- **Unchanged:** the questions, the three ways of asking, the fake data, the scoring and the rules below.
+- **One technical change:** the 20 likeliest first words are read instead of 5, because a small model's second choice can sit further down the list.
+- **From the pilot (2012–2016 only):** Gemma said "up" to 189 of 190 questions, usually with P(up) close to 1. Its probabilities still differ between days, so AUC can still rank them. Accuracy will mostly equal "always up".
+
+What I expect for Gemma:
+
+| Comparison | Before | After |
+|---|---|---|
+| 1. Hidden, AUC | 0.50 | 0.50 |
+| 2. Named minus hidden, AUC | 0 to 0.02 | 0 |
+| 3. Date only, AUC | 0.50 to 0.52 | 0.50 |
+
+- **Memory:** smaller than I'd have expected from Nemotron. A 4B model holds far less detail, so I expect little or none.
+- **Accuracy:** about the fair bar everywhere, because it nearly always says "up".
+- **Fake data:** AUC 0.50.
+
+The rest of this file is the original plan, written for Nemotron. Where it names Nemotron's dates or periods, read Gemma's from the list above.
+
 ## What is asked
 
 For a market and a day t, the model answers one word: **up** or **down** (did day t close above day t−1?). The same day is asked three ways:
