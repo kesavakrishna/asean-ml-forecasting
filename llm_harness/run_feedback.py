@@ -58,12 +58,15 @@ def days_in(month, markets):
     return chosen
 
 
-def predict(saved, markets, market, day, notebook, run):
-    """One question, with the notebook in front of the model. Returns what happened."""
+def predict(saved, markets, market, day, notebook, run, extra=None):
+    """One question, with the notebook in front of the model. Returns what happened.
+
+    extra: for step 10, a function that turns the table into lines added below it.
+    """
     rows = days_before(markets[market], day)
     checks.check_wall(rows, day)  # before anything is sent
     table = explained.rescaled(rows)
-    request = explained.request(MODEL, explained.question(table, notebook))
+    request = explained.request(MODEL, explained.question(table, notebook, extra(table) if extra else None))
     answer = checks.read_reply(saved.ask(request, run=run, market=market, day=f"{day:%Y-%m-%d}")["reply"])
     if answer is None:
         return None
@@ -113,9 +116,9 @@ def rewrite(saved, notebook, card, run, month):
     return " ".join(words[:MOST_WORDS]) or EMPTY_NOTEBOOK
 
 
-def run(dataset, kind, months):
-    """One run of the loop. Its state is saved after every month."""
-    name = f"feedback_{dataset}_{kind}" + ("_pilot" if months is PILOT_MONTHS else "")
+def run(dataset, kind, months, extra=None, suffix=""):
+    """One run of the loop. Its state is saved after every month. extra and suffix are for step 10."""
+    name = f"feedback_{dataset}_{kind}{suffix}" + ("_pilot" if months is PILOT_MONTHS else "")
     saved = Saved(name, LOCAL_URL)
     state_path = SAVED / f"{name}_state.json"
     state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {"months": []}
@@ -128,7 +131,7 @@ def run(dataset, kind, months):
         notebook = state["months"][-1]["notebook after"] if state["months"] and kind != "none" else EMPTY_NOTEBOOK
         jobs = days_in(month, markets)
         with ThreadPoolExecutor(max_workers=4) as pool:
-            results = [r for r in pool.map(lambda job: predict(saved, markets, *job, notebook, name), jobs) if r]
+            results = [r for r in pool.map(lambda job: predict(saved, markets, *job, notebook, name, extra), jobs) if r]
         card = scorecard(month, results, markets, kind)
         new_notebook = notebook if kind == "none" else rewrite(saved, notebook, card, name, month)
         state["months"].append({"month": str(month), "notebook used": notebook, "results": results,

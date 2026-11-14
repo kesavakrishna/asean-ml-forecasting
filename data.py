@@ -24,6 +24,7 @@ FILES = {
 MARKETS = list(FILES)
 US_FILE = "S&P 500 (Yahoo).csv"  # download_data.py; 2010-2022 only, for step 5
 US_HOLDOUT_FILE = "S&P 500 holdout (Yahoo).csv"  # download_data.py; 2023 onward, for the holdout only
+OTHERS_FILE = "Other markets (Yahoo).csv"  # download_data.py others; VIX, currencies and Brent oil, for step 9
 
 START = "2012-01-01"          # the same start for every market
 HOLDOUT_START = "2023-03-17"  # 2023-03-17 onward stays untouched until the final check
@@ -107,3 +108,34 @@ def read_us(include_holdout=False):
 def load_us(include_holdout=False):
     """Cleaned, checked S&P 500 data, with its daily return `ret`."""
     return clean(read_us(include_holdout), "US")
+
+
+def bad_prints(close):
+    """Closes more than 10x the series' typical daily move away from the median of the 11 closes around them.
+
+    Yahoo's currency data has these: the rupiah stuck at 9,612 for days in 2013 while it traded near 11,800.
+    A real jump that lasts moves the median with it, so it isn't flagged. This looks at later closes too,
+    but only to spot data errors in the currency series, not anything about the index.
+    """
+    log_close = np.log(close)
+    typical = log_close.diff().abs().median()
+    around = log_close.rolling(11, center=True, min_periods=6).median()
+    return (log_close - around).abs() > 10 * typical
+
+
+def load_other_moves():
+    """Daily log moves of VIX, the currencies and Brent oil, as {ticker: Series} (step 9).
+
+    Each series keeps its own trading days. A move across a gap of more than MAX_GAP_DAYS is blank, and so
+    are moves into and out of a currency's bad prints. VIX and oil are left as they are: their extremes are real.
+    """
+    closes = pd.read_csv(DATA_DIR / OTHERS_FILE, index_col="Date", parse_dates=["Date"])
+    moves = {}
+    for name, close in closes.items():
+        close = close.dropna()
+        close = close[close > 0]
+        if name.endswith("=X"):  # currencies
+            close = close.where(~bad_prints(close))
+        gap_days = close.index.to_series().diff().dt.days
+        moves[name] = np.log(close).diff().where(gap_days <= MAX_GAP_DAYS)
+    return moves

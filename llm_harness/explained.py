@@ -43,8 +43,8 @@ def rescaled(rows, base=100):
     return rows * base / rows["Close"].iloc[0]
 
 
-def question(table, notebook=None):
-    """The question text: the model's notebook if it has one, the table, and the instructions."""
+def question(table, notebook=None, extra=None):
+    """The question text: the model's notebook if it has one, the table, any extra lines (step 10), and the instructions."""
     parts = []
     if notebook is not None:
         parts.append(f"Your notebook of rules, written by you after earlier months:\n{notebook}\n")
@@ -52,6 +52,8 @@ def question(table, notebook=None):
     parts.append("Market: a stock index (name and dates hidden)\n"
                  f"Its last {DAYS_SHOWN} trading days (day, open, high, low, close), rescaled so the first close is {base}:\n"
                  f"{as_text(table, [f'day {n}' for n in range(-DAYS_SHOWN, 0)])}\n")
+    if extra is not None:
+        parts.append(extra + "\n")
     parts.append(INSTRUCTIONS)
     return "\n".join(parts)
 

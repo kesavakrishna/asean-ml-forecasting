@@ -12,7 +12,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from data import FILES, US_FILE
+from data import FILES, OTHERS_FILE, US_FILE
+from features import CURRENCIES
 
 FOLDER = Path(__file__).resolve().parent / "fake_data"
 DAYS = pd.bdate_range("2010-01-01", "2023-03-16", name="Date")  # weekdays up to the end of the development period
@@ -37,4 +38,7 @@ if __name__ == "__main__":
     FOLDER.mkdir(exist_ok=True)
     for seed, file_name in enumerate([*FILES.values(), US_FILE]):
         fake_prices(seed).to_csv(FOLDER / file_name, date_format="%Y-%m-%d")
-    print(f"wrote {len(FILES) + 1} made-up files to {FOLDER}")
+    tickers = ["^VIX", *CURRENCIES.values(), "BZ=F"]  # step 9's other markets: closes only
+    others = pd.DataFrame({t: fake_prices(100 + n)["Close"] for n, t in enumerate(tickers)})
+    others.to_csv(FOLDER / OTHERS_FILE, date_format="%Y-%m-%d")
+    print(f"wrote {len(FILES) + 2} made-up files to {FOLDER}")

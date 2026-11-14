@@ -6,21 +6,22 @@ Run:  python test_leakage.py
 import numpy as np
 import pandas as pd
 
-from data import MARKETS, clean, read_market, read_us
+from data import MARKETS, clean, load_other_moves, read_market, read_us
 from evaluation import baseline_guesses
 from features import (log_range, make_features, make_garch, make_har, make_har_with_us, make_indicators,
-                      make_range_sequence, make_sequence, make_sequence_with_us, make_us_features)
+                      make_indicators_extended, make_other_markets, make_range_sequence, make_sequence,
+                      make_sequence_with_us, make_tsfresh, make_us_features)
 
 def pipeline(raw, market):
     """Everything computed per day so far. Add each new feature function here."""
     df = clean(raw, market)
-    return df.join(baseline_guesses(df)).join(make_features(df)).join(make_indicators(df)).join(make_sequence(df)).join(make_har(df)).join(make_range_sequence(df))
+    return df.join(baseline_guesses(df)).join(make_features(df)).join(make_indicators_extended(df)).join(make_sequence(df)).join(make_har(df)).join(make_range_sequence(df))
 
 
 def model_inputs(raw, market):
     """Only the model features."""
     df = clean(raw, market)
-    return make_features(df).join(make_indicators(df)).join(make_sequence(df)).join(make_har(df)).join(make_range_sequence(df))
+    return make_features(df).join(make_indicators_extended(df)).join(make_sequence(df)).join(make_har(df)).join(make_range_sequence(df))
 
 
 def scramble_after(raw, t, rng):
@@ -161,6 +162,66 @@ def test_catches_a_same_date_join():
     raise AssertionError("leakage test missed a same-date join with US data")
 
 
+# ---------- tsfresh (step 9, set C) ----------
+
+def test_tsfresh_ignores_day_t():
+    """tsfresh's features for day t use only the 20 returns before it. Slow, so two markets and one day each."""
+    rng = np.random.default_rng(4)
+    for market in ["Indonesia", "India"]:
+        raw = read_market(market)
+        t = pd.Timestamp(rng.choice(raw.index[100:-50]))
+        days = raw.index[raw.index <= t][-30:]  # the same days with and without the change
+
+        def tsfresh_near_t(changed_raw, market):
+            return make_tsfresh(clean(changed_raw, market), days=days)
+
+        assert_no_lookahead(tsfresh_near_t, raw, market, t, rng)
+        assert_features_ignore_day_t(tsfresh_near_t, raw, market, t, rng)
+
+
+# ---------- other markets (step 9, set D) ----------
+
+def scramble_moves_from(moves, day, rng):
+    """Copy of {name: daily moves} with every move dated on or after `day` replaced at random."""
+    return {name: s.where(s.index < day, rng.normal(0, 0.05, len(s))) for name, s in moves.items()}
+
+
+def assert_other_markets_ignore_day_t(make, asia, us_raw, others, market, t, rng):
+    """Set D for Asian days up to t must not change when the US and other markets from day t on are changed."""
+    day_before = t - pd.Timedelta(days=1)
+    expected = make(asia, clean(us_raw, "US"), others, market).loc[:t]
+    changed_us = clean(scramble_after(us_raw, day_before, rng), "US")
+    result = make(asia, changed_us, scramble_moves_from(others, t, rng), market).loc[:t]
+    pd.testing.assert_frame_equal(expected, result, obj=f"{market} set D up to {t:%Y-%m-%d}")
+
+
+def test_other_markets_ignore_day_t():
+    rng = np.random.default_rng(5)
+    us_raw, others = read_us(), load_other_moves()
+    for market in MARKETS:
+        asia = clean(read_market(market), market)[:"2022"]  # the US file ends in 2022
+        for t in rng.choice(asia.index[50:-50], size=10, replace=False):
+            assert_other_markets_ignore_day_t(make_other_markets, asia, us_raw, others, market, pd.Timestamp(t), rng)
+
+
+def test_catches_a_same_date_join_of_other_markets():
+    """Sanity check: joining the currency move with the same date must fail the test."""
+    def same_date(asia, us, others, market):
+        X = make_other_markets(asia, us, others, market)
+        fx = others["IDR=X"].rename("move")
+        X["fx_move"] = pd.merge_asof(asia[[]], fx, left_index=True, right_index=True)["move"]  # same date allowed
+        return X
+
+    rng = np.random.default_rng(0)
+    asia = clean(read_market("Indonesia"), "Indonesia")[:"2022"]
+    try:
+        assert_other_markets_ignore_day_t(same_date, asia, read_us(), load_other_moves(), "Indonesia",
+                                          pd.Timestamp("2018-06-29"), rng)
+    except AssertionError:
+        return
+    raise AssertionError("leakage test missed a same-date join with another market")
+
+
 # ---------- GARCH (step 7) ----------
 
 def garch_for_2020(raw, market):
@@ -202,4 +263,7 @@ if __name__ == "__main__":
     test_catches_a_same_day_range_leak()
     test_us_feature_ignores_us_day_t()
     test_catches_a_same_date_join()
+    test_tsfresh_ignores_day_t()
+    test_other_markets_ignore_day_t()
+    test_catches_a_same_date_join_of_other_markets()
     print("Leakage test passed.")

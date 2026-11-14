@@ -21,6 +21,10 @@ def mean_deviation(s, n):
 
 def make_indicators(df):
     """The 12 technical indicators from Kim (2003). Row t uses prices up to day t-1."""
+    return indicator_values(df).shift(1)  # move down one row: day t gets day t-1's values
+
+def indicator_values(df):
+    """Kim's 12 indicators on each day, using that day's own prices (so not yet shifted)."""
     close, high, low = df["Close"], df["High"], df["Low"]
     highest = high.rolling(N_DAYS).max()
     lowest = low.rolling(N_DAYS).min()
@@ -43,7 +47,7 @@ def make_indicators(df):
     X["oscp"] = (ma5 - ma10) / ma5
     X["cci"] = (typical - typical.rolling(N_DAYS).mean()) / (0.015 * mean_deviation(typical, N_DAYS))
     X["rsi"] = 100 - 100 / (1 + gain.rolling(N_DAYS).mean() / loss.rolling(N_DAYS).mean())
-    return X.shift(1)  # move down one row: day t gets day t-1's values
+    return X
 
 def make_us_features(df, us):
     """The S&P 500's return in the last US session before day t.
@@ -133,3 +137,94 @@ def make_dataset(df, make_x=make_features, make_y=up_close_to_close):
     X, y = make_x(df), make_y(df)
     complete = X.notna().all(axis=1) & y.notna() & df["ret"].notna()
     return X[complete], y[complete].astype(bool)
+
+
+# ---------- step 9: more inputs ----------
+
+def rsi(close, n):
+    """Relative strength index over n days, 0 to 100."""
+    gain = close.diff().clip(lower=0)
+    loss = (-close.diff()).clip(lower=0)
+    return 100 - 100 / (1 + gain.rolling(n).mean() / loss.rolling(n).mean())
+
+def wilder(s, n=14):
+    """Wilder's smoothing, used by ATR and ADX: an average where each day counts 1/n."""
+    return s.ewm(alpha=1 / n, adjust=False).mean()
+
+def make_indicators_extended(df):
+    """Set B: Kim's 12, plus standard extras. Row t uses prices up to day t-1."""
+    close, high, low = df["Close"], df["High"], df["Low"]
+    typical = (high + low + close) / 3
+    true_range = pd.concat([high - low, (high - close.shift(1)).abs(), (low - close.shift(1)).abs()], axis=1).max(axis=1)
+
+    X = pd.DataFrame(index=df.index)
+    for n in (5, 20):  # Kim's 12 use 10 days
+        highest, lowest = high.rolling(n).max(), low.rolling(n).min()
+        X[f"rsi{n}"] = rsi(close, n)
+        X[f"stoch_k{n}"] = 100 * (close - lowest) / (highest - lowest)
+        X[f"williams_r{n}"] = 100 * (highest - close) / (highest - lowest)
+        X[f"roc{n}"] = 100 * close / close.shift(n)
+        X[f"cci{n}"] = (typical - typical.rolling(n).mean()) / (0.015 * mean_deviation(typical, n))
+    X["disparity20"] = 100 * close / close.rolling(20).mean()  # Kim's 12 have 5 and 10
+
+    macd = close.ewm(span=12, adjust=False).mean() - close.ewm(span=26, adjust=False).mean()
+    signal = macd.ewm(span=9, adjust=False).mean()
+    X["macd"], X["macd_signal"], X["macd_hist"] = macd / close, signal / close, (macd - signal) / close
+
+    ma20, sd20 = close.rolling(20).mean(), close.rolling(20).std()
+    X["bollinger_b"] = (close - (ma20 - 2 * sd20)) / (4 * sd20)  # 0 = lower band, 1 = upper band
+    X["bollinger_width"] = 4 * sd20 / ma20
+
+    atr = wilder(true_range)
+    X["atr"] = atr / close
+    up_move, down_move = high.diff(), -low.diff()
+    plus_di = 100 * wilder(up_move.where((up_move > down_move) & (up_move > 0), 0.0)) / atr
+    minus_di = 100 * wilder(down_move.where((down_move > up_move) & (down_move > 0), 0.0)) / atr
+    X["plus_di"], X["minus_di"] = plus_di, minus_di
+    X["adx"] = wilder(100 * (plus_di - minus_di).abs() / (plus_di + minus_di))
+
+    return make_indicators(df).join(X.shift(1))  # move down one row: day t gets day t-1's values
+
+def make_tsfresh(df, days=None):
+    """Set C: tsfresh's features of the last 20 daily returns before day t (all, or only `days`).
+
+    Gaps are filled with the median of earlier days only, or 0 if there is none. Slow: a few minutes per market.
+    """
+    from tsfresh import extract_features  # slow to import, so only when needed
+    from tsfresh.feature_extraction import EfficientFCParameters
+
+    windows = make_sequence(df).dropna()  # oldest first; the newest is day t-1
+    if days is not None:
+        windows = windows.loc[windows.index.intersection(days)]
+    long = pd.DataFrame({
+        "id": np.repeat(np.arange(len(windows)), SEQ_DAYS),
+        "time": np.tile(np.arange(SEQ_DAYS), len(windows)),
+        "ret": windows.to_numpy().ravel(),
+    })
+    X = extract_features(long, column_id="id", column_sort="time", default_fc_parameters=EfficientFCParameters(),
+                         disable_progressbar=True, n_jobs=4 if days is None else 0).sort_index()
+    X.index = windows.index
+    X = X.replace([np.inf, -np.inf], np.nan)
+    return X.fillna(X.expanding().median().shift(1)).fillna(0).reindex(df.index)
+
+CURRENCIES = {"Indonesia": "IDR=X", "Malaysia": "MYR=X", "Philippines": "PHP=X",
+              "Singapore": "SGD=X", "Thailand": "THB=X", "India": "INR=X"}  # local currency per US dollar
+
+def last_move_before(df, moves):
+    """For each day t: the series' last daily move dated strictly before t (at most a week old).
+
+    Blank if that move is blank (a long gap, or a bad print).
+    """
+    moves = moves.rename("move")
+    joined = pd.merge_asof(df[[]], moves, left_index=True, right_index=True,
+                           allow_exact_matches=False, tolerance=pd.Timedelta(days=7))
+    return joined["move"]
+
+def make_other_markets(df, us, others, market):
+    """Set D: Kim's 12, plus the last moves before day t of the S&P 500, VIX, the currency and Brent oil."""
+    X = make_indicators(df)
+    X["us_ret"] = last_move_before(df, us["ret"])
+    X["vix_move"] = last_move_before(df, others["^VIX"])
+    X["fx_move"] = last_move_before(df, others[CURRENCIES[market]])
+    X["oil_move"] = last_move_before(df, others["BZ=F"])
+    return X
