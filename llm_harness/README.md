@@ -9,8 +9,8 @@ This folder is a separate experiment from the main project. It reuses the main p
 | Test | Question | Status |
 |---|---|---|
 | 1. Accuracy | Does it predict, or remember? Asked three ways, before and after its training cutoff | **Gemma 3 4B: done.** No skill and no memory: AUC 0.49–0.51 everywhere, and it says "up" to almost everything. See `accuracy.ipynb`. Nemotron on NIM stopped at 829 answers (rate limits) |
-| 2. Reasoning | Are the numbers it cites right, and do its reasons really drive its answers? | Built, plan written: [PLAN_2_3.md](PLAN_2_3.md) |
-| 3. Feedback | Given a scorecard each month, does its notebook of rules get better? | Built, plan written: [PLAN_2_3.md](PLAN_2_3.md) |
+| 2. Reasoning | Are the numbers it cites right, and do its reasons really drive its answers? | **Gemma 3 4B: done.** It copies numbers correctly, but its stated rule doesn't drive its answer: flipping that move changes the answer no more often than flipping another (20.0% vs 19.7%). See `reasoning.ipynb` |
+| 3. Feedback | Given a scorecard each month, does its notebook of rules get better? | **Gemma 3 4B: done.** No run beats its twin (all within 1.3 points). Told which rule works on planted data, it names that rule every time but its answers don't follow it. See `feedback.ipynb` |
 | 4. Old local model | Test 1 on Llama 2 7B, whose training data ends in 2022–23 | **Done.** Like Gemma: no skill, no clear memory. See `accuracy_llama2.ipynb` |
 
 ## Files
@@ -32,6 +32,8 @@ This folder is a separate experiment from the main project. It reuses the main p
 | `PLAN.md` | Test 1's plan and expected results, written before the run |
 | `accuracy.ipynb` | Test 1's scores for Gemma: the three comparisons, the fake-data check, and a year-by-year look |
 | `accuracy_llama2.ipynb` | The same scores for Llama 2 |
+| `reasoning.ipynb` | Test 2's scores: the checks on each explanation, and the mirrored-against-control result |
+| `feedback.ipynb` | Test 3's scores: each run against its twin, month by month, and the notebooks it wrote |
 
 ## Running
 
