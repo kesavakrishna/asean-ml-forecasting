@@ -12,6 +12,7 @@ This folder is a separate experiment from the main project. It reuses the main p
 | 2. Reasoning | Are the numbers it cites right, and do its reasons really drive its answers? | **Gemma 3 4B: done.** It copies numbers correctly, but its stated rule doesn't drive its answer: flipping that move changes the answer no more often than flipping another (20.0% vs 19.7%). See `reasoning.ipynb` |
 | 3. Feedback | Given a scorecard each month, does its notebook of rules get better? | **Gemma 3 4B: done.** No run beats its twin (all within 1.3 points). Told which rule works on planted data, it names that rule every time but its answers don't follow it. See `feedback.ipynb` |
 | 4. Old local model | Test 1 on Llama 2 7B, whose training data ends in 2022–23 | **Done.** Like Gemma: no skill, no clear memory. See `accuracy_llama2.ipynb` |
+| 5. With indicators (step 10) | Test 3 again, with the direction of each move and Kim's 12 indicators written below the table. Was reading the numbers the problem? | **Gemma 3 4B: done.** No. It now copies the 1-day move's direction (61–65% of answers), whatever rule it names: in the planted tester run it named "reverse" every time and agreed with it only 35% of the time. No run beats its twin; real-data AUC 0.50, the same as the ML models. See `with_indicators.ipynb` and [PLAN_more_inputs.md](../PLAN_more_inputs.md) |
 
 ## Files
 
@@ -27,6 +28,7 @@ This folder is a separate experiment from the main project. It reuses the main p
 | `fake_markets.py` | Made-up markets: random ones, and ones with a planted rule |
 | `run_reasoning.py` | Test 2: each question asked four ways (base, rescaled, mirrored, control) |
 | `run_feedback.py` | Test 3: the monthly notebook loop, with its state saved after every month |
+| `run_with_indicators.py` | Test 5 (step 10): test 3's loop, with the moves and indicators added below the table |
 | `PLAN_2_3.md` | Tests 2 and 3's plan and expected results, written before the runs |
 | `llama2_chat_template.jinja` | Llama 2's chat format. Its model file doesn't include one, so the server is given this |
 | `PLAN.md` | Test 1's plan and expected results, written before the run |
@@ -34,6 +36,7 @@ This folder is a separate experiment from the main project. It reuses the main p
 | `accuracy_llama2.ipynb` | The same scores for Llama 2 |
 | `reasoning.ipynb` | Test 2's scores: the checks on each explanation, and the mirrored-against-control result |
 | `feedback.ipynb` | Test 3's scores: each run against its twin, month by month, and the notebooks it wrote |
+| `with_indicators.ipynb` | Test 5's scores: does it use its rule now, against its twin and test 3, and what it copies |
 
 ## Running
 
@@ -62,6 +65,7 @@ python -m llm_harness.run_accuracy gemma pilot   # 2012-2016 days only, under a 
 python -m llm_harness.run_accuracy gemma         # the real test
 python -m llm_harness.run_reasoning               # test 2, about 25 minutes
 python -m llm_harness.run_feedback real tester    # test 3: one run (data: real, random, planted; feedback: none, scorecard, tester)
+python -m llm_harness.run_with_indicators         # test 5: three runs, about 2 hours
 ```
 
 Replies are saved in `results/llm/`, which is not in git. A stopped run carries on where it left off.

@@ -8,7 +8,7 @@ Kumar & Thenmozhi (2006) reported 56–68% accuracy on India's Nifty using 12 te
 
 ## The short answer
 
-- **From a market's own past prices: no.** Seven models score about 52%, the same as always guessing the more common direction (the "fair bar").
+- **From a market's own past prices: no.** Seven models score about 52%, the same as always guessing the more common direction (the "fair bar"). Adding 20 more standard indicators, or 777 automatic features from tsfresh, changes nothing (step 9).
 - **From the overnight US move: yes, but it can't be traded.** On new data it gets 53–58% of close-to-close days right, against fair bars of 50–54%. By the time the market opens, the price already contains it.
 - **Tomorrow's volatility: yes.** How big the move will be is predictable, and a three-number linear model (HAR) is at least as good as a random forest, GARCH and a GRU.
 - **High scores are easy to get by mistake.** Remove one line, the one-day lag on the indicators, and five of those models go from 52% to 90%.
@@ -53,9 +53,11 @@ Two of the seven expectations were wrong. They're reported as they came out.
 |---|---|
 | `findings.md` | Every step's setup, tables and conclusions |
 | `blog.md` | The project as a short article |
-| `data.py` | `load_market()` / `load_all()`: load, clean and check the data, development period only unless asked. `load_us()`: the S&P 500. Every step after the EDA uses this |
-| `download_data.py` | Downloads the four Yahoo markets and the S&P 500 into `Dataset/`, up to fixed end dates |
-| `features.py` | Model features: the last 5 daily returns and yesterday's direction (step 3), the 12 technical indicators (step 4), the US move (step 5), return sequences (step 6), daily ranges, GARCH and the size of the US move (step 7); the two labels (close-to-close, open-to-close) |
+| `data.py` | `load_market()` / `load_all()`: load, clean and check the data, development period only unless asked. `load_us()`: the S&P 500. `load_other_moves()`: VIX, currencies and oil, with bad currency prints blanked (step 9). Every step after the EDA uses this |
+| `download_data.py` | Downloads the four Yahoo markets and the S&P 500 into `Dataset/`, up to fixed end dates. `others` downloads VIX, the currencies and Brent oil (step 9) |
+| `features.py` | Model features: the last 5 daily returns and yesterday's direction (step 3), the 12 technical indicators (step 4), the US move (step 5), return sequences (step 6), daily ranges, GARCH and the size of the US move (step 7), and step 9's three new sets (standard extras, tsfresh, other markets); the two labels (close-to-close, open-to-close) |
+| `more_inputs.py` | Step 9: runs the seven models on the four sets of inputs, on the same days, with tsfresh's selection on training years only |
+| `PLAN_more_inputs.md` | Steps 9 and 10's plan and expected results, committed before the runs |
 | `evaluation.py` | Walk-forward splits, scoring (accuracy, balanced accuracy, MCC), no-model baselines, fair baseline, McNemar and Diebold-Mariano paired tests, Holm's adjustment for many tests, bootstrap ranges, money test |
 | `models.py` | Logistic regression in sklearn and PyTorch, the walk-forward loop, per-year and pooled reports |
 | `classifiers.py` | Step 4 models: the six sklearn classifiers, the PyTorch network, summary tables |
@@ -75,6 +77,7 @@ Two of the seven expectations were wrong. They're reported as they came out.
 | `holdout.ipynb` | Step 8: all five one-shot tests on the holdout |
 | `holdout_checks.ipynb` | Step 8, checked more strictly: adjusted p-values and ranges, from the saved holdout predictions |
 | `gru_probes.ipynb` | Interpretability: the four questions about whether the GRU rediscovers HAR. Needs `volatility.ipynb`'s saved results |
+| `more_inputs.ipynb` | Step 9: the four sets against each other and against the fair bar, what tsfresh kept, and two checks of set D added after looking |
 | `figures/` | The charts on this page, saved by the notebooks |
 | `results/` | Saved predictions, so a rerun skips finished work. Not in git. Delete the step 4b and step 7 files after changing a model. Keep the `holdout_*` files: they're the one-shot results |
 | `requirements.txt` | The package versions the results were produced with |
@@ -94,11 +97,12 @@ Two of the seven expectations were wrong. They're reported as they came out.
 
 - **Coverage:** every market runs from 1 Jan 2012 to 23 Oct 2026. Thailand's last day is 22 Oct, because 23 Oct is a Thai holiday.
 - **Development:** 1 Jan 2012 to 16 Mar 2023. Steps 1–7 and the interpretability work use only this, and their last test year is 2022.
-- **Holdout:** 17 Mar 2023 to 23 Oct 2026. It was opened once, for step 8. `load_market()` leaves it out unless called with `include_holdout=True`, and only the two holdout notebooks and the `llm_harness/` experiment do that.
-- **US data:** S&P 500 from Yahoo `^GSPC`. 2010–2022 for development, plus a separate 2023–2026 file that only the holdout reads.
+- **Holdout:** 17 Mar 2023 to 23 Oct 2026. It was opened once, for step 8. `load_market()` leaves it out unless called with `include_holdout=True`. The two holdout notebooks, step 9 and the `llm_harness/` experiment do that. Since step 8 it counts as development data, and step 9 tests on 2017–2026.
+- **US data:** S&P 500 from Yahoo `^GSPC`. 2010–2022 for development, plus a separate 2023–2026 file that only the holdout and step 9 read.
+- **Other markets (step 9):** VIX (`^VIX`), each market's currency per US dollar (`IDR=X`, `MYR=X`, `PHP=X`, `SGD=X`, `THB=X`, `INR=X`) and Brent oil (`BZ=F`), closes only, 2010 to 23 Oct 2026, in `Other markets (Yahoo).csv`.
 
 **Getting the data.** The data files aren't in this repo, for licensing reasons.
-1. Run `python download_data.py`. It downloads the four Yahoo markets and the S&P 500 up to a fixed end date, so every run gets the same data.
+1. Run `python download_data.py`. It downloads the four Yahoo markets and the S&P 500 up to a fixed end date, so every run gets the same data. For step 9, also run `python download_data.py others`.
 2. From Investing.com (free account), open the historical data pages for **PSEi Composite** and **SET Index**. Choose Daily, set 01/01/2012 to 10/23/2026, click Download, and save the files in `Dataset/` under the names above.
 
 ## Running
@@ -119,6 +123,8 @@ jupyter notebook volatility.ipynb             # about 20 minutes
 jupyter notebook holdout.ipynb                # about 50 minutes on a first run
 jupyter notebook holdout_checks.ipynb         # about 3 minutes; needs holdout.ipynb's saved results
 jupyter notebook gru_probes.ipynb             # under 10 minutes; needs volatility.ipynb's saved results
+python more_inputs.py                         # step 9: about 1.5 hours, plus 30 minutes for tsfresh's features on a first run
+jupyter notebook more_inputs.ipynb            # about 15 minutes; needs more_inputs.py's saved results
 ```
 
 **No data?** `python make_fake_data.py` writes made-up prices to `fake_data/`. Set the `DATA_DIR` environment variable to `fake_data` and the code runs on them. The results mean nothing, but it shows that everything works.

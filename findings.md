@@ -15,6 +15,7 @@ The full results behind the [README](README.md), in the order the work was done.
 - [Step 8 findings: the holdout](#step-8-findings-the-holdout)
 - [Step 8, checked more strictly (added after looking)](#step-8-checked-more-strictly-added-after-looking)
 - [Interpretability: does the GRU rediscover HAR?](#interpretability-does-the-gru-rediscover-har)
+- [Step 9 findings: more inputs (added after looking)](#step-9-findings-more-inputs-added-after-looking)
 
 ## Data notes
 
@@ -720,3 +721,43 @@ The weights on each average, for the GRU's forecasts and for a line fitted to th
 - **What the GRU adds beyond the straight line doesn't help.** Throwing it away improves the forecast in all six markets (barely in Indonesia). This is the likeliest reason it trails HAR in development.
 - **It leans on the 5-day average.** That gets its largest weight in all six markets, and erasing it does the most damage in all six. It uses less of the 1- and 20-day averages than the real target does.
 - **The windows can't be fully separated.** The three averages move together, so erasing one also removes much of what they share. The control's smaller drop shows that erasing isn't simply breaking the network, but it also falls, because old days carry some of that shared level too.
+
+## Step 9 findings: more inputs (added after looking)
+
+**The question:** the paper's 12 indicators gave no edge. Do more indicators, automatic features, or other markets' moves do better? The plan and expected results were committed before the runs ([PLAN_more_inputs.md](PLAN_more_inputs.md), [`aff8c18`](https://github.com/kesavakrishna/asean-ml-forecasting/commit/aff8c18)). It was chosen after seeing steps 1–8, so it is labelled "added after looking".
+
+**Setup:**
+- **Four sets of inputs:**
+  - **A:** Kim's 12 (step 4).
+  - **B:** A plus 20 standard extras at other look-backs, MACD, Bollinger, ATR and ADX (32 in all). No volume indicators: Singapore and India have volume on fewer than 95% of days.
+  - **C:** 777 tsfresh features of the last 20 daily returns. tsfresh's own feature selection runs on each fold's training years only; if nothing passes, the 10 with the smallest p-values are used.
+  - **D:** A plus the last move before day t of the S&P 500, VIX, the market's currency against the dollar and Brent oil. 85 currency closes on Yahoo are plainly wrong (the rupiah stuck at 9,612 for days in 2013) and are blanked by a fixed rule.
+- **Same as step 4:** six markets, seven models, the same tuning. **Test years 2017–2026**: the holdout was spent in step 8, so it now counts as development data. All four sets are scored on the same days (2,341–2,463 per market).
+- **Leakage test:** covers B, C and D, and catches a planted same-date join of a currency.
+
+Each set against A, the same model on the same days (all markets and years together). Holm adjusts over the 21 close-to-close comparisons:
+
+| Set | Accuracy against A, points | AUC against A | Significant after Holm |
+|---|---|---|---|
+| B: standard extras | −0.6 to +0.5 | −0.003 to +0.004 | 0 of 7 |
+| C: tsfresh | −1.1 to +0.2 | −0.016 to −0.007 | 0 of 7 (smallest p 0.48) |
+| D: other markets, close to close | **+6.0 to +7.8** | **+0.09 to +0.11** | **7 of 7** |
+| D: other markets, open to close | +0.7 to +1.9 | +0.02 to +0.03 | 6 of 7 (Holm over these 7) |
+
+Accuracy minus the fair bar, per model and market (42 tests per set, Holm within each set):
+
+| | A | B | C | D |
+|---|---|---|---|---|
+| Close to close: mean gain, points | 0.1 | −0.1 | −0.5 | 6.9 |
+| Close to close: significant after Holm | 0 | 0 | 0 | 42 |
+| Open to close: mean gain, points | 0.3 | | | 1.7 |
+| Open to close: significant after Holm | 3 | | | 8 |
+
+- **More indicators add nothing.** B matches A. C is slightly worse for every model, because tsfresh found nothing: in 65 of 66 training cutoffs not one feature passed its selection test, so the models got the 10 "least bad" features of noise.
+- **Set D's gain is the US move (checked after looking).** Logistic regression with A plus one move at a time: the US move adds 7.2 points on average, VIX 5.7 (which overlaps with it), oil 0.4 and the currency 0.0. All four together add 6.9. A plus the US move scores 55.9–61.1%, close to step 5's 57.8–61.4%.
+- **Not a timing leak.** None of D's moves lines up with day t's trading after the open (every correlation 0.13 or smaller in size). The US and VIX moves line up with the overnight gap (0.43 to 0.61, and −0.31 to −0.51), as news from after Asia's close should.
+- **Open to close, the version you could trade:** D's gain is in Indonesia, Malaysia and the Philippines (+1.3 to +6.3 points over the fair bar), and none elsewhere. The Philippines and Malaysia are step 5b's exceptions, where the edge came from a partly stale opening number and was smaller than trading costs. Indonesia is new: set A alone also beats the fair bar there for two models (+3.8 and +3.9), so its opening numbers may be part of it. Not looked into. AdaBoost with A in Thailand is 3.6 points below its fair bar, significant after Holm.
+- **Old and new years agree.** D's close-to-close gain is +7.9 points in 2017–2022 and +5.3 in 2023–2026. B and C are within ±0.6 in both.
+- **Against the plan:** four of the five expectations held. The miss: I expected D to show no open-to-close gain in most markets, and three of six show one.
+
+Full tables, including every model and market, are in `more_inputs.ipynb`.
