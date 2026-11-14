@@ -101,7 +101,10 @@ class Saved:
         """Return the saved reply to this exact request, or send it and save the reply with its labels."""
         key = hashlib.sha256(json.dumps(request, sort_keys=True).encode()).hexdigest()[:16]
         if key not in self.records:
-            record = {"key": key, **labels, "request": request, "reply": send(request, self.url)}
+            start = time.time()
+            reply = send(request, self.url)
+            # "seconds" and the reply's own token counts are the run's log of how long each call took.
+            record = {"key": key, **labels, "request": request, "reply": reply, "seconds": round(time.time() - start, 2)}
             with _lock:
                 with self.path.open("a", encoding="utf-8") as file:
                     file.write(json.dumps(record) + "\n")
