@@ -32,6 +32,7 @@ This folder is a separate experiment from the main project. It reuses the main p
 | `PLAN_2_3.md` | Tests 2 and 3's plan and expected results, written before the runs |
 | `llama2_chat_template.jinja` | Llama 2's chat format. Its model file doesn't include one, so the server is given this |
 | `PLAN.md` | Test 1's plan and expected results, written before the run |
+| `PLAN_11.md` | Step 11's plan: probes inside Gemma, steering vectors, a small fine-tune and direct weight edits, with their controls and expected results |
 | `accuracy.ipynb` | Test 1's scores for Gemma: the three comparisons, the fake-data check, and a year-by-year look |
 | `accuracy_llama2.ipynb` | The same scores for Llama 2 |
 | `reasoning.ipynb` | Test 2's scores: the checks on each explanation, and the mirrored-against-control result |

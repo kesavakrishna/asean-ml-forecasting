@@ -79,12 +79,63 @@ By then the final test was used up, and I'd chosen what to try after seeing it, 
 
 One more test is still to come, and it can't be rushed. I froze all 420 models on the data up to 23 October 2026 and put a fingerprint (a hash) of each in the repository. In late 2027 they'll be scored on a year of days that didn't exist when they were trained, so no choice I made can have seen them.
 
-## What I'd tell someone starting out
+## What I learned
 
-- **Compare with a dumb baseline.** A model at 54% means nothing until you know that "always up" scores 52%.
-- **Test the code, not only the model.** A leak test that fails on a planted leak is worth more than another model.
+**About markets**
+
+- **A market's own past didn't predict its direction.** Twenty more indicators and 777 automatic features changed nothing. More inputs made from the same prices gave the models more noise to fit, not more signal.
+- **Outside information did, but it was already in the price.** The US move added 6 to 13 points, more in the markets that follow the US more closely. By the open it was mostly gone. "Predictable" and "tradeable" turned out to be different questions.
+- **The size of a move was predictable when its direction wasn't.** Choosing a question that has an answer mattered more than choosing the model.
+
+**About measuring**
+
+- **Compare with a dumb baseline.** A model at 54% means nothing until you know that "always up" scores 52%. And "always up" is just owning the index, so matching it isn't beating the market; it *is* the market.
+- **Being right more often isn't the same as making money.** The Philippines model was right more often than the fair bar and still lost money before costs.
+- **Fear the small mistakes, not the big ones.** Nobody believes 90%. A believable 54% from tuning on the test year is the one that gets published.
+- **Check the data, not only the model.** Stale opening prices made fake edges in three markets, and one currency series on Yahoo was broken for six years.
+- **Compare with something that learned nothing.** An untrained network "knew" HAR's averages too.
+- **Check what a model does, not what it says.** In a side experiment, a language model named the right rule in every late answer and then followed it only about half the time.
+
+**About honesty**
+
 - **Write your predictions down before you look.** Two of my seven were wrong. I only know that because they were written down.
-- **When your test data is used up, find data you haven't used.** New markets and new days are the only checks left that what you've already seen can't bend.
+- **Test data works once.** After the final test, every new idea was chosen after looking. New markets and new days were the only clean checks left, which is why one result is still a year away.
+- **Test the code, not only the model.** A leak test that fails on a planted leak is worth more than another model.
 - **A boring result you can trust beats an exciting one you can't.**
+
+## For ML people
+
+- **Honest feature selection keeps almost nothing.** tsfresh made 777 features, and its false-discovery control kept none in 109 of 110 training cutoffs. Run the selection on all the rows instead of the training rows, and they'd have looked useful. That's a leak.
+- **Timing leaks hide in joins.** Joining another market's move by date silently uses the future when that market closes after yours. Join on "strictly earlier", and plant that exact mistake in your leak test to check that the test catches it.
+- **When the signal is weak, simple models win or tie.** A three-input linear model matched or beat a forest, GARCH and a GRU on volatility. Logistic regression did as well as anything on direction.
+- **Probes need a control.** An untrained GRU "contained" the same averages as a trained one, and with only its last layer fitted it scored higher in five of six markets. Random networks already compute useful features.
+- **The base rate drifts.** How often days go up changes from year to year, so a model that leans the other way can beat the fair bar by luck. A "last year's direction" baseline showed that was most of two apparent edges.
+- **Many tests make false wins.** Adjusting for 123 tests left 20 of 36 "significant" results. Comparing models on the same days with paired tests is far more sensitive than comparing two accuracies.
+- **Accuracy, AUC and money disagree.** AUC showed the US move's gain more clearly than accuracy, and money showed that a more accurate model can still lose.
+- **Run more than one seed.** The GRU's score moved noticeably between seeds.
+- **Freezing is a tool.** A committed plan, plus a hash of each saved model, makes "I changed nothing after looking" something others can check.
+
+## What I'd do better
+
+**Data**
+
+- **Use prices you can trade.** An index's opening number is partly stale, which made fake edges in three markets. Index futures or ETFs, ideally with intraday prices, would settle what can really be traded.
+- **Score in money, with costs, from the start.** Accuracy was the main score for too long.
+- **Check every series against a second source.** One of the currency series on Yahoo was broken for six years, and a pegged currency broke my bad-print rule.
+- **Keep more than one sealed test set.** One holdout, once opened, left only new markets and new days for clean checks. Sealing a few markets and a final stretch of time at the start would have left more.
+
+**Models and evaluation**
+
+- **Plan the adjustment for many tests from the start.** I added it after the final test, and it took away 16 of 36 results.
+- **Add a "recent direction" baseline next to the fair bar,** so drifting base rates can't pass for skill.
+
+**The language models**
+
+- **Try a frontier model, but only on days after its training data ends.** A bigger model would probably follow its own rule better. Its knowledge of past prices is also bigger, so the risk of it remembering instead of predicting grows too. I doubt it would find direction skill in past prices that no other model found, but whether it applies its own rule is a separate question, and a bigger model could change that answer.
+- **Ask more questions.** The feedback test's differences were within 1.3 points, which is too small to tell apart with this many questions.
+- **Look inside.** Interpretability work has found readable features in neural networks, from curve detectors in image models to a "Golden Gate Bridge" feature in a language model. Probing Gemma's and Llama's activations could show whether the model represents the rule it names and then overrides it with an "up" habit, or never really uses it. As with the GRU, it would need a control: the same probe on a model that wasn't given the rule.
+- **Steer it.** A steering vector (the average activation when it answers "down" minus the average when it answers "up", added while it answers) could test whether the gap between its stated rule and its answer can be closed. That's a test of whether it can follow a rule. It wouldn't add market skill that isn't in the data, and any training on prices would have to keep the same walk-forward split.
+- **Edit its weights directly.** A new MIT CSAIL report calls this weight-space programming: a frontier model reads a small network's weights and patches them, without training. It raised a small Qwen model's math score from 7.9% to 48.1% by editing 0.016% of its weights, mostly by ending its thinking loops. The report is unreviewed, but rule-following is the same kind of fault, so it's worth testing, against steering, a small fine-tune and a random edit.
+- **Let it call a tool.** It failed at turning "down" into "up". Giving it a function that applies the rule would separate choosing a rule from carrying it out.
 
 The code, the tests and every table are at [github.com/kesavakrishna/asean-ml-forecasting](https://github.com/kesavakrishna/asean-ml-forecasting).

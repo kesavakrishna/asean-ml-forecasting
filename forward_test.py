@@ -95,6 +95,7 @@ def score(markets):
         new = X.index[X.index > LAST_TRAINING_DAY]
         preds[row.target, row.set, row.model, row.market] = pd.DataFrame({
             "year": new.year,
+            "setting": row.setting,
             "p_up": saved["predict"](X.loc[new]),
             "up": y[new],
             "fair_call": saved["fair_call"],  # frozen with the model
