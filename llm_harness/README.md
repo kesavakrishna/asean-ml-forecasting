@@ -33,6 +33,8 @@ This folder is a separate experiment from the main project. It reuses the main p
 | `llama2_chat_template.jinja` | Llama 2's chat format. Its model file doesn't include one, so the server is given this |
 | `PLAN.md` | Test 1's plan and expected results, written before the run |
 | `PLAN_11.md` | Step 11's plan: probes inside Gemma, steering vectors, a small fine-tune and direct weight edits, with their controls and expected results |
+| `inside.py`, `inside.ipynb` | Step 11, stages 0–1: does `transformers` match llama.cpp (no: 83.5% in 4-bit, 86.0% in 8-bit), and probes. In the none runs Gemma works out its rule's answer and still answers against it on 41% of questions |
+| `PLAN_11b.md` | Step 11b's plan: steering, a fine-tune and weight edits on 8-bit Gemma (added after looking) |
 | `accuracy.ipynb` | Test 1's scores for Gemma: the three comparisons, the fake-data check, and a year-by-year look |
 | `accuracy_llama2.ipynb` | The same scores for Llama 2 |
 | `reasoning.ipynb` | Test 2's scores: the checks on each explanation, and the mirrored-against-control result |
