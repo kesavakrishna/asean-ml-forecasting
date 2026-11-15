@@ -1,5 +1,5 @@
 """
-Step 11: looking inside Gemma (see PLAN_11.md). Runs in venv_gpu, which has GPU PyTorch.
+Step 11: looking inside Gemma (see PLAN_11.md and PLAN_11b.md). Runs in venv_gpu, which has GPU PyTorch.
 
 Every question and reply from step 10 is saved, so a question can be replayed exactly:
 the model is fed the question and its own reply up to the answer word, and we read what it does there.
@@ -9,6 +9,9 @@ Run:  venv_gpu/Scripts/python llm_harness/inside.py reproduce     # stage 0: doe
       venv_gpu/Scripts/python llm_harness/inside.py activations   # stage 1: save what 8-bit Gemma holds before each answer
       venv_gpu/Scripts/python llm_harness/inside.py probes        # stage 1: the probes, on the saved activations
       venv_gpu/Scripts/python llm_harness/inside.py t3check       # stage 1: does T3 read the rule, or the answer? (added after looking)
+      venv_gpu/Scripts/python llm_harness/inside.py steer         # 11b stage 2: every steering strength, on the build sample
+      venv_gpu/Scripts/python llm_harness/inside.py choose        # 11b stage 2: pick each vector's strength
+      venv_gpu/Scripts/python llm_harness/inside.py steer score   # 11b stage 2: the same on 2019, once
 """
 import json
 import re
@@ -158,7 +161,10 @@ def save_activations():
     start = time.time()
     for i, (_, row) in enumerate(questions.iterrows()):
         a, w, word, gap = look_inside(model, tokenizer, row)
-        layers.append(a), words.append(w), own.append(word), gaps.append(gap)
+        layers.append(a)
+        words.append(w)
+        own.append(word)
+        gaps.append(gap)
         if (i + 1) % 200 == 0:
             print(f"{i + 1} of {len(questions)}, {(time.time() - start) / 60:.0f} min")
     table = questions.drop(columns=["messages", "reply"]).assign(
@@ -259,6 +265,122 @@ def t3_check(layers=(15, 20, 25, 30)):
     print(result.round(3).to_string())
 
 
+# ---------- step 11b (PLAN_11b.md), stage 2: steering at the answer position ----------
+
+STEER_LAYER = 17  # hidden_states[17], the output of decoder layer 16: where T1 first reaches 90%
+STRENGTHS = [-4, -2, -1, -0.5, 0.5, 1, 2, 4]  # times the vector's own length
+NONE_RUNS = ["planted_none", "real_none"]
+
+
+def questions_with_labels():
+    """All questions, with stage 1's labels (its 8-bit answer, the 1-day move, its rule's answer) and what happened."""
+    questions = load_all_runs()
+    labels = pd.read_csv(OUT / "activations_8bit.csv")  # same order: made by load_all_runs too
+    assert (labels["market"] == questions["market"]).all() and (pd.to_datetime(labels["day"]) == questions["day"]).all()
+    questions[["own", "move_1", "rule_answer"]] = labels[["own", "move_1", "rule_answer"]].to_numpy()
+    happened = {}  # step 10 saved whether each day went up
+    for run in RUNS:
+        for month in json.loads((SAVED / f"feedback_{run}_indicators_state.json").read_text(encoding="utf-8"))["months"]:
+            happened.update({(run, r["market"], r["day"]): r["up"] for r in month["results"]})
+    questions["went_up"] = [happened[run, market, str(day.date())] for run, market, day
+                            in zip(questions["run"], questions["market"], questions["day"])]
+    return questions
+
+
+def build_sample(questions, per_run=100, seed=0):
+    """PLAN_11b's fixed build sample: 100 build questions per run."""
+    build = questions[questions["half"] == "build"]
+    return pd.concat([g.sample(per_run, random_state=seed) for _, g in build.groupby("run")])
+
+
+def steering_vectors():
+    """S1 "down minus up", S2 "agrees minus disagrees" (none runs only) and a random direction as long as S2."""
+    table = pd.read_csv(OUT / "activations_8bit.csv")
+    layer = np.load(OUT / "activations_8bit.npz")["layers"][:, STEER_LAYER].astype(np.float32)
+    build = table["half"] == "build"
+    agrees = table["own"] == table["rule_answer"]
+    none = table["run"].isin(NONE_RUNS)
+    s1 = layer[build & (table["own"] == "down")].mean(0) - layer[build & (table["own"] == "up")].mean(0)
+    s2 = layer[build & none & agrees].mean(0) - layer[build & none & ~agrees].mean(0)
+    random = np.random.default_rng(0).normal(size=s2.shape)
+    random *= np.linalg.norm(s2) / np.linalg.norm(random)
+    return {"S1": s1, "S2": s2, "random": random}
+
+
+@torch.no_grad()
+def steered_answers(model, tokenizer, row, conditions):
+    """For each condition (a vector to add at the answer position, or None): the up-minus-down gap, and whether
+    "up" or "down" is still the most likely next token.
+
+    One full pass per condition. A cached one-token pass would be much faster, but 8-bit rounds a token run alone
+    differently from the same token in a full pass, so its answers don't match (see PLAN_11b.md).
+    """
+    ids = tokenizer(up_to_answer(tokenizer, row), return_tensors="pt", add_special_tokens=False).input_ids.to(model.device)
+    up, down = (tokenizer.encode(word, add_special_tokens=False)[0] for word in ("up", "down"))
+    layer = model.model.language_model.layers[STEER_LAYER - 1]
+    results = {}
+    for name, vector in conditions.items():
+        hook = None
+        if vector is not None:  # add the vector to the last position only
+            hook = layer.register_forward_hook(lambda module, inputs, out: torch.cat([out[:, :-1], out[:, -1:] + vector], dim=1))
+        logits = model(input_ids=ids, logits_to_keep=1).logits[0, -1].float()
+        if hook:
+            hook.remove()
+        results[name] = {"gap": (logits[up] - logits[down]).item(), "answers": logits.argmax().item() in (up, down)}
+    return results
+
+
+def steer(which):
+    """Every vector at every strength on the build sample ("build"), or the chosen ones on 2019 ("score").
+
+    Saves after every question, so a stopped run carries on where it left off.
+    """
+    questions = questions_with_labels()
+    vectors = steering_vectors()
+    if which == "build":
+        rows, wanted = build_sample(questions), [f"{name} {s}" for name in vectors for s in STRENGTHS]
+    else:
+        if not (OUT / "stage2_choices.csv").exists():
+            raise SystemExit("choose the strengths on the build sample first: inside.py choose")
+        rows, wanted = questions[questions["half"] == "score"], list(pd.read_csv(OUT / "stage2_choices.csv")["condition"])
+    path = OUT / f"stage2_{which}.csv"
+    done = set()
+    if path.exists():
+        saved = pd.read_csv(path)
+        done = set(zip(saved["run"], saved["market"], saved["day"]))
+    rows = rows[[(r, m, str(d.date())) not in done for r, m, d in zip(rows["run"], rows["market"], rows["day"])]]
+    model, tokenizer = load_gemma(bits=8)
+    conditions = {"unchanged": None}
+    for condition in wanted:
+        name, strength = condition.split()
+        conditions[condition] = float(strength) * torch.tensor(vectors[name], dtype=torch.bfloat16, device=model.device)
+    start = time.time()
+    for i, (_, row) in enumerate(rows.iterrows()):
+        out = [{**row.drop(["messages", "reply"]).to_dict(), "condition": name, **result}
+               for name, result in steered_answers(model, tokenizer, row, conditions).items()]
+        out = pd.DataFrame(out).assign(steered=lambda t: np.where(t["gap"] > 0, "up", "down"))
+        out.to_csv(path, mode="a", header=not path.exists(), index=False)
+        if (i + 1) % 10 == 0:
+            print(f"{i + 1} of {len(rows)} questions, {(time.time() - start) / 60:.0f} min")
+    print(f"saved -> {path}")
+
+
+def choose_strengths():
+    """Per vector: the strength with the best agreement in planted tester, among those still answering in >= 95%."""
+    t = pd.read_csv(OUT / "stage2_build.csv")
+    t["agrees"] = t["steered"] == t["rule_answer"]
+    by = t.groupby("condition").agg(answers=("answers", "mean"))
+    by["agreement, planted tester"] = t[t["run"] == "planted_tester"].groupby("condition")["agrees"].mean()
+    print(by.mul(100).round(1).to_string())
+    choices = []
+    for name in ["S1", "S2", "random"]:
+        allowed = by[by.index.str.startswith(name + " ") & (by["answers"] >= 0.95)]
+        best = allowed["agreement, planted tester"].idxmax()
+        choices.append({"vector": name, "condition": best, **allowed.loc[best].to_dict()})
+    pd.DataFrame(choices).to_csv(OUT / "stage2_choices.csv", index=False)
+    print(pd.DataFrame(choices).to_string(index=False))
+
+
 if __name__ == "__main__":
     if "reproduce" in sys.argv:
         reproduce(bits=8 if "8" in sys.argv else 4)
@@ -268,5 +390,9 @@ if __name__ == "__main__":
         probes()
     elif "t3check" in sys.argv:
         t3_check()
+    elif "steer" in sys.argv:
+        steer("score" if "score" in sys.argv else "build")
+    elif "choose" in sys.argv:
+        choose_strengths()
     else:
         print(__doc__)

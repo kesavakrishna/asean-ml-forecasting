@@ -32,6 +32,12 @@ Written after stages 0 and 1 of [PLAN_11.md](PLAN_11.md), before any of this is 
 | S2 | Agreement rises by 5–15 points |
 | Random | Agreement changes by less than 2 points |
 
+**Change before any steering was scored (15 Nov 2026):** the cached shortcut doesn't work in 8-bit. bitsandbytes' 8-bit multiply keeps a column at full precision when any token in the same call has a large value there, so a token run alone is rounded differently from the same token in a full pass. On 4 build questions the cached gap differed by up to 26 (and flipped sign twice); in 4-bit it matched within 0.25. So:
+
+- Every condition is one **full pass**, with the vector added at the answer position only, as before.
+- The strengths are chosen on the build sample as planned (25 conditions × 300 questions, about 6 hours).
+- 2019 is scored **only at the 3 chosen strengths** (about 4 hours), not at every strength. So S1's "falls steadily with strength" is judged on the build sample.
+
 ## Stage 3: a small fine-tune (the gradient baseline)
 
 A LoRA adapter (rank 8, on the attention's query and value weights, learning rate 2e-4, one epoch) on 600 build questions (200 per run, seed 0), trained to give **its rule's answer** at the answer position. Loss on that one token only.
