@@ -22,9 +22,18 @@ FILES = {
     "India":       "Nifty 50 (Yahoo).csv",                    # download_data.py; not ASEAN, a benchmark
 }
 MARKETS = list(FILES)
+# The check on markets never looked at (see PLAN_more_inputs.md): all of 2012-2026, nothing held back.
+NEW_FILES = {
+    "Korea":     "KOSPI (Yahoo).csv",          # download_data.py new_markets
+    "Taiwan":    "TAIEX (Yahoo).csv",
+    "Hong Kong": "Hang Seng (Yahoo).csv",
+    "Japan":     "Nikkei 225 (Yahoo).csv",
+}
+NEW_MARKETS = list(NEW_FILES)
 US_FILE = "S&P 500 (Yahoo).csv"  # download_data.py; 2010-2022 only, for step 5
 US_HOLDOUT_FILE = "S&P 500 holdout (Yahoo).csv"  # download_data.py; 2023 onward, for the holdout only
 OTHERS_FILE = "Other markets (Yahoo).csv"  # download_data.py others; VIX, currencies and Brent oil, for step 9
+NEW_CURRENCY_FILE = "New market currencies (Yahoo).csv"  # download_data.py new_markets
 
 START = "2012-01-01"          # the same start for every market
 HOLDOUT_START = "2023-03-17"  # 2023-03-17 onward stays untouched until the final check
@@ -46,7 +55,7 @@ def read_raw(path):
 
 def read_market(market, include_holdout=False):
     """Raw rows for one market from START, stopping before the holdout unless asked."""
-    raw = read_raw(DATA_DIR / FILES[market])
+    raw = read_raw(DATA_DIR / {**FILES, **NEW_FILES}[market])
     raw = raw[raw.index >= START]
     if not include_holdout:
         raw = raw[raw.index < HOLDOUT_START]
@@ -92,9 +101,9 @@ def load_market(market, include_holdout=False):
     return clean(read_market(market, include_holdout), market)
 
 
-def load_all(include_holdout=False):
+def load_all(include_holdout=False, markets=MARKETS):
     """Cleaned, checked data for every market, as {market: DataFrame}."""
-    return {market: load_market(market, include_holdout) for market in MARKETS}
+    return {market: load_market(market, include_holdout) for market in markets}
 
 
 def read_us(include_holdout=False):
@@ -130,6 +139,8 @@ def load_other_moves():
     are moves into and out of a currency's bad prints. VIX and oil are left as they are: their extremes are real.
     """
     closes = pd.read_csv(DATA_DIR / OTHERS_FILE, index_col="Date", parse_dates=["Date"])
+    if (DATA_DIR / NEW_CURRENCY_FILE).exists():  # the new markets' currencies, once downloaded
+        closes = closes.join(pd.read_csv(DATA_DIR / NEW_CURRENCY_FILE, index_col="Date", parse_dates=["Date"]), how="outer")
     moves = {}
     for name, close in closes.items():
         close = close.dropna()

@@ -4,8 +4,9 @@ Step 9: do more inputs help the step 4 models? See PLAN_more_inputs.md.
 Four sets of inputs (A: Kim's 12, B: standard extras, C: tsfresh, D: other markets), scored on the same days,
 with test years 2017-2026. Every run is saved, so a stopped run carries on where it left off.
 
-Run:  python more_inputs.py pilot   # one market, one test year: checks the code and the time
-      python more_inputs.py         # everything
+Run:  python more_inputs.py pilot         # one market, one test year: checks the code and the time
+      python more_inputs.py               # everything
+      python more_inputs.py new_markets   # the check on Korea, Taiwan, Hong Kong and Japan: same code, same settings
 """
 import sys
 import time
@@ -15,7 +16,7 @@ import pandas as pd
 from joblib import Parallel, delayed
 
 from classifiers import CLASSIFIERS, HIDDEN_GRID, fit_classifier, fit_net, pick_net_setting
-from data import load_all, load_other_moves, load_us
+from data import NEW_MARKETS, load_all, load_other_moves, load_us
 from features import (make_dataset, make_indicators, make_indicators_extended, make_other_markets, make_tsfresh,
                       up_close_to_close, up_open_to_close)
 from models import pick_by_log_loss, walk_forward
@@ -135,7 +136,9 @@ def run_all(markets, test_years=TEST_YEARS, folder=SAVED, jobs=8):
 if __name__ == "__main__":
     markets = load_all(include_holdout=True)
     start = time.time()
-    if "pilot" in sys.argv:  # timing and a check that everything runs; not scored
+    if "new_markets" in sys.argv:
+        run_all(load_all(include_holdout=True, markets=NEW_MARKETS), folder=SAVED / "new_markets")
+    elif "pilot" in sys.argv:  # timing and a check that everything runs; not scored
         run_all({"Singapore": markets["Singapore"]}, test_years=[2017], folder=SAVED / "pilot")
     else:
         run_all(markets)

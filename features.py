@@ -208,7 +208,8 @@ def make_tsfresh(df, days=None):
     return X.fillna(X.expanding().median().shift(1)).fillna(0).reindex(df.index)
 
 CURRENCIES = {"Indonesia": "IDR=X", "Malaysia": "MYR=X", "Philippines": "PHP=X",
-              "Singapore": "SGD=X", "Thailand": "THB=X", "India": "INR=X"}  # local currency per US dollar
+              "Singapore": "SGD=X", "Thailand": "THB=X", "India": "INR=X",
+              "Korea": "KRW=X", "Taiwan": "TWD=X", "Hong Kong": "HKD=X", "Japan": "JPY=X"}  # local currency per US dollar
 
 def last_move_before(df, moves):
     """For each day t: the series' last daily move dated strictly before t (at most a week old).
