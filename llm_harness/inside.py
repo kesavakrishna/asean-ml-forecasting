@@ -7,6 +7,7 @@ the model is fed the question and its own reply up to the answer word, and we re
 Run:  venv_gpu/Scripts/python llm_harness/inside.py reproduce     # stage 0: does transformers agree with llama.cpp?
       venv_gpu/Scripts/python llm_harness/inside.py reproduce 8   # the same in 8-bit (added after looking)
       venv_gpu/Scripts/python llm_harness/inside.py activations   # stage 1: save what 8-bit Gemma holds before each answer
+      venv_gpu/Scripts/python llm_harness/inside.py probes        # stage 1: the probes, on the saved activations
 """
 import json
 import re
@@ -189,15 +190,29 @@ PROBE_TARGETS = {
 
 
 def probe_one(X, table, target, labels):
-    """Train on build questions, return the balanced accuracy on the score questions that judge this target."""
+    """Train on build questions. Balanced accuracy on the score questions that judge this target, and run by run.
+
+    T3 is also scored on the other score questions, where its rule's answer is the 1-day move's. A probe that
+    just flips the 1-day move would score high on conflict questions and low there.
+    """
     column, runs, judged = PROBE_TARGETS[target]
     build = (table["half"] == "build") & table["run"].isin(runs) & table[column].notna()
     y = table.loc[build, column].to_numpy()
     if labels == "shuffled":
         y = np.random.default_rng(0).permutation(y)
     probe = fit_probe(X[build.to_numpy()], y, table.loc[build, "month"].astype(str))
-    score = judged(table).to_numpy()
-    return balanced_accuracy_score(table.loc[score, column], probe.predict(X[score]))
+    score = ((table["half"] == "score") & table[column].notna()).to_numpy()
+    scored = table[score].assign(guess=probe.predict(X[score]))
+    is_judged = judged(scored)
+
+    def accuracy(rows):
+        return balanced_accuracy_score(rows[column], rows["guess"])
+
+    out = {"judged": accuracy(scored[is_judged])}
+    out.update({run: accuracy(rows) for run, rows in scored[is_judged].groupby("run")})
+    if target.startswith("T3"):
+        out["T3 other questions"] = accuracy(scored[~is_judged])
+    return out
 
 
 def probes(jobs=4):
@@ -208,8 +223,9 @@ def probes(jobs=4):
     inputs["average input embedding"] = saved["words"].astype(np.float32)
     keys = [(target, name, labels) for target in PROBE_TARGETS for name in inputs for labels in ("real", "shuffled")]
     scores = Parallel(n_jobs=jobs)(delayed(probe_one)(inputs[name], table, target, labels) for target, name, labels in keys)
-    result = pd.DataFrame(keys, columns=["target", "input", "labels"]).assign(balanced_accuracy=scores)
+    result = pd.concat([pd.DataFrame(keys, columns=["target", "input", "labels"]), pd.DataFrame(scores)], axis=1)
     result.to_csv(OUT / "stage1_probes.csv", index=False)
+    print(f"saved {len(result)} probes -> {OUT / 'stage1_probes.csv'}")
     return result
 
 
@@ -218,5 +234,7 @@ if __name__ == "__main__":
         reproduce(bits=8 if "8" in sys.argv else 4)
     elif "activations" in sys.argv:
         save_activations()
+    elif "probes" in sys.argv:
+        probes()
     else:
         print(__doc__)

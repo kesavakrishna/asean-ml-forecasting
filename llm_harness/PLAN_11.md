@@ -75,6 +75,7 @@ Explanation 2 is supported if T3 reaches at least 65% at some layer while both c
 - **T2 and T3 are read from the question text**, which states each move's direction. T3: "follow" gives the 1-day move's direction, "reverse" the opposite, and so on for the 5- and 20-day moves. Questions whose rule is "none of these" are left out of T3.
 - **Training:** T1 and T2 on build questions of all three runs. T3 on build questions of the two "none" runs, as above.
 - **Judging T3:** score-month conflict questions of all three runs together, also shown run by run.
+- **A check on T3** (added before the probes ran): almost every conflict question names "reverse", so a probe that only flips the 1-day move would pass. T3 is also scored on the other score questions, where the rule's answer is the 1-day move's. A probe that really reads the rule's answer scores well on both.
 - **Score:** balanced accuracy (the average of the hit rates on "up" and on "down"), so a probe that always says one thing scores 50%.
 - **The probe:** inputs standardized, logistic regression, its strength picked from 0.001, 0.01, 0.1 and 1 by 5-fold cross-validation on build questions, with folds split by month.
 - **The embedding control:** the last token is always ` "`, so at the embedding layer every question looks the same and the probe must score 50%. That checks the code, not the model. So one more control (added after looking): the **average of the input embeddings over the whole question**, which knows which words appear but not their order or anything the layers work out.
