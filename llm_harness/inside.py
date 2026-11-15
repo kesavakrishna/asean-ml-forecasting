@@ -8,6 +8,7 @@ Run:  venv_gpu/Scripts/python llm_harness/inside.py reproduce     # stage 0: doe
       venv_gpu/Scripts/python llm_harness/inside.py reproduce 8   # the same in 8-bit (added after looking)
       venv_gpu/Scripts/python llm_harness/inside.py activations   # stage 1: save what 8-bit Gemma holds before each answer
       venv_gpu/Scripts/python llm_harness/inside.py probes        # stage 1: the probes, on the saved activations
+      venv_gpu/Scripts/python llm_harness/inside.py t3check       # stage 1: does T3 read the rule, or the answer? (added after looking)
 """
 import json
 import re
@@ -229,6 +230,35 @@ def probes(jobs=4):
     return result
 
 
+def t3_check(layers=(15, 20, 25, 30)):
+    """Added after looking: does the T3 probe read its rule's answer, or something else?
+
+    The share of 2019 questions where the probe gives its rule's answer, split by whether its own answer agreed
+    with its rule. A probe that reads the rule scores high in every group. One that reads "the opposite of its
+    answer" scores high where it disagreed and low where it agreed.
+    """
+    table = pd.read_csv(OUT / "activations_8bit.csv")
+    saved = np.load(OUT / "activations_8bit.npz")
+    build = ((table["half"] == "build") & table["run"].isin(["planted_none", "real_none"])).to_numpy()
+    score = table[table["half"] == "score"]
+    groups = {
+        "none runs, it disagreed with its rule": score["run"].isin(["planted_none", "real_none"]) & (score["own"] != score["rule_answer"]),
+        "none runs, it agreed": score["run"].isin(["planted_none", "real_none"]) & (score["own"] == score["rule_answer"]),
+        "planted tester, it disagreed": (score["run"] == "planted_tester") & (score["own"] != score["rule_answer"]),
+        "planted tester, it agreed": (score["run"] == "planted_tester") & (score["own"] == score["rule_answer"]),
+    }
+    rows = []
+    for layer in layers:
+        X = saved["layers"][:, layer].astype(np.float32)
+        probe = fit_probe(X[build], table.loc[build, "rule_answer"].to_numpy(), table.loc[build, "month"].astype(str))
+        says_rule = pd.Series(probe.predict(X[score.index]) == score["rule_answer"].to_numpy(), index=score.index)
+        rows.append({"layer": layer, **{name: says_rule[rows_in].mean() for name, rows_in in groups.items()}})
+    result = pd.DataFrame(rows).set_index("layer")
+    result.loc["questions"] = [rows_in.sum() for rows_in in groups.values()]
+    result.to_csv(OUT / "stage1_t3_check.csv")
+    print(result.round(3).to_string())
+
+
 if __name__ == "__main__":
     if "reproduce" in sys.argv:
         reproduce(bits=8 if "8" in sys.argv else 4)
@@ -236,5 +266,7 @@ if __name__ == "__main__":
         save_activations()
     elif "probes" in sys.argv:
         probes()
+    elif "t3check" in sys.argv:
+        t3_check()
     else:
         print(__doc__)
