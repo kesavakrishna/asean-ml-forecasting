@@ -16,6 +16,7 @@ The full results behind the [README](README.md), in the order the work was done.
 - [Step 8, checked more strictly (added after looking)](#step-8-checked-more-strictly-added-after-looking)
 - [Interpretability: does the GRU rediscover HAR?](#interpretability-does-the-gru-rediscover-har)
 - [Step 9 findings: more inputs (added after looking)](#step-9-findings-more-inputs-added-after-looking)
+- [The check on new markets (added after looking)](#the-check-on-new-markets-added-after-looking)
 
 ## Data notes
 
@@ -761,3 +762,35 @@ Accuracy minus the fair bar, per model and market (42 tests per set, Holm within
 - **Against the plan:** four of the five expectations held. The miss: I expected D to show no open-to-close gain in most markets, and three of six show one.
 
 Full tables, including every model and market, are in `more_inputs.ipynb`.
+
+## The check on new markets (added after looking)
+
+**The question:** does step 9's pattern hold on markets that no choice in this project was made with? Korea (KOSPI), Taiwan (TAIEX), Hong Kong (Hang Seng) and Japan (Nikkei 225) were downloaded only after steps 9 and 10 were written up, then run once with the same code and settings: four sets, seven models, test years 2017–2026, the same days for every set (2,361–2,396 per market). The expectation was in the plan: no gain from B or C, a close-to-close gain from D.
+
+Each set against A, the same model on the same days (Holm over the 21 close-to-close comparisons):
+
+| Set | Accuracy against A, points | AUC against A | Significant after Holm |
+|---|---|---|---|
+| B: standard extras | −1.0 to +0.3 | −0.011 to +0.011 | 0 of 7 |
+| C: tsfresh | −0.9 to +1.3 | −0.013 to +0.017 | 0 of 7 |
+| D: other markets, close to close | **+9.2 to +12.5** | **+0.15 to +0.18** | **7 of 7** |
+| D: other markets, open to close | +0.3 to +2.2 | +0.01 to +0.02 | 2 of 7 (Holm over these 7) |
+
+Accuracy minus the fair bar, per model and market (28 tests per set, Holm within each set):
+
+| | A | B | C | D |
+|---|---|---|---|---|
+| Close to close: mean gain, points | −1.5 | −1.8 | −1.7 | 9.1 |
+| Close to close: significant after Holm | 3 below | 3 below | 0 | 28 above |
+| Open to close: mean gain, points | 0.8 | | | 1.9 |
+| Open to close: significant after Holm | 0 | | | 7 above (all Taiwan) |
+
+- **The expectation held.** B and C match A, and tsfresh found nothing: in all 44 training cutoffs no feature passed its test. Two models' AUC with B is 0.011 away from A's, just outside the planned ±0.01.
+- **D's close-to-close gain is larger than in step 9:** +4.9 to +7.5 points over the fair bar in Hong Kong, +6.8 to +8.4 in Korea, +8.9 to +10.5 in Taiwan and +10.5 to +12.7 in Japan (accuracy 56.3–65.9%). In step 9 it was +6.0 to +7.8 against A. Why was not looked into.
+- **A, B and C sit below the fair bar.** These markets rose on 51.5–55.3% of days, so always guessing "up" is hard to beat. Six pairs are significantly below it, all AdaBoost or the neural network in Korea, Taiwan or Japan.
+- **Old and new years agree:** D's gain is +10.7 points in 2017–2022 and +10.5 in 2023–2026.
+- **Not a timing leak (checked after looking).** The US and VIX moves line up with the overnight gap (0.52 to 0.62, and −0.47 to −0.57) and not with day t+1 (0.04 or less in size).
+- **Open to close, only Taiwan, and probably not tradeable (checked after looking).** In Taiwan the move after the open carries on from the overnight gap (correlation 0.29; Japan 0.21; the other eight markets −0.04 to +0.11). That is what a partly stale opening number looks like, as with the Philippines and Malaysia in step 5b.
+- **Data caveats:** the fixed bad-print rule blanked 148 Taiwan dollar closes (Yahoo's 2011–2016 series jumps about 2.5% back and forth) and 44 Hong Kong dollar closes (the dollar is pegged, so its typical move is tiny and ordinary closes get blanked). Those days drop out of all four sets alike.
+
+Full tables are in `new_markets.ipynb`.
