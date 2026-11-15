@@ -33,6 +33,19 @@ Replay 200 questions from the build half, sampled evenly across the three runs, 
 
 **Gate:** at least 90% the same. If not, report it, and run only stage 1 (probes on `transformers`). No steering or edit result is claimed for the llama.cpp model.
 
+**Result (15 Nov 2026): the gate failed.**
+
+| Version in `transformers` | Same answer as llama.cpp (`Q4_K_M`) | How they differ |
+|---|---|---|
+| 4-bit NF4 (the plan) | 83.5% | One way only: all 33 are llama.cpp "up", NF4 "down" |
+| 8-bit (added after looking) | 86.0% | Both ways: 17 and 11 |
+
+- The prompts are the same: on all 200, the token count equals llama.cpp's own count, and none was cut short.
+- The flips aren't close calls: almost every gap is over 2 log-odds. Rounding the same weights three ways flips about a sixth of the answers, confidently. So a small weight change alone can flip answers, which is why stage 4's random-edit control matters.
+- NF4 and 8-bit agree on only 86.5%. NF4 leans to "down".
+
+**So:** stages 2–4 are not claimed for the llama.cpp model. Stage 1 runs on **8-bit** (added after looking): it is the closest to the original weights that fits on the GPU, and it doesn't lean one way.
+
 ## Stage 1: probes
 
 At the position just before the answer word, for every layer, a logistic regression reads:
@@ -54,6 +67,17 @@ At the position just before the answer word, for every layer, a logistic regress
 | T3, conflict questions | 60–75% | at most 55% |
 
 Explanation 2 is supported if T3 reaches at least 65% at some layer while both controls stay at or below 55%. Explanation 1 if T3 stays at or below 55% everywhere.
+
+**Details fixed before the probes are run** (written after stage 0, before any activation is looked at):
+
+- **The model:** 8-bit `transformers` Gemma. The replies replayed are still llama.cpp's.
+- **T1** is the 8-bit model's own next word ("up" or "down"), since that is the model being probed.
+- **T2 and T3 are read from the question text**, which states each move's direction. T3: "follow" gives the 1-day move's direction, "reverse" the opposite, and so on for the 5- and 20-day moves. Questions whose rule is "none of these" are left out of T3.
+- **Training:** T1 and T2 on build questions of all three runs. T3 on build questions of the two "none" runs, as above.
+- **Judging T3:** score-month conflict questions of all three runs together, also shown run by run.
+- **Score:** balanced accuracy (the average of the hit rates on "up" and on "down"), so a probe that always says one thing scores 50%.
+- **The probe:** inputs standardized, logistic regression, its strength picked from 0.001, 0.01, 0.1 and 1 by 5-fold cross-validation on build questions, with folds split by month.
+- **The embedding control:** the last token is always ` "`, so at the embedding layer every question looks the same and the probe must score 50%. That checks the code, not the model. So one more control (added after looking): the **average of the input embeddings over the whole question**, which knows which words appear but not their order or anything the layers work out.
 
 ## Stage 2: steering
 
