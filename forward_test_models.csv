@@ -1,0 +1,421 @@
+target,set,model,market,setting,fair_call,training_days,file,sha256
+close to close,A,LDA,Indonesia,LinearDiscriminantAnalysis(),up,3510,A_close_to_close_LDA_Indonesia.pkl,046f668aac800d7ebf66760f89a9be938f0969008bd7c55723823e4ce4821d0b
+close to close,A,LDA,Malaysia,LinearDiscriminantAnalysis(),up,3575,A_close_to_close_LDA_Malaysia.pkl,293302de1aa9f782c8237698df5b95a4b44b11c37febbec7ee1e504d4723f9a5
+close to close,A,LDA,Philippines,LinearDiscriminantAnalysis(),up,3574,A_close_to_close_LDA_Philippines.pkl,ae8a2be9feffee193813c58e9b49ef2160ce6ef64d76836ca6ffd0430aa7da35
+close to close,A,LDA,Singapore,LinearDiscriminantAnalysis(),up,3687,A_close_to_close_LDA_Singapore.pkl,096ca95c1436581932facc7e99cb1ef1e49559114ca727f40676bac1e86a3de5
+close to close,A,LDA,Thailand,LinearDiscriminantAnalysis(),up,3556,A_close_to_close_LDA_Thailand.pkl,774b07a5d22423c67110dd6d882676b1256af6b7e9423edba8cc13aadf6f4b4d
+close to close,A,LDA,India,LinearDiscriminantAnalysis(),up,3603,A_close_to_close_LDA_India.pkl,371f32d81bf7194e6664f83c0c9f93894d31d7ecf388fdeb3f121b2c8846de3f
+close to close,A,LDA,Korea,LinearDiscriminantAnalysis(),up,3607,A_close_to_close_LDA_Korea.pkl,195fab10f298c29965064e296a6f1ddb959e70e76be04e3e03d3f4abfb3fa7f4
+close to close,A,LDA,Taiwan,LinearDiscriminantAnalysis(),up,3381,A_close_to_close_LDA_Taiwan.pkl,eb1b0f644feccbaca473901d5ed7ecf1af46c72ccb91260c406548a9e8cbbd91
+close to close,A,LDA,Hong Kong,LinearDiscriminantAnalysis(),up,3563,A_close_to_close_LDA_Hong_Kong.pkl,5bee9b40f263a68f21509d37952effc41870f50b6dee55fcf956b8c673a1230b
+close to close,A,LDA,Japan,LinearDiscriminantAnalysis(),up,3598,A_close_to_close_LDA_Japan.pkl,9d034c92fe01bc1f605a3de50c02594a555f579dab96641180d0f0ee27414f96
+close to close,A,Logistic regression,Indonesia,LogisticRegression(C=0.0001),up,3510,A_close_to_close_Logistic_regression_Indonesia.pkl,f35e8029f5167beed089ee53650bdf8264e5e647bdd549261220f19145d2cb94
+close to close,A,Logistic regression,Malaysia,LogisticRegression(C=0.0001),up,3575,A_close_to_close_Logistic_regression_Malaysia.pkl,f0db60a3b9925beb88a19954d925fd792c7c53ac214ddbb805e6910d209b7dca
+close to close,A,Logistic regression,Philippines,LogisticRegression(C=10),up,3574,A_close_to_close_Logistic_regression_Philippines.pkl,75ff29d9b404708cc68bc1153a4909b3ba92f59486df904885cd6bcb8d1c5769
+close to close,A,Logistic regression,Singapore,LogisticRegression(C=0.0001),up,3687,A_close_to_close_Logistic_regression_Singapore.pkl,e0d126c6cfd00d6a6ceaa8450ddc00b2cfb57c67c0bbe2bf34d48ba5be03007c
+close to close,A,Logistic regression,Thailand,LogisticRegression(C=0.0001),up,3556,A_close_to_close_Logistic_regression_Thailand.pkl,3eed8b1b0964e0e2a0e7e9c2bf2c11056e33f53e5e582539013d1c8c54b48ece
+close to close,A,Logistic regression,India,LogisticRegression(C=0.0001),up,3603,A_close_to_close_Logistic_regression_India.pkl,313542ad3b02dd3bfd53311949a2ed0e9c31785f9cae74b1e578c927272278c7
+close to close,A,Logistic regression,Korea,LogisticRegression(C=0.01),up,3607,A_close_to_close_Logistic_regression_Korea.pkl,4273b4646c08f21246506d29f531aaec1974322c0a9c0908cc6278301ec4ce0c
+close to close,A,Logistic regression,Taiwan,LogisticRegression(C=0.01),up,3381,A_close_to_close_Logistic_regression_Taiwan.pkl,48a8fa10475f0d1c5f9897158f166150a18e31c0f81d45b78c23c494eab7de39
+close to close,A,Logistic regression,Hong Kong,LogisticRegression(C=0.0001),up,3563,A_close_to_close_Logistic_regression_Hong_Kong.pkl,009e87c8407e44332f886efade807c9ffb544fe743e3b02d961c4fd75681bf8d
+close to close,A,Logistic regression,Japan,LogisticRegression(C=0.001),up,3598,A_close_to_close_Logistic_regression_Japan.pkl,e9fdcd4d2bd4e93c2e7d9d2e857611fd016fa0ade030f47db46b4e04ec92ba3b
+close to close,A,KNN,Indonesia,KNeighborsClassifier(n_neighbors=251),up,3510,A_close_to_close_KNN_Indonesia.pkl,6f4a0bf554f262db14576018b39e5dfc9f8e4db6ea6a5db9c4371b1c61154369
+close to close,A,KNN,Malaysia,KNeighborsClassifier(n_neighbors=101),up,3575,A_close_to_close_KNN_Malaysia.pkl,949436b7f63392ea7ce185aafef64259ef7853eb6a997c4425d4222aeb5fac6d
+close to close,A,KNN,Philippines,KNeighborsClassifier(n_neighbors=501),up,3574,A_close_to_close_KNN_Philippines.pkl,05759e0f61b12b0650142099a50996eaff6de1cdedb134e079c80dfbaf249e27
+close to close,A,KNN,Singapore,KNeighborsClassifier(n_neighbors=501),up,3687,A_close_to_close_KNN_Singapore.pkl,fa24f8bda193c209caafe85c6bee52cf0f9c33e5a057cc14a4941f0816b1e21f
+close to close,A,KNN,Thailand,KNeighborsClassifier(n_neighbors=501),up,3556,A_close_to_close_KNN_Thailand.pkl,59ba0b2f609af772b1f90fbdd722dd122d595a7bde33c9eb7eddeaa27d7314f5
+close to close,A,KNN,India,KNeighborsClassifier(n_neighbors=251),up,3603,A_close_to_close_KNN_India.pkl,2cf18b726290d1c0b64ec3ddb462bed2db32937c6c22a4e1635ddf5d61908205
+close to close,A,KNN,Korea,KNeighborsClassifier(n_neighbors=251),up,3607,A_close_to_close_KNN_Korea.pkl,18f9a31c10e5f1cd9477bc7fb5a9681914d4ca86ec71678373f6281015cf7ffd
+close to close,A,KNN,Taiwan,KNeighborsClassifier(n_neighbors=251),up,3381,A_close_to_close_KNN_Taiwan.pkl,a24d71a390ba77837c2c1009dcc9469889722c2fc2dbcc7cc8c0df59bd9f32da
+close to close,A,KNN,Hong Kong,KNeighborsClassifier(n_neighbors=501),up,3563,A_close_to_close_KNN_Hong_Kong.pkl,29967086a8b1de00346b95cbb36388e22c81c1f3b1a22bb7ba2db9f0e8812f39
+close to close,A,KNN,Japan,KNeighborsClassifier(n_neighbors=501),up,3598,A_close_to_close_KNN_Japan.pkl,0b61f99597a5628084ebc11faf74b1815af9e377c9eca688c9f1ff2d1af5bb4a
+close to close,A,SVM,Indonesia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",up,3510,A_close_to_close_SVM_Indonesia.pkl,1c7f35655c912b00a4853b5d6d2f50ea923c01fd774c28d741cb8456627fd8f7
+close to close,A,SVM,Malaysia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3575,A_close_to_close_SVM_Malaysia.pkl,87e229f5600d6e1d00deb2880b756e528503134c5fc331ce05ed2986c7635f75
+close to close,A,SVM,Philippines,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",up,3574,A_close_to_close_SVM_Philippines.pkl,2d55d3686d66b22fcb923cdcc10884a2ed8c87eea3be7be1f7bcf24741303504
+close to close,A,SVM,Singapore,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",up,3687,A_close_to_close_SVM_Singapore.pkl,ade67604b05478a5593e627daf7fb3fac6299984a345d980a328c1ce98db1be1
+close to close,A,SVM,Thailand,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",up,3556,A_close_to_close_SVM_Thailand.pkl,6c68963109903e1bd6a9e82eced0cfeb0341ef469cb76714cf12853071aa59c3
+close to close,A,SVM,India,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3603,A_close_to_close_SVM_India.pkl,109522b048ab137d41ac117364f80fa0ac6648d3746003b611d99c06e0be8bf5
+close to close,A,SVM,Korea,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3607,A_close_to_close_SVM_Korea.pkl,f5394f823153361cb7b7e444013c6ebe9bd142d140a0bb4013de397613d40da5
+close to close,A,SVM,Taiwan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",up,3381,A_close_to_close_SVM_Taiwan.pkl,8476eaa1d7eb51480475a3eeda542de5fc7474e0ca1d26a8e1c1e3871d925f9a
+close to close,A,SVM,Hong Kong,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3563,A_close_to_close_SVM_Hong_Kong.pkl,196f918e2c11e91e5c1759d80263126cf5ac19efd0816fbc56644433c0f7ed76
+close to close,A,SVM,Japan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",up,3598,A_close_to_close_SVM_Japan.pkl,ce476427b024dcf62a20ecaae8d728e96b2ced4bfcc1273658739eb3abfa3dde
+close to close,A,Random forest,Indonesia,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3510,A_close_to_close_Random_forest_Indonesia.pkl,52bda9b911209fc936837ea9988e29610c451e39c856ef6aa86be500dc38413c
+close to close,A,Random forest,Malaysia,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3575,A_close_to_close_Random_forest_Malaysia.pkl,ae6ce159218666031c6b7b83ba9dc35739340d921bead81c21cbf67fb57269b5
+close to close,A,Random forest,Philippines,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3574,A_close_to_close_Random_forest_Philippines.pkl,376d912f42e78f4dee1320433a22519cffcdd88732597829f7f032d1c17c9cf2
+close to close,A,Random forest,Singapore,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3687,A_close_to_close_Random_forest_Singapore.pkl,91d9105e0b7706d7114ef5047c66a5fdf96d165372b6bee28723311d99d4c761
+close to close,A,Random forest,Thailand,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3556,A_close_to_close_Random_forest_Thailand.pkl,829cb64c918dc1803e21afbfc5db2cc88f5501ecc861efa49a3f0ace177d8778
+close to close,A,Random forest,India,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3603,A_close_to_close_Random_forest_India.pkl,63ea4b7aece4827bc03f63aeb8adf1341d1fa730e32a11b3a6509612a4ceaec0
+close to close,A,Random forest,Korea,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3607,A_close_to_close_Random_forest_Korea.pkl,b20fbdce1b928ce9970b30f888842e49d9054b184712e05b47f7ca8467ae1cc3
+close to close,A,Random forest,Taiwan,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3381,A_close_to_close_Random_forest_Taiwan.pkl,b5db5262d61477ddbf7966832ba090e040c45d0e04885b51b1945594d6e400e0
+close to close,A,Random forest,Hong Kong,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3563,A_close_to_close_Random_forest_Hong_Kong.pkl,800168fc5d527b67d96398a39a52fee972027b7553b0978463ec82f3df68c079
+close to close,A,Random forest,Japan,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3598,A_close_to_close_Random_forest_Japan.pkl,7197dcfc7e023923f0ce6e6c0e36503b70e7001b701aa47ec42573a413a26521
+close to close,A,AdaBoost,Indonesia,"AdaBoostClassifier(learning_rate=4.0, random_state=0)",up,3510,A_close_to_close_AdaBoost_Indonesia.pkl,3d6f741cde0642c10485b3b56a665759f4021c9723ff798b191a71fb8684a427
+close to close,A,AdaBoost,Malaysia,"AdaBoostClassifier(learning_rate=2.0, random_state=0)",up,3575,A_close_to_close_AdaBoost_Malaysia.pkl,1b8a28c6fce294c71ee72e7952615a9037f41d7d4591af4003c7ac9a0dace8ce
+close to close,A,AdaBoost,Philippines,"AdaBoostClassifier(learning_rate=2.0, random_state=0)",up,3574,A_close_to_close_AdaBoost_Philippines.pkl,3aba0076613338c36a295dcd216ddfd03d4c9609960e1c8501ee4d7dfb35ccf5
+close to close,A,AdaBoost,Singapore,"AdaBoostClassifier(n_estimators=200, random_state=0)",up,3687,A_close_to_close_AdaBoost_Singapore.pkl,047dccc2b10ba64abacef4525a9eed06accb94885aa60df6f223c6ba952baaea
+close to close,A,AdaBoost,Thailand,"AdaBoostClassifier(n_estimators=500, random_state=0)",up,3556,A_close_to_close_AdaBoost_Thailand.pkl,6a65ef7c3a8c4e22b883efab4fbec39a5c8d81055ad6d29ccd3bc863e5b4b17c
+close to close,A,AdaBoost,India,"AdaBoostClassifier(learning_rate=2.0, random_state=0)",up,3603,A_close_to_close_AdaBoost_India.pkl,65ed7991d11eaac2e12264e22bf5ce76dc448ec86a88c539b6107b2b709d4ac9
+close to close,A,AdaBoost,Korea,"AdaBoostClassifier(learning_rate=0.1, n_estimators=500, random_state=0)",up,3607,A_close_to_close_AdaBoost_Korea.pkl,77c2912e8a75e11a938fbfbdcded1943e932257d6f2f006eb48714a2652c2211
+close to close,A,AdaBoost,Taiwan,"AdaBoostClassifier(learning_rate=2.0, n_estimators=500, random_state=0)",up,3381,A_close_to_close_AdaBoost_Taiwan.pkl,4e2164f511bea9d28dacba2f38747cfded44b35a87a5aa69f7c804d5d657d84f
+close to close,A,AdaBoost,Hong Kong,"AdaBoostClassifier(n_estimators=200, random_state=0)",up,3563,A_close_to_close_AdaBoost_Hong_Kong.pkl,d6d4ec51ad90916a3938ca244260f0270cea7ca138df3e80a876d6600a8b32b3
+close to close,A,AdaBoost,Japan,"AdaBoostClassifier(learning_rate=4.0, n_estimators=500, random_state=0)",up,3598,A_close_to_close_AdaBoost_Japan.pkl,61c655d2f72c46422734f8e185ff8067c8815c703857b18f3242727265d17008
+close to close,A,Neural network,Indonesia,"(2, 1)",up,3510,A_close_to_close_Neural_network_Indonesia.pkl,6e847e0f1ff6b00ff797e3bb193d8a211a5af0bd171dc5b3afe621d857b72f0e
+close to close,A,Neural network,Malaysia,"(10, 107)",up,3575,A_close_to_close_Neural_network_Malaysia.pkl,263782786a49a5635e1662f52d18a7693e9f7f81791679facf1ac48dc55864a5
+close to close,A,Neural network,Philippines,"(6, 7)",up,3574,A_close_to_close_Neural_network_Philippines.pkl,1e2b2993124d97fa983ee62f5e5b096d6bef0474d4053479280729e0737d6acb
+close to close,A,Neural network,Singapore,"(4, 96)",up,3687,A_close_to_close_Neural_network_Singapore.pkl,d645688a6ef449b7779649a0ffb517137b963ee68e522845ce7a0a3eb22fe9a9
+close to close,A,Neural network,Thailand,"(4, 1)",up,3556,A_close_to_close_Neural_network_Thailand.pkl,7b67ab085ac8fd5bae5eaa5e26082788c5a08e233cad09a1a193d39ca182eec8
+close to close,A,Neural network,India,"(12, 2)",up,3603,A_close_to_close_Neural_network_India.pkl,8a39a0ef867791e1efdf3a91ab7fb63273a79f96bd4c7c4d4cb1bdd7e59636e6
+close to close,A,Neural network,Korea,"(10, 70)",up,3607,A_close_to_close_Neural_network_Korea.pkl,8ece3e0f4714e039304e346aa0d30ead5f525c1abbacdf353d250360c295b94d
+close to close,A,Neural network,Taiwan,"(4, 33)",up,3381,A_close_to_close_Neural_network_Taiwan.pkl,ce18b3727c5dd6857708bd4bfa7aa0b4175b4273c2b917ef3593b91c866270fa
+close to close,A,Neural network,Hong Kong,"(12, 3)",up,3563,A_close_to_close_Neural_network_Hong_Kong.pkl,05fb35806a22008dc9a49135cbe92a3f41acc64da740834c8511f56d1a48b369
+close to close,A,Neural network,Japan,"(6, 1)",up,3598,A_close_to_close_Neural_network_Japan.pkl,b083ffc9006ef46b0e5f7d38e4708e65e8b4c4ce2d5c07ece9b374f08f8d716f
+close to close,B,LDA,Indonesia,LinearDiscriminantAnalysis(),up,3510,B_close_to_close_LDA_Indonesia.pkl,051bf5544e53159966b7fe77d2927ac89d673079a73a6dc8f4f0a2e94c972843
+close to close,B,LDA,Malaysia,LinearDiscriminantAnalysis(),up,3575,B_close_to_close_LDA_Malaysia.pkl,6ff2bcdb8ca815bc0a7fa70f95cdb4ba1c91c267adb9d628afdddf0a915b1f84
+close to close,B,LDA,Philippines,LinearDiscriminantAnalysis(),up,3574,B_close_to_close_LDA_Philippines.pkl,314bbe68742a5667e44868a58a5fec245dd5c20d3d866713ee505eef44317d45
+close to close,B,LDA,Singapore,LinearDiscriminantAnalysis(),up,3687,B_close_to_close_LDA_Singapore.pkl,fdba1b91115e61e9b1f21e6e5c8c54b1f736ac71cb84f10514f7d0908b38925e
+close to close,B,LDA,Thailand,LinearDiscriminantAnalysis(),up,3556,B_close_to_close_LDA_Thailand.pkl,521893606be939a91460672ce2b7ec80f99631d99fc14c58d77fd282da3909cd
+close to close,B,LDA,India,LinearDiscriminantAnalysis(),up,3603,B_close_to_close_LDA_India.pkl,4460b8b98fc7445a0d0f00dd81d3a1ed2da164bb389d26da2f8ce32fbaaf8853
+close to close,B,LDA,Korea,LinearDiscriminantAnalysis(),up,3607,B_close_to_close_LDA_Korea.pkl,1a93dd5698f6e24f3b2e2be336fba3c3716e49f57382fcc5c5b88dec647c157b
+close to close,B,LDA,Taiwan,LinearDiscriminantAnalysis(),up,3381,B_close_to_close_LDA_Taiwan.pkl,fc15e38c1f27c0529ea4ee5b7757370f3b6b4ef3384bafb02bb9522c38ba2890
+close to close,B,LDA,Hong Kong,LinearDiscriminantAnalysis(),up,3563,B_close_to_close_LDA_Hong_Kong.pkl,731672c7753ba3334d6f95ecdc1983aed44f17824e72aec50e432aed6cae2c18
+close to close,B,LDA,Japan,LinearDiscriminantAnalysis(),up,3598,B_close_to_close_LDA_Japan.pkl,34fee54e7bb6b7f01e8cd6238d1c470b40ff77466877bacfab9830d2d4c4f5c5
+close to close,B,Logistic regression,Indonesia,LogisticRegression(C=0.0001),up,3510,B_close_to_close_Logistic_regression_Indonesia.pkl,8358b1149a739e6111683cb2eedf3782ba79af28b37499543a8538df8fef07aa
+close to close,B,Logistic regression,Malaysia,LogisticRegression(C=10),up,3575,B_close_to_close_Logistic_regression_Malaysia.pkl,30230bf7ec2ad7bdbf6e85b9bdc95fb9f5dab4ea4fb85aebb6a253df9b96d5ed
+close to close,B,Logistic regression,Philippines,LogisticRegression(C=0.001),up,3574,B_close_to_close_Logistic_regression_Philippines.pkl,31ad8040b41e26d2ad29654d2826be5418ffb52e46de1be001de1e423ad25ea2
+close to close,B,Logistic regression,Singapore,LogisticRegression(C=0.0001),up,3687,B_close_to_close_Logistic_regression_Singapore.pkl,7c1eaf8cd3fe7f392330afb0f9f8b344e82f84ae3aab69d2f5dc1860be4f64c3
+close to close,B,Logistic regression,Thailand,LogisticRegression(C=1),up,3556,B_close_to_close_Logistic_regression_Thailand.pkl,dbfe5c3702a15239e68a0cb47cb436ac27e79d6bd574947d104c30a22457a783
+close to close,B,Logistic regression,India,LogisticRegression(C=0.0001),up,3603,B_close_to_close_Logistic_regression_India.pkl,b8132d90f7071f57f938ceafd8c8c7d6d867f123e86312cf902dc3968dbfd6d9
+close to close,B,Logistic regression,Korea,LogisticRegression(C=0.001),up,3607,B_close_to_close_Logistic_regression_Korea.pkl,370dcc682a04a0e15deb7a39d4c550bfb483921db405b076fd5439a06a9dc54a
+close to close,B,Logistic regression,Taiwan,LogisticRegression(C=0.01),up,3381,B_close_to_close_Logistic_regression_Taiwan.pkl,eacfe8ba52cf21f17b4ae2584a27dc2c960a60c4da91de0f219c44826f9880ba
+close to close,B,Logistic regression,Hong Kong,LogisticRegression(C=0.0001),up,3563,B_close_to_close_Logistic_regression_Hong_Kong.pkl,3bb15e47370fb0c7f52312518557cf98911d6d0f6cd6ecc888ff9f9d7c863090
+close to close,B,Logistic regression,Japan,LogisticRegression(C=0.0001),up,3598,B_close_to_close_Logistic_regression_Japan.pkl,96f3e408fd565da80c5337ab2806477917d6eada0bbba8370fc0e84697ad7d6c
+close to close,B,KNN,Indonesia,KNeighborsClassifier(n_neighbors=501),up,3510,B_close_to_close_KNN_Indonesia.pkl,acc34cf2aec112ddee695dda660014537d8530ab9a57c6ae18c6a781877fcc09
+close to close,B,KNN,Malaysia,KNeighborsClassifier(n_neighbors=251),up,3575,B_close_to_close_KNN_Malaysia.pkl,d6ee94e8fcf061213dc58313b3881bdce4a13ecd8ae4abc70a69d61f5e642837
+close to close,B,KNN,Philippines,KNeighborsClassifier(n_neighbors=251),up,3574,B_close_to_close_KNN_Philippines.pkl,46304993d75d3088c5cc52e5359950bc1e48a672f29e3f70e9b2127da6d4f35a
+close to close,B,KNN,Singapore,KNeighborsClassifier(n_neighbors=101),up,3687,B_close_to_close_KNN_Singapore.pkl,2e9f7d6801cb649c66fee7b86f6221bace5d58870c62d786f09bb81d77295580
+close to close,B,KNN,Thailand,KNeighborsClassifier(n_neighbors=251),up,3556,B_close_to_close_KNN_Thailand.pkl,b8ae0de1059b876f037c560cb2e6cf718f28ce4b83598622a096bcfcf48a77a9
+close to close,B,KNN,India,KNeighborsClassifier(n_neighbors=251),up,3603,B_close_to_close_KNN_India.pkl,6ab11e4c1acd13eb3c6109fbd1fe0e9d5edcf23833eedcafecbf6291dbf2d10d
+close to close,B,KNN,Korea,KNeighborsClassifier(n_neighbors=101),up,3607,B_close_to_close_KNN_Korea.pkl,d780ef49e332713b9fe2109c21c20b58cb4344ab70d3d4b1144adb834c604d4e
+close to close,B,KNN,Taiwan,KNeighborsClassifier(n_neighbors=501),up,3381,B_close_to_close_KNN_Taiwan.pkl,573e41d742a85e55f18ab2d23b5c9106038c242fe87e0698346008918f135190
+close to close,B,KNN,Hong Kong,KNeighborsClassifier(n_neighbors=251),up,3563,B_close_to_close_KNN_Hong_Kong.pkl,bf1e8b4cf7ebf4fd5a1b8b2a560355d10417de0e784da37421e6b546dffcbeac
+close to close,B,KNN,Japan,KNeighborsClassifier(n_neighbors=501),up,3598,B_close_to_close_KNN_Japan.pkl,c0aa678d6411c2ce5a553e6a2fd4aac346274902867925ed9b1fa0e03869506b
+close to close,B,SVM,Indonesia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3510,B_close_to_close_SVM_Indonesia.pkl,4d9cf62eaf7c5afbfbac731e3c8dc1546f4de52984b696f61e537a2e882c9b83
+close to close,B,SVM,Malaysia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",up,3575,B_close_to_close_SVM_Malaysia.pkl,c676ca3a4870bf5a2f45e155ff2312759b539a2e85597fe9d63d06af1284ce8e
+close to close,B,SVM,Philippines,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.1))",up,3574,B_close_to_close_SVM_Philippines.pkl,712036ef15f56303895099ab467abf67fa651f3d3ba70af68930ec180032bf44
+close to close,B,SVM,Singapore,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3687,B_close_to_close_SVM_Singapore.pkl,19f5e62f58968f391563e72a72df4bd2ae94e5732f3d1967d268d1e67a375ef2
+close to close,B,SVM,Thailand,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",up,3556,B_close_to_close_SVM_Thailand.pkl,71f7ee1c9fd6226408437cc938a99f9caf4d944527d2f286d02d922474555da8
+close to close,B,SVM,India,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",up,3603,B_close_to_close_SVM_India.pkl,41e80cc68f606c7c1e8c96a06f06e8bfdb5505b438c4c6b54aa689c5fd53335f
+close to close,B,SVM,Korea,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3607,B_close_to_close_SVM_Korea.pkl,4e6f2c92e903be3bb98ba4cf97cc0c4912b964b96ecc788977f55d93a64f4530
+close to close,B,SVM,Taiwan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3381,B_close_to_close_SVM_Taiwan.pkl,b501d6c8398d27b3a27ad69681f7e5aff7cc4f7e3eee113bb0c235a2e25c0395
+close to close,B,SVM,Hong Kong,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3563,B_close_to_close_SVM_Hong_Kong.pkl,d9207c219bde317e95ccab216a60c8e6d98387748c97aed1e8a78faea00a54dc
+close to close,B,SVM,Japan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",up,3598,B_close_to_close_SVM_Japan.pkl,5db5b6c4a02364201b771083a74179f51315768b4f15cd01de12112bfe3fcd20
+close to close,B,Random forest,Indonesia,"RandomForestClassifier(max_features=3, min_samples_leaf=10, n_estimators=300, n_jobs=-1, random_state=0)",up,3510,B_close_to_close_Random_forest_Indonesia.pkl,c4ddc92efacf407e4857cefe54c74ec264edda845ef2174c130d457907c48bf4
+close to close,B,Random forest,Malaysia,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3575,B_close_to_close_Random_forest_Malaysia.pkl,4b565cf241c78fd9699066a911f22be5de639b6cd75821b34a5d1ba63e37f40e
+close to close,B,Random forest,Philippines,"RandomForestClassifier(max_features=3, n_estimators=300, n_jobs=-1, random_state=0)",up,3574,B_close_to_close_Random_forest_Philippines.pkl,6cd721fc4c556a56e903abbe4fd0a5208cf8125ab3defb48e320e44f93f0e8f0
+close to close,B,Random forest,Singapore,"RandomForestClassifier(max_features=3, min_samples_leaf=10, n_estimators=300, n_jobs=-1, random_state=0)",up,3687,B_close_to_close_Random_forest_Singapore.pkl,171d2811bc04f663c859fecbbf0fddf8264137f23452ae0f5b3d771e881d2226
+close to close,B,Random forest,Thailand,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3556,B_close_to_close_Random_forest_Thailand.pkl,e285df78efe00ae25652bea00397d1aa03992e923e90f8cf3d008fbe01d8827f
+close to close,B,Random forest,India,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3603,B_close_to_close_Random_forest_India.pkl,a06109ca0813d6ebb1f73b1a4aa1c35b106776f2a56626d47d4af363033e09b6
+close to close,B,Random forest,Korea,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3607,B_close_to_close_Random_forest_Korea.pkl,0fb6b9ac4575b7f662882a0a8a3e00b1432ca53b6e973fd5e72dc06bc4683b2e
+close to close,B,Random forest,Taiwan,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3381,B_close_to_close_Random_forest_Taiwan.pkl,d67bf18c520a01ec9826f140d950b3733226033f128fe4132bd4ece96dc11f05
+close to close,B,Random forest,Hong Kong,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3563,B_close_to_close_Random_forest_Hong_Kong.pkl,208bb84d37afcf83eacd3299f7e72983551f20d505d7bec2db307b50365dbd21
+close to close,B,Random forest,Japan,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3598,B_close_to_close_Random_forest_Japan.pkl,30db2f75dd136f0f21661abead373e7effbf00688fa715f7dc434b6b5ae789dd
+close to close,B,AdaBoost,Indonesia,"AdaBoostClassifier(learning_rate=4.0, random_state=0)",up,3510,B_close_to_close_AdaBoost_Indonesia.pkl,fc5e124f69076b62abdfd5a68089518b68109d1d2c710424d920fb8863ac9f48
+close to close,B,AdaBoost,Malaysia,AdaBoostClassifier(random_state=0),up,3575,B_close_to_close_AdaBoost_Malaysia.pkl,e28fbdaee413534c5764ee08e1ac5e1d6d522a51786f4a5ebc7f31dd4754f6e3
+close to close,B,AdaBoost,Philippines,"AdaBoostClassifier(n_estimators=500, random_state=0)",up,3574,B_close_to_close_AdaBoost_Philippines.pkl,b5f98e5f567aa66d16a55a641cbf25d3824ec1b1d3f96c46f9a23ddf9851598e
+close to close,B,AdaBoost,Singapore,"AdaBoostClassifier(learning_rate=4.0, random_state=0)",up,3687,B_close_to_close_AdaBoost_Singapore.pkl,711dbd77058e55b213f76883396c1d35f2fc888bbad2ef90d52a812627e06088
+close to close,B,AdaBoost,Thailand,"AdaBoostClassifier(learning_rate=2.0, random_state=0)",up,3556,B_close_to_close_AdaBoost_Thailand.pkl,f20f320095a9ae99e7cc1a6c66adc5442bc802430cdd8b8db464182fda5b09b8
+close to close,B,AdaBoost,India,"AdaBoostClassifier(n_estimators=500, random_state=0)",up,3603,B_close_to_close_AdaBoost_India.pkl,cd1a75ace7058f1f7ab49e5665bdc119bfb8ef41564d8e70089042fa8f4b8f6c
+close to close,B,AdaBoost,Korea,"AdaBoostClassifier(learning_rate=0.1, n_estimators=500, random_state=0)",up,3607,B_close_to_close_AdaBoost_Korea.pkl,14faec1c28c138e10f09fd1c3c759e6ad84326bbf64f0e604d55e152ad4b4fef
+close to close,B,AdaBoost,Taiwan,"AdaBoostClassifier(learning_rate=2.0, n_estimators=500, random_state=0)",up,3381,B_close_to_close_AdaBoost_Taiwan.pkl,13fb6ef3772b0d878230ad2acd0777cc1123d8baa8d2afd478cd893ca8f4eb60
+close to close,B,AdaBoost,Hong Kong,"AdaBoostClassifier(n_estimators=500, random_state=0)",up,3563,B_close_to_close_AdaBoost_Hong_Kong.pkl,0988ebd0ec49cc3dadbbd03f76b6369912c3053ca5b7e097fbed8aa59d087dd5
+close to close,B,AdaBoost,Japan,"AdaBoostClassifier(learning_rate=4.0, n_estimators=500, random_state=0)",up,3598,B_close_to_close_AdaBoost_Japan.pkl,8aa7599e468f3aa8031284438297583a70bbcf6356cc998ca48cd58a2d7706c8
+close to close,B,Neural network,Indonesia,"(8, 2)",up,3510,B_close_to_close_Neural_network_Indonesia.pkl,05b93488368c34e4c85af75510bc3c817114588501ae15446ecb0c5fcbf662e4
+close to close,B,Neural network,Malaysia,"(6, 45)",up,3575,B_close_to_close_Neural_network_Malaysia.pkl,0ea0999dbdf15a91f30f378769140fad10788193e267f38e519d78194c4ac723
+close to close,B,Neural network,Philippines,"(6, 2)",up,3574,B_close_to_close_Neural_network_Philippines.pkl,6a7b4b559dae90494dd1c89e94e3affe40a8e59c59d74e0f74ca7c342c9c7051
+close to close,B,Neural network,Singapore,"(4, 200)",up,3687,B_close_to_close_Neural_network_Singapore.pkl,7e145859e61e51d5b8b7b97ad036d00be2a8ac7fe80014714335b3ccee1ba737
+close to close,B,Neural network,Thailand,"(8, 66)",up,3556,B_close_to_close_Neural_network_Thailand.pkl,8059f03b0b96f0510e318ca7c696a5f7ba223836f413de0dc187afa7f97e30cd
+close to close,B,Neural network,India,"(4, 1)",up,3603,B_close_to_close_Neural_network_India.pkl,aaaa15c3c0ec4255f0193ec58362ea899d4204d7e619438fffcd638c8bebb41c
+close to close,B,Neural network,Korea,"(12, 30)",up,3607,B_close_to_close_Neural_network_Korea.pkl,fc30fd3b66c5dcdcd81256720ee81058402e10b43ad8b52cb4d62e7501c18139
+close to close,B,Neural network,Taiwan,"(10, 10)",up,3381,B_close_to_close_Neural_network_Taiwan.pkl,c7b01223b13ea6169e08453ee1eb45d7b200c57f7771a0cac905bd43ac4373c6
+close to close,B,Neural network,Hong Kong,"(10, 1)",up,3563,B_close_to_close_Neural_network_Hong_Kong.pkl,9200c94a08db1b527699b0cea40b3dfe0e3b68cbba994eba3d975b7f4a7fe80d
+close to close,B,Neural network,Japan,"(4, 1)",up,3598,B_close_to_close_Neural_network_Japan.pkl,fc4f63df73c46fe3d0adff98d6a7f2eb9fc47e727a9165e8cd4364a5e3e766b1
+close to close,C,LDA,Indonesia,LinearDiscriminantAnalysis(),up,3510,C_close_to_close_LDA_Indonesia.pkl,f97e30fe9a503dcc28255924169eabb93142f929771546f035053308dfa8952b
+close to close,C,LDA,Malaysia,LinearDiscriminantAnalysis(),up,3575,C_close_to_close_LDA_Malaysia.pkl,c81f97acdd5d3145e5e5d4d5f4b18b23d1b10a4e4bf2e86d0562059aaf1bcc62
+close to close,C,LDA,Philippines,LinearDiscriminantAnalysis(),up,3574,C_close_to_close_LDA_Philippines.pkl,0dfe8692b085aaf5f224cefc4e46e546d1c1c26f780d13620b653a217df66316
+close to close,C,LDA,Singapore,LinearDiscriminantAnalysis(),up,3687,C_close_to_close_LDA_Singapore.pkl,d7e9c2baf5b9197c6aaf888c76d075337f003416175d37d4c109863a3e1d2b99
+close to close,C,LDA,Thailand,LinearDiscriminantAnalysis(),up,3556,C_close_to_close_LDA_Thailand.pkl,55c775f92105cde69f3fe0156bb8fbde24673a6b697f2bb56443584fdd34c938
+close to close,C,LDA,India,LinearDiscriminantAnalysis(),up,3603,C_close_to_close_LDA_India.pkl,50206512a7c4313e9a9bc4bc17f732e2789a351f563a8b4578c121b6a4725fac
+close to close,C,LDA,Korea,LinearDiscriminantAnalysis(),up,3607,C_close_to_close_LDA_Korea.pkl,d53abf8f8d13c5e45bbac3b5c7f8552b88bba990070fbd4beb728db0bff5896f
+close to close,C,LDA,Taiwan,LinearDiscriminantAnalysis(),up,3381,C_close_to_close_LDA_Taiwan.pkl,e9b01ec16036ca887f6190fc903819f34d31fe1aeee4132de8eb751b77c3f017
+close to close,C,LDA,Hong Kong,LinearDiscriminantAnalysis(),up,3563,C_close_to_close_LDA_Hong_Kong.pkl,c3ab601f4eaec81000c9a6071ec1663e3b7285db3cf441a139b7828883a52d0d
+close to close,C,LDA,Japan,LinearDiscriminantAnalysis(),up,3598,C_close_to_close_LDA_Japan.pkl,653ccc8ff2c16f6ccb688db92ae4bfc2ddf0b38bbc4cdfa92135094ff1f4ff14
+close to close,C,Logistic regression,Indonesia,LogisticRegression(C=0.0001),up,3510,C_close_to_close_Logistic_regression_Indonesia.pkl,fdcaf908f86e0e113be77f063341b08654b9547b60bcd8cbbea341fe1dbc9a92
+close to close,C,Logistic regression,Malaysia,LogisticRegression(C=0.001),up,3575,C_close_to_close_Logistic_regression_Malaysia.pkl,e7ebf2f7d2568b3e329048227cf6d0b72377868100825e086e11862f03b5bad4
+close to close,C,Logistic regression,Philippines,LogisticRegression(C=0.1),up,3574,C_close_to_close_Logistic_regression_Philippines.pkl,12468867201fba237846963fee05ddf5a5254c4b85c267a68fdb0823e032c6e4
+close to close,C,Logistic regression,Singapore,LogisticRegression(C=0.0001),up,3687,C_close_to_close_Logistic_regression_Singapore.pkl,ad330416cc123bc38041b12c2c198df00a745fd3c7e8927c03453bd6c70dabab
+close to close,C,Logistic regression,Thailand,LogisticRegression(C=0.0001),up,3556,C_close_to_close_Logistic_regression_Thailand.pkl,e3f407fb6a463d3b3db3d061577010fa83f756c92517a39df1df1b7c9239259c
+close to close,C,Logistic regression,India,LogisticRegression(C=0.0001),up,3603,C_close_to_close_Logistic_regression_India.pkl,7ccc0593d78871dfa99226f635e390f04734abee5a621bebab9f2dbc9b73f8e8
+close to close,C,Logistic regression,Korea,LogisticRegression(C=0.0001),up,3607,C_close_to_close_Logistic_regression_Korea.pkl,aca34af7ddc9afb4548e9c42fa0290d38017a5de4a4eb5bb815e1272b2e6aecc
+close to close,C,Logistic regression,Taiwan,LogisticRegression(C=0.0001),up,3381,C_close_to_close_Logistic_regression_Taiwan.pkl,8b05c8f58a10cb590ceec12baf7e119ad9c0d312252c6620a54eb54d84cc9a0b
+close to close,C,Logistic regression,Hong Kong,LogisticRegression(C=10),up,3563,C_close_to_close_Logistic_regression_Hong_Kong.pkl,3b41beb477f1f74bad649441fefe117fa5dd269f7f10147f6d58614b78af82fc
+close to close,C,Logistic regression,Japan,LogisticRegression(C=0.0001),up,3598,C_close_to_close_Logistic_regression_Japan.pkl,5213c64a47a6a1557a29371c89d47621e7840ffc1cae501c80f908c6adbcb442
+close to close,C,KNN,Indonesia,KNeighborsClassifier(n_neighbors=501),up,3510,C_close_to_close_KNN_Indonesia.pkl,ff3211cd09d3472c75a0fbca327a17c5665a6fde1db48a3178d801e8913be391
+close to close,C,KNN,Malaysia,KNeighborsClassifier(n_neighbors=251),up,3575,C_close_to_close_KNN_Malaysia.pkl,8a43987ee8c51b2778eb8354f0fd42ecfeb67af79b3cc21bae71d2f1f09fd465
+close to close,C,KNN,Philippines,KNeighborsClassifier(n_neighbors=101),up,3574,C_close_to_close_KNN_Philippines.pkl,b9e5e17fe8755ccc73832bbfc6fe6923237b61e5cdb7e0d536a8cb3eb7c52ca6
+close to close,C,KNN,Singapore,KNeighborsClassifier(n_neighbors=501),up,3687,C_close_to_close_KNN_Singapore.pkl,d86c065b4e6e98ac198a913c7a6ebdf6105417760b6f3d8ddc0b93bd3c48dbc1
+close to close,C,KNN,Thailand,KNeighborsClassifier(n_neighbors=501),up,3556,C_close_to_close_KNN_Thailand.pkl,7e06b718daebefdea50ea1291c25e6ee0eaac46e6e565c95f4ecc1c28fbba0c3
+close to close,C,KNN,India,KNeighborsClassifier(n_neighbors=101),up,3603,C_close_to_close_KNN_India.pkl,0a0cce32e733d97a7627993c507bad06a070b1360ff500e4dfdfc95603a4d0cf
+close to close,C,KNN,Korea,KNeighborsClassifier(n_neighbors=101),up,3607,C_close_to_close_KNN_Korea.pkl,78cc7916496beaa7dbe26c8f47888132613131d281a0b315d0abb33cebd0bf6e
+close to close,C,KNN,Taiwan,KNeighborsClassifier(n_neighbors=501),up,3381,C_close_to_close_KNN_Taiwan.pkl,78ce7b02b479554356b9c48991bcaf825990142ce949addaa2852e8fb73a73c2
+close to close,C,KNN,Hong Kong,KNeighborsClassifier(n_neighbors=25),up,3563,C_close_to_close_KNN_Hong_Kong.pkl,dfb4034c855400b7067101206b4044f29e43cf827f6e0f4cd5c9beb2f5d61df1
+close to close,C,KNN,Japan,KNeighborsClassifier(n_neighbors=501),up,3598,C_close_to_close_KNN_Japan.pkl,d5857d6d29b31b921b3a52ef6b00297e8e3dc8512808b9b7f331e333a52329d6
+close to close,C,SVM,Indonesia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.01))",up,3510,C_close_to_close_SVM_Indonesia.pkl,4a2b2417e26b24ffe2f17d5647274d2e7a707c6eca5ef7a976900f64f5a14f09
+close to close,C,SVM,Malaysia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3575,C_close_to_close_SVM_Malaysia.pkl,0d4a3c50a9fbeda04f4f1cc5b9c4e0c6177c6cc52508859030a1181445dd273d
+close to close,C,SVM,Philippines,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3574,C_close_to_close_SVM_Philippines.pkl,0492fc9ab1e9edadbd43679a8363d86a2222aa7312355117360bc806e9eb41e6
+close to close,C,SVM,Singapore,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",up,3687,C_close_to_close_SVM_Singapore.pkl,e6694099524df921f2b815cf8a31ac8abf4b834f2f1ee45bad3384e26400836b
+close to close,C,SVM,Thailand,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3556,C_close_to_close_SVM_Thailand.pkl,26bf162afb6bc87139f8901e6487c84756a3fbb9d2063b1e9af1a53be179864e
+close to close,C,SVM,India,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",up,3603,C_close_to_close_SVM_India.pkl,19f835e60b1f789686b0ae1c5dbe483af3d9e67f3f8bc2c7ce9a0ee1a16ca5a0
+close to close,C,SVM,Korea,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",up,3607,C_close_to_close_SVM_Korea.pkl,316f614dc7f9b2f5a55c65e933c7c7fadce92eb7c39148153e22c286eb929d8a
+close to close,C,SVM,Taiwan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3381,C_close_to_close_SVM_Taiwan.pkl,59f3a63a1085edb9ebd9f4519c024d25c1c4c3293a5267715e7b14e40e9c7021
+close to close,C,SVM,Hong Kong,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",up,3563,C_close_to_close_SVM_Hong_Kong.pkl,8354311ee2e7ad3f42897b6b4ff1a865988acfa325ab66b15eaade59cde52aff
+close to close,C,SVM,Japan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3598,C_close_to_close_SVM_Japan.pkl,deb15dbec458cbe9c2631fd43daf9d7da14004d2bf494fa6e42a864eb46bb858
+close to close,C,Random forest,Indonesia,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3510,C_close_to_close_Random_forest_Indonesia.pkl,b3440678804ab988414558738e1b03c995a9a5068b877b368799ab8f2abcf30f
+close to close,C,Random forest,Malaysia,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3575,C_close_to_close_Random_forest_Malaysia.pkl,72ec87210280fbfde3ea9a380d785e8de2401da2c1b14532894d5d75d9ab93ff
+close to close,C,Random forest,Philippines,"RandomForestClassifier(max_features=3, min_samples_leaf=10, n_estimators=300, n_jobs=-1, random_state=0)",up,3574,C_close_to_close_Random_forest_Philippines.pkl,7c127464d77b7bc28173bfc84d11c6903cf158ec0a91095df4d9a50827c5657a
+close to close,C,Random forest,Singapore,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3687,C_close_to_close_Random_forest_Singapore.pkl,ef848865806d49acda62a89b799dbeb9504699305a68d3831014751304377502
+close to close,C,Random forest,Thailand,"RandomForestClassifier(max_features=3, min_samples_leaf=10, n_estimators=300, n_jobs=-1, random_state=0)",up,3556,C_close_to_close_Random_forest_Thailand.pkl,3a5e129f204f967ac2f0db17d6ed855d02d588be85ba6942b84afa56f18a8339
+close to close,C,Random forest,India,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3603,C_close_to_close_Random_forest_India.pkl,f9f6758e0646a507e5f9fb21979be5aa9702de4db4a3d1ac656be25cdb256a64
+close to close,C,Random forest,Korea,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3607,C_close_to_close_Random_forest_Korea.pkl,bbde47b1dbcc5e8412592136613af67f5b933fdc8fee50411237200e0057cfad
+close to close,C,Random forest,Taiwan,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3381,C_close_to_close_Random_forest_Taiwan.pkl,0d381cf18de52a01077694803670ced674922a33a9d567006a5d247b74dbbc35
+close to close,C,Random forest,Hong Kong,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3563,C_close_to_close_Random_forest_Hong_Kong.pkl,5c6438af28495e6b493bdede4301691a57c202bdb735dacde2b199c85e6cc5f5
+close to close,C,Random forest,Japan,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3598,C_close_to_close_Random_forest_Japan.pkl,1efca219f2f3b22ac1141f70c66f1319e1df8c101b4f1314a50a8470f6e11e7b
+close to close,C,AdaBoost,Indonesia,"AdaBoostClassifier(learning_rate=2.0, random_state=0)",up,3510,C_close_to_close_AdaBoost_Indonesia.pkl,35d818c1d2dc1a3bc352312618542436d97ae18f4721ed8385d14f8bb2590a3a
+close to close,C,AdaBoost,Malaysia,"AdaBoostClassifier(n_estimators=500, random_state=0)",up,3575,C_close_to_close_AdaBoost_Malaysia.pkl,06c2663e30992db9b79873a4af1670636817d1fde1a8c248c3c60599fe39f5a1
+close to close,C,AdaBoost,Philippines,"AdaBoostClassifier(n_estimators=500, random_state=0)",up,3574,C_close_to_close_AdaBoost_Philippines.pkl,d062153f750a9ea20264aa8095ca9f78ea228e83b90a2348f085d98453bb4936
+close to close,C,AdaBoost,Singapore,"AdaBoostClassifier(learning_rate=2.0, n_estimators=500, random_state=0)",up,3687,C_close_to_close_AdaBoost_Singapore.pkl,2cbf5d1af3de1c084f1523837fb35d7ef697055b6bdf13b86c03fef5fe839e1c
+close to close,C,AdaBoost,Thailand,"AdaBoostClassifier(learning_rate=2.0, random_state=0)",up,3556,C_close_to_close_AdaBoost_Thailand.pkl,9bd56cfdc6a8bc87159688a83841754c5991aa1ae5cbccb4b3b73326c7b833e9
+close to close,C,AdaBoost,India,"AdaBoostClassifier(learning_rate=2.0, n_estimators=200, random_state=0)",up,3603,C_close_to_close_AdaBoost_India.pkl,dc7e6bf69a7c740e563749c930e7265ed9799222fd16908f3f184b8dc0abfbd3
+close to close,C,AdaBoost,Korea,AdaBoostClassifier(random_state=0),up,3607,C_close_to_close_AdaBoost_Korea.pkl,22bab2c1a55d0c053f0eb5cb8c6787e313d08a89353da16ed33e7beeca81c4c8
+close to close,C,AdaBoost,Taiwan,"AdaBoostClassifier(n_estimators=500, random_state=0)",up,3381,C_close_to_close_AdaBoost_Taiwan.pkl,1c25f1fd50bb75ed51316e7fb0cf69afae38cbdaeae04c530a55297289283aa7
+close to close,C,AdaBoost,Hong Kong,"AdaBoostClassifier(n_estimators=500, random_state=0)",up,3563,C_close_to_close_AdaBoost_Hong_Kong.pkl,fe62a21e4ceeabd8236e68104a2c7951e60c3eb3e7c0bb43081a68c91832cb88
+close to close,C,AdaBoost,Japan,"AdaBoostClassifier(n_estimators=500, random_state=0)",up,3598,C_close_to_close_AdaBoost_Japan.pkl,a9a1d090bcf9c80c12dfd240218388b10ccaf3b1658ea6bfcfa640ec893b2f9e
+close to close,C,Neural network,Indonesia,"(12, 3)",up,3510,C_close_to_close_Neural_network_Indonesia.pkl,8641bbf113affa943ca5de18362ccfb372a657ff92360194331b06a5fadc220b
+close to close,C,Neural network,Malaysia,"(4, 4)",up,3575,C_close_to_close_Neural_network_Malaysia.pkl,4bb68318958b37ce3f87efa322d46775c5d89808b6bcdf7886b1ee4243d0275b
+close to close,C,Neural network,Philippines,"(8, 101)",up,3574,C_close_to_close_Neural_network_Philippines.pkl,ec535c0a27ca630c15e33e52de2bd621388059a4268388574b78e2717616222f
+close to close,C,Neural network,Singapore,"(10, 42)",up,3687,C_close_to_close_Neural_network_Singapore.pkl,8f521c3a2fde3b96ffda9663032bfec7e7f4f28612113505ac5846166d453cd8
+close to close,C,Neural network,Thailand,"(4, 6)",up,3556,C_close_to_close_Neural_network_Thailand.pkl,01464d721322f2d512368e02e2efdee6013469a8921774e967b4e68221334d89
+close to close,C,Neural network,India,"(10, 1)",up,3603,C_close_to_close_Neural_network_India.pkl,f3f6363dbb4f732801d4bf09f54954e5079ef8f532424efca07dad57a4427dd3
+close to close,C,Neural network,Korea,"(6, 2)",up,3607,C_close_to_close_Neural_network_Korea.pkl,95eb70d3e605f2c69b5df930981cca97638dee300055568d08342d0686271ba3
+close to close,C,Neural network,Taiwan,"(6, 2)",up,3381,C_close_to_close_Neural_network_Taiwan.pkl,4846c21fbc2e5273d7c18cf79e23a652d445bbf20af38ec2c7fece2461c36e47
+close to close,C,Neural network,Hong Kong,"(8, 1)",up,3563,C_close_to_close_Neural_network_Hong_Kong.pkl,9cd0a5f618a0f3a8fe1800f194abeab982881f5cd3c102bc0a05bc68e5ed1c14
+close to close,C,Neural network,Japan,"(2, 3)",up,3598,C_close_to_close_Neural_network_Japan.pkl,4c7229d60674e3221f7e7f40946b0a45abf0e5986d487a4a810ddf6d911e44f9
+close to close,D,LDA,Indonesia,LinearDiscriminantAnalysis(),up,3510,D_close_to_close_LDA_Indonesia.pkl,20529a105bf046cb5de012870119b4e3201e75e9efb80aec018d46920bbfc9b8
+close to close,D,LDA,Malaysia,LinearDiscriminantAnalysis(),up,3575,D_close_to_close_LDA_Malaysia.pkl,395c8d0121e788cb1239c6b0e8fb970b0653cc595a8f494d7b612b2423f251d5
+close to close,D,LDA,Philippines,LinearDiscriminantAnalysis(),up,3574,D_close_to_close_LDA_Philippines.pkl,1a615e8d9006cfa9b8a969ede1792d76592608983a6b7947e9055fc1106cbae7
+close to close,D,LDA,Singapore,LinearDiscriminantAnalysis(),up,3687,D_close_to_close_LDA_Singapore.pkl,9324a3785c858362f76b54adcb75bfdab0a78fd9d7781189888c1c9543d4f7e5
+close to close,D,LDA,Thailand,LinearDiscriminantAnalysis(),up,3556,D_close_to_close_LDA_Thailand.pkl,0a573ea0252ff112b489b6180bca11f1d23ccb3cf6c54a3e17680db99b66d740
+close to close,D,LDA,India,LinearDiscriminantAnalysis(),up,3603,D_close_to_close_LDA_India.pkl,c26fd0fe8f29154eb3fe3f1fb96d601d781db7060eb27789a97849816f59630b
+close to close,D,LDA,Korea,LinearDiscriminantAnalysis(),up,3607,D_close_to_close_LDA_Korea.pkl,f5d4c3207b7a2f7eccbba1b9d7d8e6dac07ffe57944a9558a47924799ae78378
+close to close,D,LDA,Taiwan,LinearDiscriminantAnalysis(),up,3381,D_close_to_close_LDA_Taiwan.pkl,de235fa13162db766289db9e30e13642ca1eba775cf2cda88cc80790c30d3e91
+close to close,D,LDA,Hong Kong,LinearDiscriminantAnalysis(),up,3563,D_close_to_close_LDA_Hong_Kong.pkl,ad382563dbbbe698bf1ff3cb7abe1c9dd014c731a67676c050f901344652129a
+close to close,D,LDA,Japan,LinearDiscriminantAnalysis(),up,3598,D_close_to_close_LDA_Japan.pkl,896357ba21688cd82bf220c76a82a1f086d26b097402879b5cb58e2ae66a1258
+close to close,D,Logistic regression,Indonesia,LogisticRegression(C=0.001),up,3510,D_close_to_close_Logistic_regression_Indonesia.pkl,357e2d5fe331d9d2f2731db59fbdb1ae9d1ddd5274a57bc24c580c59c47c7a0f
+close to close,D,Logistic regression,Malaysia,LogisticRegression(C=0.001),up,3575,D_close_to_close_Logistic_regression_Malaysia.pkl,3a3ddb0abb5c419e2661715fe980c6838e15127215f082dcc495fbf7facef3d4
+close to close,D,Logistic regression,Philippines,LogisticRegression(C=10),up,3574,D_close_to_close_Logistic_regression_Philippines.pkl,1e2a5a7774e47510dd3eb7302cb2178aec789983db7115e3518f85db4fa14629
+close to close,D,Logistic regression,Singapore,LogisticRegression(C=0.01),up,3687,D_close_to_close_Logistic_regression_Singapore.pkl,a648f2b567eaaa94ca46f9d2d878dc62c71f0a384e507de944ae63ecdfcfb9e7
+close to close,D,Logistic regression,Thailand,LogisticRegression(C=0.01),up,3556,D_close_to_close_Logistic_regression_Thailand.pkl,cebc6b4b55113a29304cd7f9a41c13cc700b0ab58c638c28e26da93f0c5530a7
+close to close,D,Logistic regression,India,LogisticRegression(C=0.01),up,3603,D_close_to_close_Logistic_regression_India.pkl,e1599d4635a160a994993d7299938ea4e386589fe6627c5b9f2055934d34a054
+close to close,D,Logistic regression,Korea,LogisticRegression(C=0.01),up,3607,D_close_to_close_Logistic_regression_Korea.pkl,afcd74000b0608d4a41199a82ed45fc67d2fda35ef4eaa2b943c86f0cd3eae17
+close to close,D,Logistic regression,Taiwan,LogisticRegression(C=0.1),up,3381,D_close_to_close_Logistic_regression_Taiwan.pkl,c0a6c1f0dc8e71d16776f206d382f6e253f3781525eb32a8854635ee2d6b58aa
+close to close,D,Logistic regression,Hong Kong,LogisticRegression(C=0.01),up,3563,D_close_to_close_Logistic_regression_Hong_Kong.pkl,a7950e322be6679cf1c68a05aa3f8dae03b817e340dac0d94f3fca5a6122ceac
+close to close,D,Logistic regression,Japan,LogisticRegression(C=10),up,3598,D_close_to_close_Logistic_regression_Japan.pkl,124fd6906f81d66dfd031bfa8fa464abd61716593a7afb5f8b1e057ce892187b
+close to close,D,KNN,Indonesia,KNeighborsClassifier(n_neighbors=251),up,3510,D_close_to_close_KNN_Indonesia.pkl,e7c2d9159b6540ab56e1100ac9493cb15c206d9c2e054b033fce1826dc0902f3
+close to close,D,KNN,Malaysia,KNeighborsClassifier(n_neighbors=101),up,3575,D_close_to_close_KNN_Malaysia.pkl,eeb37e753b808318bf1703ef744418747002bb053db9a857796f38b5961662e6
+close to close,D,KNN,Philippines,KNeighborsClassifier(n_neighbors=251),up,3574,D_close_to_close_KNN_Philippines.pkl,eabe765339c0cee30613ec0ed5c5d71943ccbeee535062a57be5c0cc35737719
+close to close,D,KNN,Singapore,KNeighborsClassifier(n_neighbors=101),up,3687,D_close_to_close_KNN_Singapore.pkl,d5e5ff3f906646e686977d09d919b15f9326dbbd8a6b0d1bfc2c74c25fbd4848
+close to close,D,KNN,Thailand,KNeighborsClassifier(n_neighbors=101),up,3556,D_close_to_close_KNN_Thailand.pkl,3756c61258fd5ca64aafe0c4134974b305e2d234b64beb04f5891aeea16083e3
+close to close,D,KNN,India,KNeighborsClassifier(n_neighbors=501),up,3603,D_close_to_close_KNN_India.pkl,39b03c116aca3096b71008808e8d6886c2a4835728f347147049e5f658cab7c7
+close to close,D,KNN,Korea,KNeighborsClassifier(n_neighbors=251),up,3607,D_close_to_close_KNN_Korea.pkl,837af247af666111783c78ab5359daba6e6b898e5f1d327adb1343c8298d31c5
+close to close,D,KNN,Taiwan,KNeighborsClassifier(n_neighbors=101),up,3381,D_close_to_close_KNN_Taiwan.pkl,a66defa0722299b40fc11b03ef4a9746745abd502021ed0bfcc5e117ec334fec
+close to close,D,KNN,Hong Kong,KNeighborsClassifier(n_neighbors=101),up,3563,D_close_to_close_KNN_Hong_Kong.pkl,1b36b6ed5f6d0464113987350413ce9fa6f0729538de935bd4b0f569e99c7594
+close to close,D,KNN,Japan,KNeighborsClassifier(n_neighbors=101),up,3598,D_close_to_close_KNN_Japan.pkl,003b21728fa4a1ece7e123c82f29784b3157aa98dcf2b24390665d3ef18086bd
+close to close,D,SVM,Indonesia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3510,D_close_to_close_SVM_Indonesia.pkl,778483d97428ad1166e6ecab3526035ea3a1cbbca13341454b0577e124397538
+close to close,D,SVM,Malaysia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.01))",up,3575,D_close_to_close_SVM_Malaysia.pkl,ae60aebf2e4d1d3ff2a7afb794fc2403b93df793ad5c1ffefeb1ffd4c5c46a1b
+close to close,D,SVM,Philippines,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3574,D_close_to_close_SVM_Philippines.pkl,48d0ddfc2264d4ba035b33ee7fb171e59268dccf3cf6e0ab58877b1ae785dfc4
+close to close,D,SVM,Singapore,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.01))",up,3687,D_close_to_close_SVM_Singapore.pkl,36217f937dd29446090d59fa79bd3196cbd8f7e75132734d6d1157af4b90315f
+close to close,D,SVM,Thailand,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",up,3556,D_close_to_close_SVM_Thailand.pkl,a4f4acd48d8795e2d1405d5efd994419a1146deacb1ec29431cc495bdbf3434d
+close to close,D,SVM,India,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",up,3603,D_close_to_close_SVM_India.pkl,de88ff9129a52742302a9e62bcec6284cf88a30a77d7f53c935dc3f97a90b339
+close to close,D,SVM,Korea,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3607,D_close_to_close_SVM_Korea.pkl,5dc23a3c24a2630d0859b6a39d1d6a07c1186aa95c4309e971082166024a9376
+close to close,D,SVM,Taiwan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3381,D_close_to_close_SVM_Taiwan.pkl,36237d62972416ccdf903a7e0db1ce0da68948b99ac8a8d8b9bca7530607f570
+close to close,D,SVM,Hong Kong,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3563,D_close_to_close_SVM_Hong_Kong.pkl,d6f19b9a6b813fe324f23aee5df6c2e3831e4f69ca60e228059d1672ac520e37
+close to close,D,SVM,Japan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",up,3598,D_close_to_close_SVM_Japan.pkl,33150c5a38a2f99e61f45ffbbb2f83d9a8c5b6efdcf7f5946a91805dcd5c1318
+close to close,D,Random forest,Indonesia,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3510,D_close_to_close_Random_forest_Indonesia.pkl,26e1d480289a6c8e1e78e3b607f8c764fd412216836b599443838e9f40c51570
+close to close,D,Random forest,Malaysia,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3575,D_close_to_close_Random_forest_Malaysia.pkl,0cdf8dde8ac4fb2bbc066d61d5890217ca47796d971db13c422b88e096325895
+close to close,D,Random forest,Philippines,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3574,D_close_to_close_Random_forest_Philippines.pkl,54009404bffdec16b95f5f24a92b71ee0e56d925a50bc5ef20a50404f3e7a55f
+close to close,D,Random forest,Singapore,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3687,D_close_to_close_Random_forest_Singapore.pkl,bf2ce8298b42dad0474abcde9161b369b7fed7662d69a6611edb10c4d83c10e5
+close to close,D,Random forest,Thailand,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3556,D_close_to_close_Random_forest_Thailand.pkl,bb45aabff73f762ec82fe58bae739483d62ebaacf6419c1f2fd4ede988bb2e47
+close to close,D,Random forest,India,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3603,D_close_to_close_Random_forest_India.pkl,9b227e8976a9ef5f13e33b58653769f27d0842efe1bbab8839f44cebeb5d7898
+close to close,D,Random forest,Korea,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3607,D_close_to_close_Random_forest_Korea.pkl,1d84d8771441a376c4b11dbe39f870200bd959a348e4fd884c56af761687a647
+close to close,D,Random forest,Taiwan,"RandomForestClassifier(max_features=3, min_samples_leaf=10, n_estimators=300, n_jobs=-1, random_state=0)",up,3381,D_close_to_close_Random_forest_Taiwan.pkl,06c6701563448b3503cf291ed525b90dacf872f29b96e11a7ad082f8b60a0d7b
+close to close,D,Random forest,Hong Kong,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3563,D_close_to_close_Random_forest_Hong_Kong.pkl,caea3dbbd4d0d58546cf1d9f3f400b00c74b4b8551ac37b38ea9158eced2ccb3
+close to close,D,Random forest,Japan,"RandomForestClassifier(max_features=3, n_estimators=300, n_jobs=-1, random_state=0)",up,3598,D_close_to_close_Random_forest_Japan.pkl,bcb346ab4abccc157aa9e8cf5c38b8b5b26690175f25be17e26ae1d59f20d0e9
+close to close,D,AdaBoost,Indonesia,"AdaBoostClassifier(n_estimators=500, random_state=0)",up,3510,D_close_to_close_AdaBoost_Indonesia.pkl,ce95d893fa3a2e921d8eecf1d28169c69073b171a9fca5ff5368f4c15d01d0a2
+close to close,D,AdaBoost,Malaysia,"AdaBoostClassifier(n_estimators=200, random_state=0)",up,3575,D_close_to_close_AdaBoost_Malaysia.pkl,17f0d9f0788fb707ead40708d9db5ea44dc90f8e0afa194f9ce3fd09c5609d56
+close to close,D,AdaBoost,Philippines,AdaBoostClassifier(random_state=0),up,3574,D_close_to_close_AdaBoost_Philippines.pkl,bd12fef7acc0faaa6533e64ef0406fd057b0f814984d5e225697c2489b6af1bf
+close to close,D,AdaBoost,Singapore,"AdaBoostClassifier(learning_rate=0.1, n_estimators=500, random_state=0)",up,3687,D_close_to_close_AdaBoost_Singapore.pkl,2b111dd1699c4c72ca31dccb85276a7a605027a92c74a76c0b30b37ef7305bb5
+close to close,D,AdaBoost,Thailand,"AdaBoostClassifier(learning_rate=0.1, n_estimators=500, random_state=0)",up,3556,D_close_to_close_AdaBoost_Thailand.pkl,e7cc5810aa5a25a7b1a6b97065feefbd00df3bb4a74588b67db8832753e7acb2
+close to close,D,AdaBoost,India,"AdaBoostClassifier(n_estimators=200, random_state=0)",up,3603,D_close_to_close_AdaBoost_India.pkl,e49138b3ad9914e1284720b6412ead9b1a45368420ed39f5cf960af20135e32d
+close to close,D,AdaBoost,Korea,"AdaBoostClassifier(learning_rate=0.1, n_estimators=500, random_state=0)",up,3607,D_close_to_close_AdaBoost_Korea.pkl,7800bad32baa2a5863661d6e6af4aa76b90414cd699a2e990c9830f48b3d3ca0
+close to close,D,AdaBoost,Taiwan,"AdaBoostClassifier(learning_rate=0.1, n_estimators=200, random_state=0)",up,3381,D_close_to_close_AdaBoost_Taiwan.pkl,1800edaa4fb7fd184fdf999188709b67a8410ac00d5df5a05ac96b5e8367ac55
+close to close,D,AdaBoost,Hong Kong,"AdaBoostClassifier(learning_rate=0.1, n_estimators=500, random_state=0)",up,3563,D_close_to_close_AdaBoost_Hong_Kong.pkl,31881197dd28e4ef40c6fa71f413949d434a3de0c94a6d64e1c2747818e02e07
+close to close,D,AdaBoost,Japan,"AdaBoostClassifier(learning_rate=0.1, n_estimators=500, random_state=0)",up,3598,D_close_to_close_AdaBoost_Japan.pkl,8cd4386fa44ce210425d7d0ba5eb1c9831382129703042ad1aeaaecd45dc6d11
+close to close,D,Neural network,Indonesia,"(12, 1)",up,3510,D_close_to_close_Neural_network_Indonesia.pkl,2dcff6d2099b00a636b2bcce126ee6af377283b9c3a9fce85fc87e9f6c568a67
+close to close,D,Neural network,Malaysia,"(2, 4)",up,3575,D_close_to_close_Neural_network_Malaysia.pkl,45d71ecf743a41ec132e3dd1340cd956a33d9b56bd2575abb77dfa51b59e93e8
+close to close,D,Neural network,Philippines,"(2, 5)",up,3574,D_close_to_close_Neural_network_Philippines.pkl,06c08ffe87e9e1cfb82328a6afc9e3f8db7f87db4693a80aa6f3437c4f4fb101
+close to close,D,Neural network,Singapore,"(6, 7)",up,3687,D_close_to_close_Neural_network_Singapore.pkl,0bd07da33971a411cbebba10187ea71831cdc9ad190efc1386af8938bc0a6de6
+close to close,D,Neural network,Thailand,"(10, 7)",up,3556,D_close_to_close_Neural_network_Thailand.pkl,bc1094f8e9546b18c52c81ebc7a588520014ab03a8c735926cd62794d4c2aa23
+close to close,D,Neural network,India,"(4, 14)",up,3603,D_close_to_close_Neural_network_India.pkl,e35802ad4647861a085415bd564af7537e7d045f7fa1683c67f5fac52e0dd91f
+close to close,D,Neural network,Korea,"(6, 18)",up,3607,D_close_to_close_Neural_network_Korea.pkl,57972ebac70f2ca3cc51b4255a14438ba7a7582441b0d3eee46b7783643b3237
+close to close,D,Neural network,Taiwan,"(2, 99)",up,3381,D_close_to_close_Neural_network_Taiwan.pkl,795491c0767c19eb432704350da863c82e7bdfe810825b56f21b404a2edefba3
+close to close,D,Neural network,Hong Kong,"(4, 10)",up,3563,D_close_to_close_Neural_network_Hong_Kong.pkl,e3fcd9edc44bbad01e18665a6d611e836277d017658d8ff922b48903d489f3c0
+close to close,D,Neural network,Japan,"(12, 106)",up,3598,D_close_to_close_Neural_network_Japan.pkl,58690021e3ab1ae1ab9bed79b30d5d58e08c77ab1203f502ec132cbc04e65c32
+open to close,A,LDA,Indonesia,LinearDiscriminantAnalysis(),up,3206,A_open_to_close_LDA_Indonesia.pkl,9f9b581407dd7eccf2fc6eb9818ac13d72449e41d6b0679ed55746c7afdc8829
+open to close,A,LDA,Malaysia,LinearDiscriminantAnalysis(),up,3568,A_open_to_close_LDA_Malaysia.pkl,e8a3017a26297536887c5aa53a80a592148afe077bd4c1c024298ae8413fe9ef
+open to close,A,LDA,Philippines,LinearDiscriminantAnalysis(),down,3513,A_open_to_close_LDA_Philippines.pkl,f5644cebdd5c83dcf65c34b71d2a95e9694a4bdcdfa86e9b274b9b5c549bda8e
+open to close,A,LDA,Singapore,LinearDiscriminantAnalysis(),down,3484,A_open_to_close_LDA_Singapore.pkl,36dfd33beea1fc15a7d7b820d067cb577474467e8eae7e0d74cc88b18aee600e
+open to close,A,LDA,Thailand,LinearDiscriminantAnalysis(),down,3555,A_open_to_close_LDA_Thailand.pkl,b67fd54e614d263176048d2c9a9cbf5aef5f2bc4a13e62eec3b051d3c47e16da
+open to close,A,LDA,India,LinearDiscriminantAnalysis(),down,3601,A_open_to_close_LDA_India.pkl,27159f75915efecac24e412b840ec45ae73fb043a379b519c4a0a193b7c9b626
+open to close,A,LDA,Korea,LinearDiscriminantAnalysis(),down,3602,A_open_to_close_LDA_Korea.pkl,6e93ea5e7dca811596fb9a7562f72e8d8735c8f3daf6afcb8b372dcd1cb7523f
+open to close,A,LDA,Taiwan,LinearDiscriminantAnalysis(),up,3373,A_open_to_close_LDA_Taiwan.pkl,94b5ca68090481d38076d2848c4c9c67ccc77c2bd7af80fa8cc1334601651588
+open to close,A,LDA,Hong Kong,LinearDiscriminantAnalysis(),down,3563,A_open_to_close_LDA_Hong_Kong.pkl,74e5948111d945ba329699c2246be044ab58bad80d9712432c499cf0fc490550
+open to close,A,LDA,Japan,LinearDiscriminantAnalysis(),up,3598,A_open_to_close_LDA_Japan.pkl,6d8d14edd9c54674ccc5982c99247664829fec2002b9e3723dc5ab7257ae28d7
+open to close,A,Logistic regression,Indonesia,LogisticRegression(C=0.0001),up,3206,A_open_to_close_Logistic_regression_Indonesia.pkl,448a0a65ebbee59c50facb5980ab7eb28142eb0334b900c265e758402cf77220
+open to close,A,Logistic regression,Malaysia,LogisticRegression(C=10),up,3568,A_open_to_close_Logistic_regression_Malaysia.pkl,ee3422dedfbb42e355aab4c0d2f0bf00c9d134d600ad3aa97763c394d64ce04a
+open to close,A,Logistic regression,Philippines,LogisticRegression(C=0.0001),down,3513,A_open_to_close_Logistic_regression_Philippines.pkl,8320c68b320e372b13ddf48e1fb78fe67fd089fea8c20c8e5ef5a7102f3308e6
+open to close,A,Logistic regression,Singapore,LogisticRegression(C=0.1),down,3484,A_open_to_close_Logistic_regression_Singapore.pkl,fe60a8dc1b0a5a064e7e53f51ddfa8b933f952898982bccffb6d59433a130a69
+open to close,A,Logistic regression,Thailand,LogisticRegression(C=0.0001),down,3555,A_open_to_close_Logistic_regression_Thailand.pkl,57f7fcac6a3f5d9277d42cdfeb50e8de954c8254e36128d70a7ecc217ab91fab
+open to close,A,Logistic regression,India,LogisticRegression(C=0.001),down,3601,A_open_to_close_Logistic_regression_India.pkl,13030096b21f42af10fd41c27adc4ad9ba88568bcb8a0ea90c159cbc2fd101c9
+open to close,A,Logistic regression,Korea,LogisticRegression(C=10),down,3602,A_open_to_close_Logistic_regression_Korea.pkl,fefcc5de8f7f09b7cd683a4466dda4d4d22ff92069b35f8d3297b24471a91bc4
+open to close,A,Logistic regression,Taiwan,LogisticRegression(C=0.01),up,3373,A_open_to_close_Logistic_regression_Taiwan.pkl,fc1bd614b37c7abd86ee0c984ce725e93f4e32c115cb8406c002b01fe6d63584
+open to close,A,Logistic regression,Hong Kong,LogisticRegression(C=0.0001),down,3563,A_open_to_close_Logistic_regression_Hong_Kong.pkl,a437bbfe49f33fa8f3b05032a505f8fb3e1075c83d99717e0042789941db9e76
+open to close,A,Logistic regression,Japan,LogisticRegression(C=1),up,3598,A_open_to_close_Logistic_regression_Japan.pkl,743acb6a5202f41b7bd95e79a2e7d73240e1768d9312e22699c30056118ab6ad
+open to close,A,KNN,Indonesia,KNeighborsClassifier(n_neighbors=251),up,3206,A_open_to_close_KNN_Indonesia.pkl,f25f2a8e6977f59ce8d3cd890e614992dd8b0c2e2710c99307f81dbd4e233b06
+open to close,A,KNN,Malaysia,KNeighborsClassifier(n_neighbors=251),up,3568,A_open_to_close_KNN_Malaysia.pkl,3ca9bc2146d49bf6d0ea30855ff2c5c6e5faa75d28b7cacf9fce1ff8bb644aa4
+open to close,A,KNN,Philippines,KNeighborsClassifier(n_neighbors=501),down,3513,A_open_to_close_KNN_Philippines.pkl,54479f60f722f9163b63b80dd80b857f283c72f824368b9a1ee34edec684dec4
+open to close,A,KNN,Singapore,KNeighborsClassifier(n_neighbors=501),down,3484,A_open_to_close_KNN_Singapore.pkl,785cab3a6c87d58f5431ba555681a7255df8c8a92b58103ef3d6b72815ddd827
+open to close,A,KNN,Thailand,KNeighborsClassifier(n_neighbors=501),down,3555,A_open_to_close_KNN_Thailand.pkl,9b4503d101e988256cc47187c55384a31c7e91e8782a5bb56622a8d0e5e140ff
+open to close,A,KNN,India,KNeighborsClassifier(n_neighbors=501),down,3601,A_open_to_close_KNN_India.pkl,5f6b9c8ef53d0aa44a570382e7587dc89f7454b77100b82f6dbac1e670437cab
+open to close,A,KNN,Korea,KNeighborsClassifier(n_neighbors=251),down,3602,A_open_to_close_KNN_Korea.pkl,e4cddaa726c96e42ebeabdcc6b22dc4060ea78b64a47f2aad533029d4bf155f7
+open to close,A,KNN,Taiwan,KNeighborsClassifier(n_neighbors=251),up,3373,A_open_to_close_KNN_Taiwan.pkl,5d6b5940141b0b8b1823a055228d3ed80af5bf45d0429520516d8bc3e75480ba
+open to close,A,KNN,Hong Kong,KNeighborsClassifier(n_neighbors=251),down,3563,A_open_to_close_KNN_Hong_Kong.pkl,ca82a704d74e8f630b33a9d567ead2fb935e344925295e0a87a0d3df41d6c741
+open to close,A,KNN,Japan,KNeighborsClassifier(n_neighbors=501),up,3598,A_open_to_close_KNN_Japan.pkl,bf54e8b1be84c2d1b10c2fd95eeba86b9f9b3241a96138e77f68dd9d55be28e2
+open to close,A,SVM,Indonesia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",up,3206,A_open_to_close_SVM_Indonesia.pkl,4779c4e96fce900030ccb13f3ad9fca8c314ba284a2c93cb8e04320596e70acc
+open to close,A,SVM,Malaysia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.01))",up,3568,A_open_to_close_SVM_Malaysia.pkl,c61faec2d2c52339ea54cd3b550254b0214ac88c65fc86b5b2de0f2af61d49fc
+open to close,A,SVM,Philippines,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",down,3513,A_open_to_close_SVM_Philippines.pkl,06b8bab19357c09e50525a3f06625a37ba4b70ce88c688d19e8ac8b4c78ff401
+open to close,A,SVM,Singapore,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",down,3484,A_open_to_close_SVM_Singapore.pkl,0906fba6229792acc283213b360156d63293dc5bc05d98da4ce1d3638f244506
+open to close,A,SVM,Thailand,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",down,3555,A_open_to_close_SVM_Thailand.pkl,97fba2c6d9a164c1a526eb5f4fc38b553159aeb1b508c46736a2a416cdf192ef
+open to close,A,SVM,India,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.01))",down,3601,A_open_to_close_SVM_India.pkl,aa1ae3889c09bdbfdee0617f2691379ae6f464aef3deb518e9cd5c7db258a20b
+open to close,A,SVM,Korea,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.1))",down,3602,A_open_to_close_SVM_Korea.pkl,d431869df1b06f85be9c61b2f0df5c910403c7a986a66e11b43635e7c082efff
+open to close,A,SVM,Taiwan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.01))",up,3373,A_open_to_close_SVM_Taiwan.pkl,32b08852e371b2496be56ea2d316241ba96e3849a91a13b8c2620a7134331b08
+open to close,A,SVM,Hong Kong,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",down,3563,A_open_to_close_SVM_Hong_Kong.pkl,8291e087f5bb27cb907e7b5cb9f25dcbf42a48e8b71d6411c57e5f2111a584c8
+open to close,A,SVM,Japan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3598,A_open_to_close_SVM_Japan.pkl,24971bcc8f91308a4c0f23f2d31ef54aae5512dc18330adf5bb8be1a5f5e0186
+open to close,A,Random forest,Indonesia,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3206,A_open_to_close_Random_forest_Indonesia.pkl,e1d37ef071479bc716f77b05ab185b6401a48ae7f37ee0d9c237285cc6be229c
+open to close,A,Random forest,Malaysia,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3568,A_open_to_close_Random_forest_Malaysia.pkl,d1d284b3326b5a1f9f5220f928e604b76ece50eaaa3dad21d10ab7d6dfc8f167
+open to close,A,Random forest,Philippines,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",down,3513,A_open_to_close_Random_forest_Philippines.pkl,d7f63c67693a5ac924cae1bab4260015cf6554cf2a3224c402e94662b609a877
+open to close,A,Random forest,Singapore,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",down,3484,A_open_to_close_Random_forest_Singapore.pkl,68e47caea56c1c5ee1eff3c36f9893200346cccb43bf8e3fc42f9bf67cc76aa7
+open to close,A,Random forest,Thailand,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",down,3555,A_open_to_close_Random_forest_Thailand.pkl,ccf7a172868559ef3b76b6c61975adeb490179b6761fab439ebee986ab32eb5c
+open to close,A,Random forest,India,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",down,3601,A_open_to_close_Random_forest_India.pkl,2750a0542490dc185c90355b713587d894fd1f8b7566844fcdfda0287900fd8b
+open to close,A,Random forest,Korea,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",down,3602,A_open_to_close_Random_forest_Korea.pkl,3f2629da391b56219dc405b1228353e0c9b150c408006773afca9fc501c230d8
+open to close,A,Random forest,Taiwan,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3373,A_open_to_close_Random_forest_Taiwan.pkl,67f188c0d522df5188b9d928c82abaf5edc801dc74a6e5f67ab7fe8800c6a326
+open to close,A,Random forest,Hong Kong,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",down,3563,A_open_to_close_Random_forest_Hong_Kong.pkl,3b43689db70ebaa4cd9094442bf3d7ed90f04023f247b49f7e939c97b672d932
+open to close,A,Random forest,Japan,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3598,A_open_to_close_Random_forest_Japan.pkl,77e59ac201691c4851baf928a40a4e992d7a9a6c80cf6f5508e3052a41ed6d83
+open to close,A,AdaBoost,Indonesia,"AdaBoostClassifier(learning_rate=4.0, random_state=0)",up,3206,A_open_to_close_AdaBoost_Indonesia.pkl,8b544e4ca28514800f1919a37f74ee50467f3c7597ee3ab1935ec20fd0f79b9b
+open to close,A,AdaBoost,Malaysia,"AdaBoostClassifier(learning_rate=2.0, n_estimators=500, random_state=0)",up,3568,A_open_to_close_AdaBoost_Malaysia.pkl,87b985b12678415bfd7ef40337a184277b12fa30c120d12c006ad8ab62ee374d
+open to close,A,AdaBoost,Philippines,"AdaBoostClassifier(learning_rate=2.0, n_estimators=500, random_state=0)",down,3513,A_open_to_close_AdaBoost_Philippines.pkl,396a8aec0f2877d40bbbd101c079bd776dea492422cd482d5312944d882dfb89
+open to close,A,AdaBoost,Singapore,"AdaBoostClassifier(learning_rate=4.0, random_state=0)",down,3484,A_open_to_close_AdaBoost_Singapore.pkl,78a27bb217f5cf37acac73ce74df3f9197cac17a9cc71491f488869fa702d4de
+open to close,A,AdaBoost,Thailand,"AdaBoostClassifier(n_estimators=500, random_state=0)",down,3555,A_open_to_close_AdaBoost_Thailand.pkl,fa18fb177dba42902ed9a6fc2fcca084fa86b52ac4db2bac60d645aa443d0e5b
+open to close,A,AdaBoost,India,"AdaBoostClassifier(n_estimators=200, random_state=0)",down,3601,A_open_to_close_AdaBoost_India.pkl,bcd9a5b0d69b39e66f12a9bd6706d8b2621f9b93d61a738fb5d1c471c5bbf7ea
+open to close,A,AdaBoost,Korea,"AdaBoostClassifier(learning_rate=4.0, n_estimators=500, random_state=0)",down,3602,A_open_to_close_AdaBoost_Korea.pkl,e60e70b1dc2f37d4f3d0c4f8a10da6be86a1c3018539d29130aaf5c4548f1b9d
+open to close,A,AdaBoost,Taiwan,"AdaBoostClassifier(learning_rate=0.1, random_state=0)",up,3373,A_open_to_close_AdaBoost_Taiwan.pkl,2c14648fab00724b361b8a92f3d5937223eae0440e61f347694ef6403579abf0
+open to close,A,AdaBoost,Hong Kong,"AdaBoostClassifier(learning_rate=2.0, n_estimators=500, random_state=0)",down,3563,A_open_to_close_AdaBoost_Hong_Kong.pkl,3083bc31b4e7b271e78251674850044a86c6eccd520412535e0c22957f3143f5
+open to close,A,AdaBoost,Japan,"AdaBoostClassifier(n_estimators=200, random_state=0)",up,3598,A_open_to_close_AdaBoost_Japan.pkl,0c99d6e99942969c71ce814d35b3fb937c2f04b8c19d904944a056d4168ddb79
+open to close,A,Neural network,Indonesia,"(2, 4)",up,3206,A_open_to_close_Neural_network_Indonesia.pkl,38ac43b9c44b817fdf595211d9dc529ddf89cc96106fb8755a9dcd0b1c498ab5
+open to close,A,Neural network,Malaysia,"(4, 195)",up,3568,A_open_to_close_Neural_network_Malaysia.pkl,401add4f2832aa4d2448dc3c9f6d50cb6a50ff2ecbf913559a4c558f83929e86
+open to close,A,Neural network,Philippines,"(2, 4)",down,3513,A_open_to_close_Neural_network_Philippines.pkl,0a2c8be0a73c4fa1f820ced6693ac6b6ca498e4300205036a7327ede83337740
+open to close,A,Neural network,Singapore,"(10, 1)",down,3484,A_open_to_close_Neural_network_Singapore.pkl,f742c2504cd4ee87821ea75a896cdf950b6c06a1284a80f813da2d859aa3f581
+open to close,A,Neural network,Thailand,"(4, 198)",down,3555,A_open_to_close_Neural_network_Thailand.pkl,90dc56024318af81174e4d54908594e6aded8e13e02aaa5cedd167ed01ea6907
+open to close,A,Neural network,India,"(4, 178)",down,3601,A_open_to_close_Neural_network_India.pkl,035900265e0bc800116c1fcd9af34cdc794831156155823e2597ef362c9a8d0a
+open to close,A,Neural network,Korea,"(6, 190)",down,3602,A_open_to_close_Neural_network_Korea.pkl,be2577de8e84854132b03778a6e315aab9c87a92047495c57eea21f46243837a
+open to close,A,Neural network,Taiwan,"(4, 56)",up,3373,A_open_to_close_Neural_network_Taiwan.pkl,41d1767174fbfb1c0855ed3201f57113f19cb2199a2ee8c2df14421ba0a50011
+open to close,A,Neural network,Hong Kong,"(8, 2)",down,3563,A_open_to_close_Neural_network_Hong_Kong.pkl,35986e6a12b3d5f1d6cda371da352c44f20a91bc373312b3c30c6d120ca14db5
+open to close,A,Neural network,Japan,"(6, 1)",up,3598,A_open_to_close_Neural_network_Japan.pkl,a84b49a56ea9934eb19b988ff53249edada1eccbaa3651c0cd8174a3fb9a8f07
+open to close,D,LDA,Indonesia,LinearDiscriminantAnalysis(),up,3206,D_open_to_close_LDA_Indonesia.pkl,26a356058e65cebf293bd16ed527971bd8a4fca20ca76d214b390182cc8bdc36
+open to close,D,LDA,Malaysia,LinearDiscriminantAnalysis(),up,3568,D_open_to_close_LDA_Malaysia.pkl,c9ad397e1046f880eb7f1209be48cba8ee81d93ea5626399a72b97dbe51ea41d
+open to close,D,LDA,Philippines,LinearDiscriminantAnalysis(),down,3513,D_open_to_close_LDA_Philippines.pkl,a842e005db92189c97e15cda8064ba8ac111ee8169efe0663db09498fcb5b4dd
+open to close,D,LDA,Singapore,LinearDiscriminantAnalysis(),down,3484,D_open_to_close_LDA_Singapore.pkl,e2e2b5cf07b79c44a731e01db4c31bac575f459b0e81e342775819dcfdb2a2ab
+open to close,D,LDA,Thailand,LinearDiscriminantAnalysis(),down,3555,D_open_to_close_LDA_Thailand.pkl,54c2a7df050b9a349a9a715c2467f7bbae3acdbdebb8a00a0ba1373c537ea816
+open to close,D,LDA,India,LinearDiscriminantAnalysis(),down,3601,D_open_to_close_LDA_India.pkl,57f5177bceeaca0a6cebb8e2b2b251b36d3be9c482bfeb171d71dd408edd1d39
+open to close,D,LDA,Korea,LinearDiscriminantAnalysis(),down,3602,D_open_to_close_LDA_Korea.pkl,be426f087d3eb41815c411a6c042624a1d634dcee186c52c2b3874ed2f797797
+open to close,D,LDA,Taiwan,LinearDiscriminantAnalysis(),up,3373,D_open_to_close_LDA_Taiwan.pkl,d245d19b5963b0c356cbb610a445e19567f6b04b7e5e6cd4e67465fda647c042
+open to close,D,LDA,Hong Kong,LinearDiscriminantAnalysis(),down,3563,D_open_to_close_LDA_Hong_Kong.pkl,cb88d53fce2822b844e1202b867b7cb1c3e15701e60c4a08d83bc57d53ece623
+open to close,D,LDA,Japan,LinearDiscriminantAnalysis(),up,3598,D_open_to_close_LDA_Japan.pkl,232c31000c59dea44ea14ba079c3af1f0dc66a56a31d4605eff569ad1f85083c
+open to close,D,Logistic regression,Indonesia,LogisticRegression(C=0.0001),up,3206,D_open_to_close_Logistic_regression_Indonesia.pkl,bbf032adb6cb9a99c614be9f53f2b2db0731784c55481c5ef3b7c7ebc72ec1b2
+open to close,D,Logistic regression,Malaysia,LogisticRegression(C=10),up,3568,D_open_to_close_Logistic_regression_Malaysia.pkl,f473624cc3461934abed5d71559bae79ba849ac315c09b542888dea87c87be51
+open to close,D,Logistic regression,Philippines,LogisticRegression(C=0.01),down,3513,D_open_to_close_Logistic_regression_Philippines.pkl,aca684cc71dcd675410799cd03cc7cd3bb53c008bfffa8eb4453eae2b95e8097
+open to close,D,Logistic regression,Singapore,LogisticRegression(C=0.1),down,3484,D_open_to_close_Logistic_regression_Singapore.pkl,93af90e781295764113441e67b7f42d5c102b575838226547977b1754cbdbc04
+open to close,D,Logistic regression,Thailand,LogisticRegression(C=0.01),down,3555,D_open_to_close_Logistic_regression_Thailand.pkl,bed70a464c64e1476da2501a039581cfc1892e878dc5e3a66cb7e554da5465e0
+open to close,D,Logistic regression,India,LogisticRegression(C=0.001),down,3601,D_open_to_close_Logistic_regression_India.pkl,2e598bfeec3cff87eb6e182867da1d6fbfaf1f7f020722e0b40412811e62d52c
+open to close,D,Logistic regression,Korea,LogisticRegression(C=10),down,3602,D_open_to_close_Logistic_regression_Korea.pkl,893a878a11f7de19d9df19cb68e9da67b9b2312ce615c6c1d5105a6592830898
+open to close,D,Logistic regression,Taiwan,LogisticRegression(C=0.01),up,3373,D_open_to_close_Logistic_regression_Taiwan.pkl,03e05ad10935afbe90c2eb1c41dde4620dd8e42cf2f575fa3e5a15595b8d59ac
+open to close,D,Logistic regression,Hong Kong,LogisticRegression(C=0.0001),down,3563,D_open_to_close_Logistic_regression_Hong_Kong.pkl,bd89850d0ad42fbda33180cbdf482547647959d1dbecc3a991b8f0c0c065ac72
+open to close,D,Logistic regression,Japan,LogisticRegression(C=0.001),up,3598,D_open_to_close_Logistic_regression_Japan.pkl,cbc86e80121894c321cb81df153fb474eb8ff8abb365ae6947e0bb773bbf4f1b
+open to close,D,KNN,Indonesia,KNeighborsClassifier(n_neighbors=501),up,3206,D_open_to_close_KNN_Indonesia.pkl,12835f2de9168928297fa639bd595aa0dc12673a7a3a277a0d2a2b55dba87ad4
+open to close,D,KNN,Malaysia,KNeighborsClassifier(n_neighbors=101),up,3568,D_open_to_close_KNN_Malaysia.pkl,07d6461bcb25706265abc898fec7ca129111465449932343038258b2ce5c249f
+open to close,D,KNN,Philippines,KNeighborsClassifier(n_neighbors=501),down,3513,D_open_to_close_KNN_Philippines.pkl,5313ebdbfbdc1d00f442989458dd4db43b82fa7928251ae88328fb87dc1ee329
+open to close,D,KNN,Singapore,KNeighborsClassifier(n_neighbors=251),down,3484,D_open_to_close_KNN_Singapore.pkl,52186f1c21cb3d64f687c91dca8716435760822d29c3709f603d0b0d4569d32e
+open to close,D,KNN,Thailand,KNeighborsClassifier(n_neighbors=101),down,3555,D_open_to_close_KNN_Thailand.pkl,192680f84d4d6e0d23ecef6076b355c51ce6f27d38949c7d5c957e0390fa0190
+open to close,D,KNN,India,KNeighborsClassifier(n_neighbors=501),down,3601,D_open_to_close_KNN_India.pkl,4050296c4833cdb532be0b9420ccb3ce1f6cd9217eb393d8039ca93f85b21ac4
+open to close,D,KNN,Korea,KNeighborsClassifier(n_neighbors=25),down,3602,D_open_to_close_KNN_Korea.pkl,2bf1385a05490f9c5371608d47707e1efd9f8a43d87ed165d5865d41224e996c
+open to close,D,KNN,Taiwan,KNeighborsClassifier(n_neighbors=101),up,3373,D_open_to_close_KNN_Taiwan.pkl,07444c8f6c77b860121e08765c2a65ff580a61059c87a3f66237a501ec9ed402
+open to close,D,KNN,Hong Kong,KNeighborsClassifier(n_neighbors=101),down,3563,D_open_to_close_KNN_Hong_Kong.pkl,181f13f80602dbba03da21df651f2a29ca049653930cf9d9c9cd49ca5a49ab38
+open to close,D,KNN,Japan,KNeighborsClassifier(n_neighbors=501),up,3598,D_open_to_close_KNN_Japan.pkl,a68f3bc5cd8d3b15de84374e7972355aaf14b48e462fbba943dfbbe2e7c2157b
+open to close,D,SVM,Indonesia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",up,3206,D_open_to_close_SVM_Indonesia.pkl,35d178762a917543eecca65562257a40211bd51e4a388f0b29a33fd4f5400dc3
+open to close,D,SVM,Malaysia,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",up,3568,D_open_to_close_SVM_Malaysia.pkl,517936dc5bef5b916c7293d7db93f71851b7032961511b178f291a1106cc80eb
+open to close,D,SVM,Philippines,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",down,3513,D_open_to_close_SVM_Philippines.pkl,24ce8a10d1ddf4e2e333cc135639bd6c0a47eeb8c2457694da365f426832c78e
+open to close,D,SVM,Singapore,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.1))",down,3484,D_open_to_close_SVM_Singapore.pkl,489c1b3f7713b42b873dc974e62e753e94cc6d34e1af140e6ac6598797a7a6c4
+open to close,D,SVM,Thailand,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=10, gamma=0.1))",down,3555,D_open_to_close_SVM_Thailand.pkl,a091072a591001e1b082d71b8ced25c402c734c627157c6ab17765d503cec3aa
+open to close,D,SVM,India,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",down,3601,D_open_to_close_SVM_India.pkl,6dc150cbf06e3bc0c807234beb40565e303062273632fbfb36377de69f0f241a
+open to close,D,SVM,Korea,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=1, gamma=0.01))",down,3602,D_open_to_close_SVM_Korea.pkl,74ccdee5048fb05bda08dc9a64e75a1d274a51418111aae923d8289ede7e391b
+open to close,D,SVM,Taiwan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3373,D_open_to_close_SVM_Taiwan.pkl,10761f840999ef714bbe39d6560e81fe66c685e2f8eddfcce0ed7364c8f16d25
+open to close,D,SVM,Hong Kong,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",down,3563,D_open_to_close_SVM_Hong_Kong.pkl,2c739c9fbf585ed5c21d47ba44aeca85c34f03ad18e616c1c426afdd0d94212b
+open to close,D,SVM,Japan,"CalibratedClassifierCV(ensemble=False, estimator=SVC(C=0.1, gamma=0.01))",up,3598,D_open_to_close_SVM_Japan.pkl,e9303c1b258007969fbdf96910bbc675d0134d8ff624f835a8d427f98d931b6b
+open to close,D,Random forest,Indonesia,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3206,D_open_to_close_Random_forest_Indonesia.pkl,f2d8f1e993fb4639d134713e137684344d11d0cc53430dd175d11fd03cda230a
+open to close,D,Random forest,Malaysia,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",up,3568,D_open_to_close_Random_forest_Malaysia.pkl,f58663f8fef58bdc5fa05879510d3593780c00175cacc07216852e779d0f9f16
+open to close,D,Random forest,Philippines,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",down,3513,D_open_to_close_Random_forest_Philippines.pkl,935d5f482ce6abe25a0855ec16195e0f60f5ffa899af3ce34e1f4659859d5380
+open to close,D,Random forest,Singapore,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",down,3484,D_open_to_close_Random_forest_Singapore.pkl,0923a1547b4c00135032ae8b58d9df8a2876ffe9810c966bdb2b9bae0a8887bc
+open to close,D,Random forest,Thailand,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",down,3555,D_open_to_close_Random_forest_Thailand.pkl,ba19cb1e7ec3746f0ff03ee36a09e436f7a55050f6b489fc08438d1a59b6bea5
+open to close,D,Random forest,India,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",down,3601,D_open_to_close_Random_forest_India.pkl,75fdd6cc3fb851702e003fe867a73ff8867e2993e31c141cde57729e8a6892dc
+open to close,D,Random forest,Korea,"RandomForestClassifier(max_features=3, min_samples_leaf=50, n_estimators=300, n_jobs=-1, random_state=0)",down,3602,D_open_to_close_Random_forest_Korea.pkl,5a34aea1b6e73a060dfc9865d62b2db0a26ccccb87121c31bf917d59051690a9
+open to close,D,Random forest,Taiwan,"RandomForestClassifier(max_features=3, min_samples_leaf=10, n_estimators=300, n_jobs=-1, random_state=0)",up,3373,D_open_to_close_Random_forest_Taiwan.pkl,730afce58f4b9976d4779a978ef811534f5f2d7ca5e8e45dccd272ed788ab81f
+open to close,D,Random forest,Hong Kong,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",down,3563,D_open_to_close_Random_forest_Hong_Kong.pkl,9b410e5196ea129f72a0f69ddd249eac30c7e902b21678d2d9273b8b4474eef7
+open to close,D,Random forest,Japan,"RandomForestClassifier(max_features=3, min_samples_leaf=200, n_estimators=300, n_jobs=-1, random_state=0)",up,3598,D_open_to_close_Random_forest_Japan.pkl,fdac778f3af5f4e460e038e82db5050942cb8b97fdc77b56375c3d167ad19731
+open to close,D,AdaBoost,Indonesia,"AdaBoostClassifier(learning_rate=2.0, random_state=0)",up,3206,D_open_to_close_AdaBoost_Indonesia.pkl,7d8f9bc7e0fb483ce90da9c9ce15b915d883ecab7f95ee7c28e95c738efe309a
+open to close,D,AdaBoost,Malaysia,"AdaBoostClassifier(learning_rate=2.0, random_state=0)",up,3568,D_open_to_close_AdaBoost_Malaysia.pkl,1df8c8c999d5b006b8c7258ee719be9e061ef93114aaf04080f6dcdaf86ffc79
+open to close,D,AdaBoost,Philippines,"AdaBoostClassifier(n_estimators=500, random_state=0)",down,3513,D_open_to_close_AdaBoost_Philippines.pkl,4594a240bf5c9542a8ce9253cb252c7770b0279779497e04ff48cf925745a586
+open to close,D,AdaBoost,Singapore,"AdaBoostClassifier(learning_rate=4.0, random_state=0)",down,3484,D_open_to_close_AdaBoost_Singapore.pkl,3bd6a71a2ffe31959387cde5327d7668254acdbd3d47ac88d81d8a50bbc377cb
+open to close,D,AdaBoost,Thailand,"AdaBoostClassifier(n_estimators=200, random_state=0)",down,3555,D_open_to_close_AdaBoost_Thailand.pkl,3e20fedd3020eeeeb43d13ea740f62a7ee255cfd648e1195e67e5093cdafd103
+open to close,D,AdaBoost,India,"AdaBoostClassifier(n_estimators=500, random_state=0)",down,3601,D_open_to_close_AdaBoost_India.pkl,517d73b8d8a7b9f8ea6cb1c789ce28a16f3d27117197c46697f322e9ddae66f2
+open to close,D,AdaBoost,Korea,"AdaBoostClassifier(learning_rate=2.0, n_estimators=500, random_state=0)",down,3602,D_open_to_close_AdaBoost_Korea.pkl,729fefe461ab121dfb4c169ee1d23037ec00fa6872d085ccbd5a5b8c21a51cd6
+open to close,D,AdaBoost,Taiwan,"AdaBoostClassifier(learning_rate=0.1, n_estimators=200, random_state=0)",up,3373,D_open_to_close_AdaBoost_Taiwan.pkl,e02855f12d79c57fe06e6005cc0029d655535bc59978398249e795ed0ad064a6
+open to close,D,AdaBoost,Hong Kong,"AdaBoostClassifier(learning_rate=4.0, n_estimators=500, random_state=0)",down,3563,D_open_to_close_AdaBoost_Hong_Kong.pkl,a408deaeaabe8b19beebff12e33b40ec66e2d5bc7f3b0d972b9af609a7df39da
+open to close,D,AdaBoost,Japan,"AdaBoostClassifier(n_estimators=200, random_state=0)",up,3598,D_open_to_close_AdaBoost_Japan.pkl,562cead1249a44a4b1af40d39b22106d0cce527dbd08796e9265a7f6ffcc5d96
+open to close,D,Neural network,Indonesia,"(2, 1)",up,3206,D_open_to_close_Neural_network_Indonesia.pkl,815477eaa733833ef7fb6a378cd72fabc3812d948bceb04ccaa897e83fa86335
+open to close,D,Neural network,Malaysia,"(2, 3)",up,3568,D_open_to_close_Neural_network_Malaysia.pkl,cd11c6d33dbb3ecbb5e83137f06ca8890f35de788802afb6cf1f160b399ab5dc
+open to close,D,Neural network,Philippines,"(2, 1)",down,3513,D_open_to_close_Neural_network_Philippines.pkl,ad418078e6c248feaa7b86d174bdff2e8250f447fe5ca176c39a98e582f1c8a5
+open to close,D,Neural network,Singapore,"(4, 1)",down,3484,D_open_to_close_Neural_network_Singapore.pkl,b6698bfd428c30f3448c93c85cfdf01e5455242abbfacc7017486bfea27c7d21
+open to close,D,Neural network,Thailand,"(8, 23)",down,3555,D_open_to_close_Neural_network_Thailand.pkl,8d88fd5b6bfc03099203d38fda0faaed4a7b5582629a161d5120cd8fe3f8add5
+open to close,D,Neural network,India,"(4, 57)",down,3601,D_open_to_close_Neural_network_India.pkl,2a3d1f5df4095d19043bbcaf4d6b37177d8717a2aa3f521c296feb0b6befff77
+open to close,D,Neural network,Korea,"(8, 61)",down,3602,D_open_to_close_Neural_network_Korea.pkl,7845fd98b5eff3e4bee46c0c1f691bc6f4af74cea9ce0dadcc08f94f48668664
+open to close,D,Neural network,Taiwan,"(2, 108)",up,3373,D_open_to_close_Neural_network_Taiwan.pkl,6b2d77878f1fd8078bbfa17106be0f1d9f82e8e0528f0911c57a7f83e0545e13
+open to close,D,Neural network,Hong Kong,"(8, 1)",down,3563,D_open_to_close_Neural_network_Hong_Kong.pkl,7ee023e84f56c563754ee5acabecb1e9ce26e658953a58a03d5494d01b530a17
+open to close,D,Neural network,Japan,"(10, 158)",up,3598,D_open_to_close_Neural_network_Japan.pkl,b8004fb9d47bd6c4c0c0c0bee1cf217f745580d0ef39c74f14c385ca2a2a8c1b
