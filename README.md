@@ -10,7 +10,7 @@ Kumar & Thenmozhi (2006) reported 56–68% accuracy on India's Nifty using 12 te
 
 - **From a market's own past prices: no.** Seven models score about 52%, the same as always guessing the more common direction (the "fair bar"). Adding 20 more standard indicators, or 777 automatic features from tsfresh, changes nothing (step 9). Four markets never looked at before (Korea, Taiwan, Hong Kong, Japan) show the same.
 - **From the overnight US move: yes, but it can't be traded.** On new data it gets 53–58% of close-to-close days right, against fair bars of 50–54%. By the time the market opens, the price already contains it.
-- **Tomorrow's volatility: yes.** How big the move will be is predictable, and a three-number linear model (HAR) is at least as good as a random forest, GARCH and a GRU.
+- **Tomorrow's volatility: yes.** How big the move will be is predictable, and a three-number linear model (HAR) is at least as good as a random forest, GARCH and a GRU. The same holds on four markets it was never tried on (Korea, Taiwan, Hong Kong, Japan), with every planned expectation met.
 - **High scores are easy to get by mistake.** Remove one line, the one-day lag on the indicators, and five of those models go from 52% to 90%.
 
 ![One missing lag turns a coin flip into 90%: honest 52.0%, tuned on the test year 53.9%, without the lag 89.8%](figures/mistakes.png)
@@ -85,7 +85,7 @@ Two of the seven expectations were wrong. They're reported as they came out.
 | `more_inputs.ipynb` | Step 9: the four sets against each other and against the fair bar, what tsfresh kept, and two checks of set D added after looking |
 | `forward_test.ipynb` | The forward test's scoring, written before the new days exist. Run once, in late 2027 |
 | `new_markets.ipynb` | The check on new markets: step 9's scoring on Korea, Taiwan, Hong Kong and Japan, plus a timing check and a stale-open check added after looking |
-| `new_markets_volatility.ipynb` | Step 7's volatility models on the four new markets |
+| `new_markets_volatility.ipynb` | Step 7's volatility models on the four new markets, run once: all five expectations held |
 | `loose_ends.ipynb` | Three results step 9 left unexplained, looked into with its saved predictions |
 | `figures/` | The charts on this page, saved by the notebooks |
 | `results/` | Saved predictions, so a rerun skips finished work. Not in git. Delete the step 4b and step 7 files after changing a model. Keep the `holdout_*` files: they're the one-shot results |

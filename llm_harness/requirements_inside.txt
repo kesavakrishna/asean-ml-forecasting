@@ -1,0 +1,14 @@
+# Step 11 only (see PLAN_11.md), in its own venv with GPU PyTorch:
+#   python -m venv venv_gpu
+#   venv_gpu/Scripts/pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cu130
+#   venv_gpu/Scripts/pip install -r llm_harness/requirements_inside.txt
+accelerate==1.15.0
+bitsandbytes==0.50.2
+huggingface_hub==2.4.0
+numpy==2.5.4
+pandas==3.1.1
+peft==0.21.3
+safetensors==0.8.0
+scikit-learn==1.9.1
+tokenizers==0.23.3
+transformers==5.23.0

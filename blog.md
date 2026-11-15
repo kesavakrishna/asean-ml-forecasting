@@ -77,6 +77,8 @@ The final test said the paper's 12 indicators had no edge. The obvious reply is 
 
 By then the final test was used up, and I'd chosen what to try after seeing it, so these weren't clean checks. For a clean one, I downloaded four markets I had never touched, Korea, Taiwan, Hong Kong and Japan, and ran everything once, unchanged. The pattern held. More indicators did nothing, and other markets helped even more, by 9 to 13 points. The size of that gain follows one number: how closely a market moves with the previous US session. Japan follows it most and gained most.
 
+Volatility passed the same check. On the four new markets, HAR again beat GARCH, the forest and same as yesterday, and tied with the neural network. All five of my written-down expectations held.
+
 One more test is still to come, and it can't be rushed. I froze all 420 models on the data up to 23 October 2026 and put a fingerprint (a hash) of each in the repository. In late 2027 they'll be scored on a year of days that didn't exist when they were trained, so no choice I made can have seen them.
 
 ## What I learned

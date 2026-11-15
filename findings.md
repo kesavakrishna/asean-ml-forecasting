@@ -18,6 +18,7 @@ The full results behind the [README](README.md), in the order the work was done.
 - [Step 9 findings: more inputs (added after looking)](#step-9-findings-more-inputs-added-after-looking)
 - [The check on new markets (added after looking)](#the-check-on-new-markets-added-after-looking)
 - [Three loose ends from step 9 (added after looking)](#three-loose-ends-from-step-9-added-after-looking)
+- [Volatility on the new markets (added after looking)](#volatility-on-the-new-markets-added-after-looking)
 
 ## Data notes
 
@@ -803,3 +804,32 @@ Step 9 and the check on new markets left three results marked "not looked into".
 - **Set D gains most where a market follows the US most.** Over the 10 markets, D's gain over A and the US move's correlation with day t go together (0.93). Japan (0.43) and Taiwan (0.41) follow the US most and gain most (+13.0 and +11.5 points); Thailand and Indonesia (0.24) least (+4.9 and +5.9). North Asia isn't special beyond that.
 - **Indonesia's open-to-close edge with set A is mostly a drift.** The fair bar says up every year, but days rose after the open on only 44–48% of days in 2019–2021 and 2024–2026. Following last year's direction, with no model at all, gains +3.2 points over the fair bar, about as much as the models (+2.0 to +3.9). The years only partly match (both gain in 2021, 2025 and 2026, but not in 2020 and 2022), so this explains much of it, not all.
 - **Thailand's AdaBoost result is the same drift going the other way.** Days rose after the open on only 41–50% of days, so the fair bar says down every year and any "up" call is costly. All seven models are below it (−0.9 to −3.6 points), and so is following last year's direction (−2.8). AdaBoost's worst years, 2017 and 2023 (−6.6 and −13.6), are the two years in which following last year's direction loses most (−9.5 and −17.7).
+
+## Volatility on the new markets (added after looking)
+
+**The question:** does step 7's volatility result hold on markets it was never tried on? The plan and expected results were committed before any of these ranges was looked at ([PLAN_clean_checks.md](PLAN_clean_checks.md)). Step 7's code and settings, unchanged: Korea, Taiwan, Hong Kong and Japan, test years 2017–2026, run once.
+
+**R², all ten test years** (GRU shows the range over three seeds; p-values are against HAR on squared errors, Holm over 24):
+
+| Market | Same as yesterday | HAR | HAR + US | GARCH | Forest | GRU |
+|---|---|---|---|---|---|---|
+| Korea | 0.405 | **0.593** | 0.591 | 0.525 | 0.504 | 0.568–0.573 |
+| Taiwan | 0.097 | 0.418 | **0.422** | 0.314 | 0.370 | 0.412–0.418 |
+| Hong Kong | 0.107 | 0.444 | **0.446** | 0.361 | 0.423 | 0.428–0.439 |
+| Japan | 0.121 | 0.413 | **0.420** | 0.300 | 0.392 | 0.395–0.401 |
+
+**QLIKE** (lower is better):
+
+| Market | Same as yesterday | HAR | HAR + US | GARCH | Forest | GRU |
+|---|---|---|---|---|---|---|
+| Korea | 0.589 | **0.455** | 0.458 | 0.537 | 0.721 | 0.509–0.527 |
+| Taiwan | 0.726 | 0.496 | **0.490** | 0.595 | 0.568 | 0.492–0.516 |
+| Hong Kong | 0.575 | 0.367 | **0.365** | 0.451 | 0.390 | 0.370–0.393 |
+| Japan | 0.746 | 0.483 | **0.466** | 0.592 | 0.491 | 0.487–0.509 |
+
+- **All five expectations held.** HAR beats same as yesterday and GARCH in all four markets, significantly on both scores. Its R² is above the forest's in all four (significantly in Korea and Taiwan). No GRU seed is significantly better or worse: 11 of 12 runs are below HAR and one is level. HAR + US changes R² by −0.002 to +0.007, significant only on QLIKE in Japan.
+- **Volatility is more predictable here than in ASEAN:** HAR's R² is 0.41–0.59, against 0.27–0.49 in step 7.
+- **It varies a lot by year:** HAR's R² ranges from 0.06 to 0.86. The best years are 2026 in Korea, Taiwan and Japan (0.67–0.86) and 2022 in Hong Kong (0.67).
+- **The US move adds almost nothing to the size of the move,** as on the holdout, even though these markets follow the US direction closely.
+
+Full tables, including each GRU seed and HAR's R² by year, are in `new_markets_volatility.ipynb`.
