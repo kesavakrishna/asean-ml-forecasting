@@ -17,6 +17,7 @@ The full results behind the [README](README.md), in the order the work was done.
 - [Interpretability: does the GRU rediscover HAR?](#interpretability-does-the-gru-rediscover-har)
 - [Step 9 findings: more inputs (added after looking)](#step-9-findings-more-inputs-added-after-looking)
 - [The check on new markets (added after looking)](#the-check-on-new-markets-added-after-looking)
+- [Three loose ends from step 9 (added after looking)](#three-loose-ends-from-step-9-added-after-looking)
 
 ## Data notes
 
@@ -757,7 +758,7 @@ Accuracy minus the fair bar, per model and market (42 tests per set, Holm within
 - **More indicators add nothing.** B matches A. C is slightly worse for every model, because tsfresh found nothing: in 65 of 66 training cutoffs not one feature passed its selection test, so the models got the 10 "least bad" features of noise.
 - **Set D's gain is the US move (checked after looking).** Logistic regression with A plus one move at a time: the US move adds 7.2 points on average, VIX 5.7 (which overlaps with it), oil 0.4 and the currency 0.0. All four together add 6.9. A plus the US move scores 55.9–61.1%, close to step 5's 57.8–61.4%.
 - **Not a timing leak.** None of D's moves lines up with day t's trading after the open (every correlation 0.13 or smaller in size). The US and VIX moves line up with the overnight gap (0.43 to 0.61, and −0.31 to −0.51), as news from after Asia's close should.
-- **Open to close, the version you could trade:** D's gain is in Indonesia, Malaysia and the Philippines (+1.3 to +6.3 points over the fair bar), and none elsewhere. The Philippines and Malaysia are step 5b's exceptions, where the edge came from a partly stale opening number and was smaller than trading costs. Indonesia is new: set A alone also beats the fair bar there for two models (+3.8 and +3.9), so its opening numbers may be part of it. Not looked into. AdaBoost with A in Thailand is 3.6 points below its fair bar, significant after Holm.
+- **Open to close, the version you could trade:** D's gain is in Indonesia, Malaysia and the Philippines (+1.3 to +6.3 points over the fair bar), and none elsewhere. The Philippines and Malaysia are step 5b's exceptions, where the edge came from a partly stale opening number and was smaller than trading costs. Indonesia is new: set A alone also beats the fair bar there for two models (+3.8 and +3.9), so its opening numbers may be part of it. AdaBoost with A in Thailand is 3.6 points below its fair bar, significant after Holm. Both are looked into in [Three loose ends](#three-loose-ends-from-step-9-added-after-looking).
 - **Old and new years agree.** D's close-to-close gain is +7.9 points in 2017–2022 and +5.3 in 2023–2026. B and C are within ±0.6 in both.
 - **Against the plan:** four of the five expectations held. The miss: I expected D to show no open-to-close gain in most markets, and three of six show one.
 
@@ -786,7 +787,7 @@ Accuracy minus the fair bar, per model and market (28 tests per set, Holm within
 | Open to close: significant after Holm | 0 | | | 7 above (all Taiwan) |
 
 - **The expectation held.** B and C match A, and tsfresh found nothing: in all 44 training cutoffs no feature passed its test. Two models' AUC with B is 0.011 away from A's, just outside the planned ±0.01.
-- **D's close-to-close gain is larger than in step 9:** +4.9 to +7.5 points over the fair bar in Hong Kong, +6.8 to +8.4 in Korea, +8.9 to +10.5 in Taiwan and +10.5 to +12.7 in Japan (accuracy 56.3–65.9%). In step 9 it was +6.0 to +7.8 against A. Why was not looked into.
+- **D's close-to-close gain is larger than in step 9:** +4.9 to +7.5 points over the fair bar in Hong Kong, +6.8 to +8.4 in Korea, +8.9 to +10.5 in Taiwan and +10.5 to +12.7 in Japan (accuracy 56.3–65.9%). In step 9 it was +6.0 to +7.8 against A. Why: see [Three loose ends](#three-loose-ends-from-step-9-added-after-looking).
 - **A, B and C sit below the fair bar.** These markets rose on 51.5–55.3% of days, so always guessing "up" is hard to beat. Six pairs are significantly below it, all AdaBoost or the neural network in Korea, Taiwan or Japan.
 - **Old and new years agree:** D's gain is +10.7 points in 2017–2022 and +10.5 in 2023–2026.
 - **Not a timing leak (checked after looking).** The US and VIX moves line up with the overnight gap (0.52 to 0.62, and −0.47 to −0.57) and not with day t+1 (0.04 or less in size).
@@ -794,3 +795,11 @@ Accuracy minus the fair bar, per model and market (28 tests per set, Holm within
 - **Data caveats:** the fixed bad-print rule blanked 148 Taiwan dollar closes (Yahoo's 2011–2016 series jumps about 2.5% back and forth) and 44 Hong Kong dollar closes (the dollar is pegged, so its typical move is tiny and ordinary closes get blanked). Those days drop out of all four sets alike.
 
 Full tables are in `new_markets.ipynb`.
+
+## Three loose ends from step 9 (added after looking)
+
+Step 9 and the check on new markets left three results marked "not looked into". `loose_ends.ipynb` looks at them using the saved predictions, without rerunning anything.
+
+- **Set D gains most where a market follows the US most.** Over the 10 markets, D's gain over A and the US move's correlation with day t go together (0.93). Japan (0.43) and Taiwan (0.41) follow the US most and gain most (+13.0 and +11.5 points); Thailand and Indonesia (0.24) least (+4.9 and +5.9). North Asia isn't special beyond that.
+- **Indonesia's open-to-close edge with set A is mostly a drift.** The fair bar says up every year, but days rose after the open on only 44–48% of days in 2019–2021 and 2024–2026. Following last year's direction, with no model at all, gains +3.2 points over the fair bar, about as much as the models (+2.0 to +3.9). The years only partly match (both gain in 2021, 2025 and 2026, but not in 2020 and 2022), so this explains much of it, not all.
+- **Thailand's AdaBoost result is the same drift going the other way.** Days rose after the open on only 41–50% of days, so the fair bar says down every year and any "up" call is costly. All seven models are below it (−0.9 to −3.6 points), and so is following last year's direction (−2.8). AdaBoost's worst years, 2017 and 2023 (−6.6 and −13.6), are the two years in which following last year's direction loses most (−9.5 and −17.7).

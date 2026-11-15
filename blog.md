@@ -67,11 +67,24 @@ At first it seemed so: I could read all three averages out of its memory quite a
 
 An untrained network with only its last layer fitted scored higher than the fully trained one in five of six markets. Without that comparison, I would have reported a discovery that wasn't there.
 
+## After the final test: more inputs, and markets I'd never looked at
+
+The final test said the paper's 12 indicators had no edge. The obvious reply is "you didn't give the models enough". So I tried three bigger sets of inputs, writing down what I expected first:
+
+- **20 more standard indicators** (MACD, Bollinger bands, ADX and others): no change.
+- **777 automatic features** from a library called tsfresh: slightly worse. Its own filter found nothing worth keeping in 65 of 66 tries.
+- **Other markets' moves the night before** (the S&P 500, the VIX "fear index", the currency and oil): 6 to 8 points better, close to close. Almost all of that is the US move again, and once more it's mostly gone by the open.
+
+By then the final test was used up, and I'd chosen what to try after seeing it, so these weren't clean checks. For a clean one, I downloaded four markets I had never touched, Korea, Taiwan, Hong Kong and Japan, and ran everything once, unchanged. The pattern held. More indicators did nothing, and other markets helped even more, by 9 to 13 points. The size of that gain follows one number: how closely a market moves with the previous US session. Japan follows it most and gained most.
+
+One more test is still to come, and it can't be rushed. I froze all 420 models on the data up to 23 October 2026 and put a fingerprint (a hash) of each in the repository. In late 2027 they'll be scored on a year of days that didn't exist when they were trained, so no choice I made can have seen them.
+
 ## What I'd tell someone starting out
 
 - **Compare with a dumb baseline.** A model at 54% means nothing until you know that "always up" scores 52%.
 - **Test the code, not only the model.** A leak test that fails on a planted leak is worth more than another model.
 - **Write your predictions down before you look.** Two of my seven were wrong. I only know that because they were written down.
+- **When your test data is used up, find data you haven't used.** New markets and new days are the only checks left that what you've already seen can't bend.
 - **A boring result you can trust beats an exciting one you can't.**
 
 The code, the tests and every table are at [github.com/kesavakrishna/asean-ml-forecasting](https://github.com/kesavakrishna/asean-ml-forecasting).

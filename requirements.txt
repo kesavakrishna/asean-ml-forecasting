@@ -1,5 +1,6 @@
 # The package versions the results were produced with (Python 3.13).
 arch==8.0.0
+cloudpickle==3.1.2
 joblib==1.6.0
 matplotlib==3.11.2
 numpy==2.5.4

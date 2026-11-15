@@ -4,6 +4,7 @@ Download the Yahoo Finance data into Dataset/.
 Run:  python download_data.py               # the index files
       python download_data.py others        # VIX, currencies and Brent oil, for step 9
       python download_data.py new_markets   # Korea, Taiwan, Hong Kong, Japan and their currencies, for the final check
+      python download_data.py forward       # late 2027 only, with DATA_DIR=Dataset/forward: everything, to FORWARD_END
 
 The end dates are fixed so every run gets the same data. The Philippines (PSEi) and
 Thailand (SET) aren't on Yahoo; download those from Investing.com (see README).
@@ -21,6 +22,7 @@ from data import DATA_DIR, FILES, NEW_CURRENCY_FILE, NEW_FILES, OTHERS_FILE, STA
 warnings.filterwarnings("ignore", module="yfinance")  # pandas deprecation notices from inside yfinance
 
 END = "2026-10-24"  # Yahoo's end date is exclusive: the last day downloaded is 2026-10-23
+FORWARD_END = "2027-11-27"  # the forward test's data stops on 2027-11-26 (forward_test.LAST_NEW_DAY)
 
 TICKERS = {
     "Indonesia": "^JKSE",  # IDX Composite
@@ -50,10 +52,10 @@ def download(ticker, file_name, start, end):
     print(f"{ticker:6} {len(df)} days, {df.index.min().date()} to {df.index.max().date()} -> {file_name}")
 
 
-def download_closes(tickers, file_name):
+def download_closes(tickers, file_name, end=END):
     closes = {}
     for ticker in tickers:
-        df = yf.download(ticker, start=US_START, end=END, auto_adjust=False, progress=False, multi_level_index=False)
+        df = yf.download(ticker, start=US_START, end=end, auto_adjust=False, progress=False, multi_level_index=False)
         closes[ticker] = df["Close"].astype(float).round(6)
         print(f"{ticker:6} {len(df)} days, {df.index.min().date()} to {df.index.max().date()}")
     pd.DataFrame(closes).rename_axis("Date").to_csv(DATA_DIR / file_name, date_format="%Y-%m-%d")
@@ -66,6 +68,16 @@ elif __name__ == "__main__" and "new_markets" in sys.argv:
     for market, ticker in NEW_TICKERS.items():
         download(ticker, NEW_FILES[market], START, END)
     download_closes(NEW_CURRENCIES, NEW_CURRENCY_FILE)
+elif __name__ == "__main__" and "forward" in sys.argv:  # the forward test's new days (PLAN_clean_checks.md)
+    if DATA_DIR.name != "forward":
+        raise SystemExit("set DATA_DIR to Dataset/forward first, so the fixed files in Dataset/ stay as they are")
+    DATA_DIR.mkdir(exist_ok=True)
+    for market, ticker in {**TICKERS, **NEW_TICKERS}.items():
+        download(ticker, {**FILES, **NEW_FILES}[market], START, FORWARD_END)
+    download(US_TICKER, US_FILE, US_START, US_END)
+    download(US_TICKER, US_HOLDOUT_FILE, US_HOLDOUT_START, FORWARD_END)
+    download_closes(OTHER_TICKERS, OTHERS_FILE, FORWARD_END)
+    download_closes(NEW_CURRENCIES, NEW_CURRENCY_FILE, FORWARD_END)
 elif __name__ == "__main__":
     for market, ticker in TICKERS.items():
         download(ticker, FILES[market], START, END)

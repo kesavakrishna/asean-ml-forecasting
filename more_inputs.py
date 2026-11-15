@@ -33,24 +33,24 @@ RUNS = {"close to close": ["A", "B", "C", "D"], "open to close": ["A", "D"]}  # 
 
 # ---------- the inputs ----------
 
-def tsfresh_features(market, df):
-    """Set C for one market. Computed once and saved, because it takes minutes."""
-    path = SAVED / f"tsfresh_{market}.pkl"
+def tsfresh_features(market, df, folder=SAVED):
+    """Set C for one market. Computed once and saved in `folder`, because it takes minutes."""
+    path = folder / f"tsfresh_{market}.pkl"
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
         make_tsfresh(df).to_pickle(path)
     return pd.read_pickle(path)
 
 
-def all_inputs(markets):
-    """{set: {market: X}}. Each X keeps only the days where all four sets have values."""
+def all_inputs(markets, folder=SAVED):
+    """{set: {market: X}}. Each X keeps only the days where all four sets have values. tsfresh's are saved in `folder`."""
     us, others = load_us(include_holdout=True), load_other_moves()
     inputs = {name: {} for name in "ABCD"}
     for market, df in markets.items():
         X = {
             "A": make_indicators(df),
             "B": make_indicators_extended(df),
-            "C": tsfresh_features(market, df),
+            "C": tsfresh_features(market, df, folder),
             "D": make_other_markets(df, us, others, market),
         }
         common = pd.concat([x.notna().all(axis=1) for x in X.values()], axis=1).all(axis=1)

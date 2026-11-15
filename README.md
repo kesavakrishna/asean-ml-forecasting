@@ -37,6 +37,8 @@ Two of the seven expectations were wrong. They're reported as they came out.
 
 ![HAR's R² by market, development against holdout: lower on the holdout in five of six markets](figures/holdout_volatility.png)
 
+**Still to come: a forward test.** Step 9's 420 models (10 markets) were trained on every day to 23 Oct 2026 and frozen, with a hash of each in `forward_test_models.csv`. They'll be scored once, on 24 Oct 2026 – 26 Nov 2027, days that didn't exist when they were trained. The plan and expected results are in [PLAN_clean_checks.md](PLAN_clean_checks.md).
+
 **A stricter second look, added afterwards.** The holdout has 123 significance tests, and with that many some pass by luck. Adjusting for that leaves 20 of the 36 significant results. The results in the table above already allow for it. The details are in [findings.md](findings.md#step-8-checked-more-strictly-added-after-looking).
 
 ## Why the numbers can be trusted
@@ -58,6 +60,9 @@ Two of the seven expectations were wrong. They're reported as they came out.
 | `features.py` | Model features: the last 5 daily returns and yesterday's direction (step 3), the 12 technical indicators (step 4), the US move (step 5), return sequences (step 6), daily ranges, GARCH and the size of the US move (step 7), and step 9's three new sets (standard extras, tsfresh, other markets); the two labels (close-to-close, open-to-close) |
 | `more_inputs.py` | Step 9: runs the seven models on the four sets of inputs, on the same days, with tsfresh's selection on training years only |
 | `PLAN_more_inputs.md` | Steps 9 and 10's plan and expected results, committed before the runs |
+| `PLAN_clean_checks.md` | The forward test's and the new-market volatility check's plan and expected results, committed before the runs |
+| `forward_test.py` | `freeze`: trains and saves step 9's models on every day to 23 Oct 2026. `score` (late 2027): checks their hashes and predicts the new days |
+| `forward_test_models.csv` | Each frozen model's setting, fair bar and hash |
 | `evaluation.py` | Walk-forward splits, scoring (accuracy, balanced accuracy, MCC), no-model baselines, fair baseline, McNemar and Diebold-Mariano paired tests, Holm's adjustment for many tests, bootstrap ranges, money test |
 | `models.py` | Logistic regression in sklearn and PyTorch, the walk-forward loop, per-year and pooled reports |
 | `classifiers.py` | Step 4 models: the six sklearn classifiers, the PyTorch network, summary tables |
@@ -78,7 +83,10 @@ Two of the seven expectations were wrong. They're reported as they came out.
 | `holdout_checks.ipynb` | Step 8, checked more strictly: adjusted p-values and ranges, from the saved holdout predictions |
 | `gru_probes.ipynb` | Interpretability: the four questions about whether the GRU rediscovers HAR. Needs `volatility.ipynb`'s saved results |
 | `more_inputs.ipynb` | Step 9: the four sets against each other and against the fair bar, what tsfresh kept, and two checks of set D added after looking |
+| `forward_test.ipynb` | The forward test's scoring, written before the new days exist. Run once, in late 2027 |
 | `new_markets.ipynb` | The check on new markets: step 9's scoring on Korea, Taiwan, Hong Kong and Japan, plus a timing check and a stale-open check added after looking |
+| `new_markets_volatility.ipynb` | Step 7's volatility models on the four new markets |
+| `loose_ends.ipynb` | Three results step 9 left unexplained, looked into with its saved predictions |
 | `figures/` | The charts on this page, saved by the notebooks |
 | `results/` | Saved predictions, so a rerun skips finished work. Not in git. Delete the step 4b and step 7 files after changing a model. Keep the `holdout_*` files: they're the one-shot results |
 | `requirements.txt` | The package versions the results were produced with |
@@ -102,6 +110,8 @@ Two of the seven expectations were wrong. They're reported as they came out.
 - **US data:** S&P 500 from Yahoo `^GSPC`. 2010–2022 for development, plus a separate 2023–2026 file that only the holdout and step 9 read.
 - **Other markets (step 9):** VIX (`^VIX`), each market's currency per US dollar (`IDR=X`, `MYR=X`, `PHP=X`, `SGD=X`, `THB=X`, `INR=X`) and Brent oil (`BZ=F`), closes only, 2010 to 23 Oct 2026, in `Other markets (Yahoo).csv`.
 - **New markets (the clean check):** Korea (KOSPI, `^KS11`), Taiwan (TAIEX, `^TWII`), Hong Kong (Hang Seng, `^HSI`) and Japan (Nikkei 225, `^N225`), downloaded only after steps 9 and 10 were written up, in `KOSPI (Yahoo).csv`, `TAIEX (Yahoo).csv`, `Hang Seng (Yahoo).csv` and `Nikkei 225 (Yahoo).csv`. Their currencies (`KRW=X`, `TWD=X`, `HKD=X`, `JPY=X`) are in `New market currencies (Yahoo).csv`. Taiwan's last day is 22 Oct. The bad-print rule blanks 148 Taiwan dollar closes (Yahoo's 2011–2016 series is broken) and 44 Hong Kong dollar closes (it is pegged, so ordinary closes look like jumps).
+
+- **Forward test data (late 2027 only):** the same files to 26 Nov 2027, in `Dataset/forward/`, so the fixed files in `Dataset/` never change.
 
 **Getting the data.** The data files aren't in this repo, for licensing reasons.
 1. Run `python download_data.py`. It downloads the four Yahoo markets and the S&P 500 up to a fixed end date, so every run gets the same data. For step 9, also run `python download_data.py others`, and for the new markets `python download_data.py new_markets`.
@@ -129,6 +139,18 @@ python more_inputs.py                         # step 9: about 1.5 hours, plus 30
 jupyter notebook more_inputs.ipynb            # about 15 minutes; needs more_inputs.py's saved results
 python more_inputs.py new_markets             # about 1 hour, including tsfresh's features
 jupyter notebook new_markets.ipynb            # about 15 minutes
+jupyter notebook new_markets_volatility.ipynb # about 40 minutes
+jupyter notebook loose_ends.ipynb             # about 1 minute; needs the step 9 and new-markets results
+python forward_test.py freeze                 # about 30 minutes; done once, on 14 Nov 2026
+```
+
+**The forward test, in late 2027** (after 26 Nov 2027; in PowerShell use `$env:DATA_DIR = "Dataset/forward"`):
+
+```
+export DATA_DIR=Dataset/forward
+python download_data.py forward               # then add the two Investing.com files, to 11/26/2027, to Dataset/forward/
+python forward_test.py score                  # checks every model's hash first
+jupyter notebook forward_test.ipynb
 ```
 
 **No data?** `python make_fake_data.py` writes made-up prices to `fake_data/`. Set the `DATA_DIR` environment variable to `fake_data` and the code runs on them. The results mean nothing, but it shows that everything works.
