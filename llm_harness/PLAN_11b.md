@@ -38,6 +38,8 @@ Written after stages 0 and 1 of [PLAN_11.md](PLAN_11.md), before any of this is 
 - The strengths are chosen on the build sample as planned (25 conditions × 300 questions, about 6 hours).
 - 2019 is scored **only at the 3 chosen strengths** (about 4 hours), not at every strength. So S1's "falls steadily with strength" is judged on the build sample.
 
+**A fair bar, added after the build sample and before 2019 is scored:** on the build sample the unchanged model agrees with its rule less often (38%, planted tester) than answering "up" to everything would (57%), and the large strengths mostly make it say "up". So beating the unchanged model can just mean saying "up" more. Every stage is therefore also compared with **the fair bar: the same word every time, whichever agrees more often**. In 2019's planted tester run that is "up", at 52.1%, worked out from the labels alone. A stage closes the gap only if it beats the fair bar too (McNemar, Holm over the 4 stages). Chosen strengths (by the rule above; S1's tie between 2 and 4 went to the first, 2): **S1 at 2, S2 at −4, random at 2.**
+
 ## Stage 3: a small fine-tune (the gradient baseline)
 
 A LoRA adapter (rank 8, on the attention's query and value weights, learning rate 2e-4, one epoch) on 600 build questions (200 per run, seed 0), trained to give **its rule's answer** at the answer position. Loss on that one token only.
@@ -58,7 +60,7 @@ Claude, working through code, inspects the 8-bit model's weights and activations
 
 | Measure | How |
 |---|---|
-| **Main: agreement with its own rule** | Planted tester, 2019 (432 questions). Each stage's choice against the unchanged model: McNemar's test, Holm over 4 (S1, S2, LoRA, edit) |
+| **Main: agreement with its own rule** | Planted tester, 2019 (432 questions). Each stage's choice against the unchanged model: McNemar's test, Holm over 4 (S1, S2, LoRA, edit). **And against the fair bar** (the same word every time: "up", 52.1%), the same way |
 | Agreement, none runs | Also reported, same test |
 | Accuracy and AUC, real | Real none run, 2019. **Expected 48–52% and 0.48–0.53 for every stage** |
 | Still answers | Share of questions where "up" or "down" is the most likely next token. Below 95% counts as breaking the model |

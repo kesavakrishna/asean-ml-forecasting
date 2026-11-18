@@ -1,0 +1,3 @@
+https://github.com/andrewyng/openworker/blob/main/harness/README.md?utm_campaign=The%20Batch&utm_medium=email&_hsmi=100254791476&utm_content=449065180&utm_source=hs_email
+
+check our OpenWorker Harness SDK and see if we can build something with it
